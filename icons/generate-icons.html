@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Generate Icons</title>
+</head>
+<body>
+  <canvas id="canvas16" width="16" height="16"></canvas>
+  <canvas id="canvas48" width="48" height="48"></canvas>
+  <canvas id="canvas128" width="128" height="128"></canvas>
+
+  <script>
+    // Simple icon generator - creates blue square with white "LT" text
+    function generateIcon(canvasId, size) {
+      const canvas = document.getElementById(canvasId);
+      const ctx = canvas.getContext('2d');
+
+      // Background
+      ctx.fillStyle = '#0073b1';
+      ctx.fillRect(0, 0, size, size);
+
+      // Text
+      ctx.fillStyle = 'white';
+      ctx.font = `bold ${size * 0.5}px Arial`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('LT', size / 2, size / 2);
+
+      // Download
+      canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `icon${size}.png`;
+        a.click();
+      });
+    }
+
+    // Generate all sizes
+    generateIcon('canvas16', 16);
+    generateIcon('canvas48', 48);
+    generateIcon('canvas128', 128);
+  </script>
+</body>
+</html>

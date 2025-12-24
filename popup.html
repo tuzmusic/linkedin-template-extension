@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      width: 400px;
+      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 18px;
+      margin: 0 0 16px 0;
+      color: #000000;
+    }
+
+    .template-section {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: #666;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 14px;
+      resize: vertical;
+      box-sizing: border-box;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #0073b1;
+    }
+
+    .char-count {
+      text-align: right;
+      font-size: 12px;
+      margin-top: 4px;
+      color: #666;
+    }
+
+    .char-count.over-limit {
+      color: #cc1016;
+      font-weight: 600;
+    }
+
+    .wildcards {
+      background: #f3f6f8;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      margin-bottom: 16px;
+    }
+
+    .wildcards-title {
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #000;
+    }
+
+    .wildcard-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .wildcard-tag {
+      background: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 11px;
+      border: 1px solid #ddd;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #0073b1;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: #005885;
+    }
+
+    .saved-message {
+      text-align: center;
+      color: #057642;
+      font-size: 13px;
+      margin-top: 12px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .saved-message.show {
+      opacity: 1;
+    }
+
+    .keyboard-hint {
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #eee;
+    }
+
+    .keyboard-hint kbd {
+      background: #f3f6f8;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: inherit;
+      font-size: 11px;
+      border: 1px solid #ddd;
+    }
+  </style>
+</head>
+<body>
+  <h1>LinkedIn Message Template</h1>
+
+  <div class="wildcards">
+    <div class="wildcards-title">Available Wildcards:</div>
+    <div class="wildcard-list">
+      <span class="wildcard-tag">{{firstName}}</span>
+      <span class="wildcard-tag">{{lastName}}</span>
+      <span class="wildcard-tag">{{fullName}}</span>
+      <span class="wildcard-tag">{{companyName}}</span>
+      <span class="wildcard-tag">{{position}}</span>
+      <span class="wildcard-tag">{{headline}}</span>
+      <span class="wildcard-tag">{{location}}</span>
+    </div>
+  </div>
+
+  <div class="template-section">
+    <label for="template">Your Message Template:</label>
+    <textarea id="template" placeholder="Hi {{firstName}}, I noticed you work at {{companyName}}..."></textarea>
+    <div class="char-count" id="charCount">0/300 characters</div>
+  </div>
+
+  <button id="saveBtn">Save Template</button>
+  <div class="saved-message" id="savedMessage">Template saved!</div>
+
+  <div class="keyboard-hint">
+    On any LinkedIn profile, press <kbd>Cmd+Shift+L</kbd> to copy your personalized message
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

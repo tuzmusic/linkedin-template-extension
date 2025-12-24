@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+      color: #000;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 32px;
+    }
+
+    .section {
+      background: white;
+      padding: 24px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      margin-bottom: 24px;
+    }
+
+    h2 {
+      font-size: 18px;
+      margin: 0 0 16px 0;
+      color: #000;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: #666;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 14px;
+      resize: vertical;
+      box-sizing: border-box;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #0073b1;
+    }
+
+    .char-count {
+      text-align: right;
+      font-size: 12px;
+      margin-top: 4px;
+      color: #666;
+    }
+
+    .char-count.over-limit {
+      color: #cc1016;
+      font-weight: 600;
+    }
+
+    .wildcards {
+      background: #f3f6f8;
+      padding: 16px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+    }
+
+    .wildcards-title {
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #000;
+      font-size: 14px;
+    }
+
+    .wildcard-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+
+    .wildcard-code {
+      background: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 12px;
+      border: 1px solid #ddd;
+      min-width: 140px;
+      margin-right: 12px;
+    }
+
+    .wildcard-description {
+      color: #666;
+    }
+
+    button {
+      padding: 12px 24px;
+      background: #0073b1;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: #005885;
+    }
+
+    .saved-message {
+      color: #057642;
+      font-size: 14px;
+      margin-left: 16px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      display: inline-block;
+    }
+
+    .saved-message.show {
+      opacity: 1;
+    }
+
+    .info-box {
+      background: #e7f3ff;
+      border: 1px solid #b3d9ff;
+      border-radius: 6px;
+      padding: 16px;
+      margin-top: 16px;
+    }
+
+    .info-box strong {
+      display: block;
+      margin-bottom: 8px;
+      color: #0073b1;
+    }
+
+    .info-box p {
+      margin: 0;
+      font-size: 13px;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    kbd {
+      background: #f3f6f8;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 12px;
+      border: 1px solid #ddd;
+    }
+  </style>
+</head>
+<body>
+  <h1>LinkedIn Message Template Settings</h1>
+  <p class="subtitle">Customize your connection request message template</p>
+
+  <div class="section">
+    <h2>Available Wildcards</h2>
+    <div class="wildcards">
+      <div class="wildcards-title">Use these placeholders in your template:</div>
+      <div class="wildcard-item">
+        <code class="wildcard-code">{{firstName}}</code>
+        <span class="wildcard-description">Contact's first name</span>
+      </div>
+      <div class="wildcard-item">
+        <code class="wildcard-code">{{lastName}}</code>
+        <span class="wildcard-description">Contact's last name</span>
+      </div>
+      <div class="wildcard-item">
+        <code class="wildcard-code">{{fullName}}</code>
+        <span class="wildcard-description">Contact's full name</span>
+      </div>
+      <div class="wildcard-item">
+        <code class="wildcard-code">{{companyName}}</code>
+        <span class="wildcard-description">Current company name</span>
+      </div>
+      <div class="wildcard-item">
+        <code class="wildcard-code">{{position}}</code>
+        <span class="wildcard-description">Current job position</span>
+      </div>
+      <div class="wildcard-item">
+        <code class="wildcard-code">{{headline}}</code>
+        <span class="wildcard-description">LinkedIn headline</span>
+      </div>
+      <div class="wildcard-item">
+        <code class="wildcard-code">{{location}}</code>
+        <span class="wildcard-description">Location</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Message Template</h2>
+    <label for="template">Your Template (max 300 characters):</label>
+    <textarea id="template" placeholder="Hi {{firstName}}, I noticed you work at {{companyName}}. I'd love to connect and learn more about your work!"></textarea>
+    <div class="char-count" id="charCount">0/300 characters</div>
+
+    <div style="margin-top: 16px;">
+      <button id="saveBtn">Save Template</button>
+      <span class="saved-message" id="savedMessage">Saved successfully!</span>
+    </div>
+
+    <div class="info-box">
+      <strong>How to use:</strong>
+      <p>Navigate to any LinkedIn profile page and press <kbd>Cmd+Shift+L</kbd> (or <kbd>Ctrl+Shift+L</kbd> on Windows/Linux). The extension will automatically fill in the wildcards with the person's information and copy the message to your clipboard. Then simply paste it into LinkedIn's connection request message box!</p>
+    </div>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>
