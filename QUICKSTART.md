@@ -16,7 +16,7 @@
 
 2. **Use it** (on any LinkedIn profile):
    - Navigate to someone's LinkedIn profile
-   - Press `Cmd+Shift+L` (Mac) or `Ctrl+Shift+L` (Windows)
+   - Press `Cmd+.` (Mac) or `Ctrl+.` (Windows)
    - See green notification: "Message copied!"
    - Go to LinkedIn → Connect → Add a note → Paste (`Cmd+V`)
    - Send!

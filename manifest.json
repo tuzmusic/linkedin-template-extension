@@ -33,8 +33,8 @@
   "commands": {
     "copy-template": {
       "suggested_key": {
-        "default": "Ctrl+Shift+L",
-        "mac": "Command+Shift+L"
+        "default": "Ctrl+Period",
+        "mac": "Command+Period"
       },
       "description": "Copy personalized template to clipboard"
     }

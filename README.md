@@ -5,7 +5,7 @@ A Chrome extension that helps you quickly copy personalized LinkedIn connection 
 ## Features
 
 - **Message Templates**: Create reusable message templates with wildcard support
-- **Keyboard Shortcut**: Press `Cmd+Shift+L` (Mac) or `Ctrl+Shift+L` (Windows/Linux) to copy personalized messages
+- **Keyboard Shortcut**: Press `Cmd+.` (Mac) or `Ctrl+.` (Windows/Linux) to copy personalized messages
 - **Auto-Fill Wildcards**: Automatically extracts profile data and fills in template placeholders
 - **Character Counter**: Shows character count (LinkedIn's 300 char limit) with warnings
 - **Toast Notifications**: Visual feedback when message is copied
@@ -74,7 +74,7 @@ Hi {{firstName}}, I noticed you work at {{companyName}}. I'd love to connect and
    - Go to any LinkedIn profile page (e.g., `linkedin.com/in/someone`)
 
 2. **Copy Personalized Message**
-   - Press `Cmd+Shift+L` (Mac) or `Ctrl+Shift+L` (Windows/Linux)
+   - Press `Cmd+.` (Mac) or `Ctrl+.` (Windows/Linux)
    - You'll see a toast notification: "Message copied! (XXX/300 chars)"
 
 3. **Paste into LinkedIn**

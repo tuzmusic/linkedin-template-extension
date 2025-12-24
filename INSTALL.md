@@ -28,7 +28,7 @@ You should see:
 ## Quick Test
 
 1. Go to any LinkedIn profile (e.g., a coworker or public profile)
-2. Press `Cmd+Shift+L` (Mac) or `Ctrl+Shift+L` (Windows)
+2. Press `Cmd+.` (Mac) or `Ctrl+.` (Windows)
 3. You should see a green toast notification saying "Message copied!"
 4. Paste (`Cmd+V`) anywhere to see your personalized message
 

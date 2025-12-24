@@ -15,7 +15,8 @@ function scrapeLinkedInProfile() {
 
   try {
     // Get full name from the h1 tag
-    const nameElement = document.querySelector('h1.text-heading-xlarge');
+    const nameElement = document.querySelector('h1.text-heading-xlarge') ||
+                       document.querySelector('h1');
     if (nameElement) {
       data.fullName = nameElement.textContent.trim();
       const nameParts = data.fullName.split(' ');
@@ -23,47 +24,80 @@ function scrapeLinkedInProfile() {
       data.lastName = nameParts.slice(1).join(' ') || '';
     }
 
-    // Get headline
-    const headlineElement = document.querySelector('.text-body-medium.break-words');
+    // Get headline - try multiple selectors
+    const headlineElement = document.querySelector('.text-body-medium.break-words') ||
+                           document.querySelector('.pv-top-card--list-bullet span:first-child') ||
+                           document.querySelector('[class*="headline"]');
     if (headlineElement) {
       data.headline = headlineElement.textContent.trim();
     }
 
-    // Get current position and company from experience section
-    // LinkedIn's structure: position is usually in the first experience item
-    const experienceSection = document.querySelector('#experience');
-    if (experienceSection) {
-      const firstExperience = experienceSection.parentElement.querySelector('ul li');
-      if (firstExperience) {
-        const positionElement = firstExperience.querySelector('.t-bold span[aria-hidden="true"]');
-        const companyElement = firstExperience.querySelector('.t-14.t-normal span[aria-hidden="true"]');
-
-        if (positionElement) {
-          data.position = positionElement.textContent.trim();
-        }
-        if (companyElement) {
-          data.companyName = companyElement.textContent.trim();
+    // Try to get position and company from the top card first (more reliable)
+    const topCard = document.querySelector('.pv-top-card');
+    if (topCard) {
+      // Look for position/company in the profile top section
+      const subtitleElement = topCard.querySelector('.text-body-medium');
+      if (subtitleElement) {
+        const subtitleText = subtitleElement.textContent.trim();
+        // Format is usually "Position at Company" or just "Company"
+        if (subtitleText.includes(' at ')) {
+          const parts = subtitleText.split(' at ');
+          data.position = parts[0].trim();
+          data.companyName = parts[1].trim();
+        } else if (subtitleText.includes(' · ')) {
+          // Sometimes format is "Position · Company"
+          const parts = subtitleText.split(' · ');
+          data.position = parts[0].trim();
+          if (parts[1]) data.companyName = parts[1].trim();
+        } else {
+          // Just company or position
+          data.companyName = subtitleText;
         }
       }
     }
 
-    // Alternative: try to get company from the top section
-    if (!data.companyName) {
-      const topCardElements = document.querySelectorAll('.text-body-small.inline');
-      for (const elem of topCardElements) {
-        const text = elem.textContent.trim();
-        if (text && !text.includes('·') && text.length > 2) {
-          data.companyName = text;
-          break;
+    // Fallback: Get current position and company from experience section
+    if (!data.position || !data.companyName) {
+      const experienceSection = document.querySelector('#experience');
+      if (experienceSection) {
+        const firstExperience = experienceSection.parentElement.querySelector('ul li');
+        if (firstExperience) {
+          const positionElement = firstExperience.querySelector('.t-bold span[aria-hidden="true"]') ||
+                                 firstExperience.querySelector('[class*="profile-section-card__title"]');
+
+          // For company, look for the first simple company name (not the one with duration info)
+          let companyElement = null;
+          const companySpans = firstExperience.querySelectorAll('.t-14.t-normal span[aria-hidden="true"]');
+          for (const span of companySpans) {
+            const text = span.textContent.trim();
+            // Skip spans that contain duration markers like "·", "Full-time", "yrs", "mos"
+            if (!text.includes('·') && !text.includes('Full-time') && !text.includes('Part-time') &&
+                !text.includes(' yr') && !text.includes(' mo') && text.length > 0) {
+              companyElement = span;
+              break;
+            }
+          }
+
+          if (positionElement && !data.position) {
+            data.position = positionElement.textContent.trim();
+          }
+          if (companyElement && !data.companyName) {
+            data.companyName = companyElement.textContent.trim();
+          }
         }
       }
     }
 
     // Get location
-    const locationElement = document.querySelector('.text-body-small.inline.t-black--light.break-words');
+    const locationElement = document.querySelector('.text-body-small.inline.t-black--light.break-words') ||
+                           document.querySelector('.pv-top-card--list-bullet li') ||
+                           document.querySelector('[class*="location"]');
     if (locationElement) {
       data.location = locationElement.textContent.trim();
     }
+
+    // Debug log
+    console.log('Scraped LinkedIn data:', data);
 
   } catch (error) {
     console.error('Error scraping LinkedIn profile:', error);
