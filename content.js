@@ -141,7 +141,7 @@ async function copyToClipboard(text) {
 }
 
 // Show toast notification
-function showNotification(message, type = 'success') {
+function showNotification(message, type = 'success', copiedMessage = null) {
   // Remove existing notification if any
   const existing = document.getElementById('linkedin-template-toast');
   if (existing) {
@@ -151,7 +151,18 @@ function showNotification(message, type = 'success') {
   const toast = document.createElement('div');
   toast.id = 'linkedin-template-toast';
   toast.className = `linkedin-template-toast ${type}`;
-  toast.textContent = message;
+
+  if (copiedMessage) {
+    // Show header, message preview, and footer
+    toast.innerHTML = `
+      <div class="linkedin-template-toast-header">${message}</div>
+      <div class="linkedin-template-toast-message">${copiedMessage}</div>
+      <div class="linkedin-template-toast-footer">Press Cmd+V to paste</div>
+    `;
+  } else {
+    // Simple message
+    toast.textContent = message;
+  }
 
   document.body.appendChild(toast);
 
@@ -160,7 +171,7 @@ function showNotification(message, type = 'success') {
     toast.classList.add('show');
   }, 10);
 
-  // Animate out and remove
+  // Auto-hide after 3 seconds for now (will change to 5 and detect paste next)
   setTimeout(() => {
     toast.classList.remove('show');
     setTimeout(() => {
@@ -202,7 +213,7 @@ async function handleCopyTemplate() {
     const success = await copyToClipboard(filledMessage);
 
     if (success) {
-      showNotification(`Message copied! (${charCount}/300 chars)`, 'success');
+      showNotification(`Message copied! (${charCount}/300 chars)`, 'success', filledMessage);
     } else {
       showNotification('Failed to copy message', 'error');
     }

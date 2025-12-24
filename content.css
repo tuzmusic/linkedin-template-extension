@@ -3,18 +3,43 @@
   position: fixed;
   top: 20px;
   right: 20px;
-  padding: 16px 24px;
+  padding: 16px 20px;
   border-radius: 8px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 13px;
   color: white;
   z-index: 999999;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   opacity: 0;
   transform: translateY(-20px);
   transition: all 0.3s ease;
-  max-width: 350px;
+  max-width: 400px;
+  min-width: 300px;
+}
+
+.linkedin-template-toast-header {
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.linkedin-template-toast-message {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 10px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  line-height: 1.5;
+  font-weight: 400;
+  margin-bottom: 6px;
+  max-height: 150px;
+  overflow-y: auto;
+  word-wrap: break-word;
+}
+
+.linkedin-template-toast-footer {
+  font-size: 11px;
+  opacity: 0.9;
+  font-weight: 400;
 }
 
 .linkedin-template-toast.show {
