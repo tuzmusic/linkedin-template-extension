@@ -171,13 +171,24 @@ function showNotification(message, type = 'success', copiedMessage = null) {
     toast.classList.add('show');
   }, 10);
 
-  // Auto-hide after 3 seconds for now (will change to 5 and detect paste next)
-  setTimeout(() => {
+  // Function to hide toast
+  const hideToast = () => {
     toast.classList.remove('show');
     setTimeout(() => {
       toast.remove();
+      // Remove paste listener when toast is removed
+      document.removeEventListener('paste', pasteListener);
     }, 300);
-  }, 3000);
+  };
+
+  // Listen for paste event (Cmd+V)
+  const pasteListener = (e) => {
+    hideToast();
+  };
+  document.addEventListener('paste', pasteListener);
+
+  // Auto-hide after 5 seconds
+  setTimeout(hideToast, 5000);
 }
 
 // Handle messages from background script
