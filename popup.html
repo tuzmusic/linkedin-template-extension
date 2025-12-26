@@ -30,19 +30,33 @@
 
     select {
       width: 100%;
-      padding: 10px;
+      padding: 4px;
       border: 1px solid #ddd;
       border-radius: 6px;
       font-family: inherit;
-      font-size: 14px;
+      font-size: 13px;
+      line-height: 1.4;
       box-sizing: border-box;
       background: white;
       cursor: pointer;
+      overflow-y: auto;
     }
 
     select:focus {
       outline: none;
       border-color: #0073b1;
+    }
+
+    select option {
+      padding: 10px;
+      line-height: 1.5;
+      white-space: normal;
+      word-wrap: break-word;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    select option:last-child {
+      border-bottom: none;
     }
 
     textarea {
@@ -169,16 +183,16 @@
   </div>
 
   <div class="template-section">
-    <label for="recentTemplates">Recent Templates:</label>
-    <select id="recentTemplates">
-      <option value="">-- Select a recent template --</option>
-    </select>
-  </div>
-
-  <div class="template-section">
     <label for="template">Your Message Template:</label>
     <textarea id="template" placeholder="Hi {{firstName}}, I noticed you work at {{companyName}}..."></textarea>
     <div class="char-count" id="charCount">0/300 characters</div>
+  </div>
+
+  <div class="template-section">
+    <label for="recentTemplates">Recent Templates:</label>
+    <select id="recentTemplates" size="2">
+      <option value="">-- Select a recent template --</option>
+    </select>
   </div>
 
   <button id="saveBtn">Save Template</button>

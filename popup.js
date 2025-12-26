@@ -15,13 +15,28 @@ chrome.storage.sync.get(['messageTemplate', 'savedTemplates'], (result) => {
   }
 
   // Load recent templates into dropdown
-  if (result.savedTemplates && result.savedTemplates.length > 0) {
-    result.savedTemplates.forEach((template, index) => {
+  let templates = result.savedTemplates || [];
+
+  // Pad with dummy templates if fewer than 4 (for testing)
+  const dummyTemplates = [
+    "Hi {{firstName}}, I noticed you work at {{companyName}} and wanted to reach out. I'm really impressed by your work in {{position}} and would love to connect!",
+    "Hello {{firstName}}! I saw your profile and your experience at {{companyName}} caught my attention. I think we could have some great conversations about {{headline}}.",
+    "Hey {{firstName}}, I'm reaching out because I noticed we share similar interests. Your role as {{position}} at {{companyName}} is fascinating. Would you be open to connecting?",
+    "Hi {{firstName}}, I came across your profile and was impressed by your background at {{companyName}}. I'd love to learn more about your experience in {{position}}!"
+  ];
+
+  if (templates.length < 4) {
+    const needed = 4 - templates.length;
+    templates = [...templates, ...dummyTemplates.slice(0, needed)];
+  }
+
+  if (templates.length > 0) {
+    templates.forEach((template, index) => {
       const option = document.createElement('option');
       option.value = index;
-      // Show first 50 characters as preview
-      const preview = template.length > 50 ? template.substring(0, 50) + '...' : template;
-      option.textContent = preview;
+      option.dataset.template = template;
+      // Show full template text
+      option.textContent = template;
       recentTemplatesSelect.appendChild(option);
     });
   }
@@ -44,14 +59,10 @@ templateTextarea.addEventListener('input', updateCharCount);
 
 // Handle recent template selection
 recentTemplatesSelect.addEventListener('change', () => {
-  const selectedIndex = recentTemplatesSelect.value;
-  if (selectedIndex !== '') {
-    chrome.storage.sync.get(['savedTemplates'], (result) => {
-      if (result.savedTemplates && result.savedTemplates[selectedIndex]) {
-        templateTextarea.value = result.savedTemplates[selectedIndex];
-        updateCharCount();
-      }
-    });
+  const selectedOption = recentTemplatesSelect.options[recentTemplatesSelect.selectedIndex];
+  if (selectedOption && selectedOption.dataset.template) {
+    templateTextarea.value = selectedOption.dataset.template;
+    updateCharCount();
   }
 });
 
