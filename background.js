@@ -22,11 +22,20 @@ chrome.commands.onCommand.addListener((command) => {
 
 // Initialize default template on install
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.storage.sync.get(['messageTemplate'], (result) => {
+  chrome.storage.sync.get(['messageTemplate', 'savedTemplates'], (result) => {
     if (!result.messageTemplate) {
-      chrome.storage.sync.set({
-        messageTemplate: "Hi {{firstName}}, I noticed you work at {{companyName}}. I'd love to connect!"
-      });
+      // Check if there are any saved templates
+      if (result.savedTemplates?.length > 0) {
+        // Use the most recent saved template
+        chrome.storage.sync.set({
+          messageTemplate: result.savedTemplates[0]
+        });
+      } else {
+        // Use the default init message
+        chrome.storage.sync.set({
+          messageTemplate: "Hi {{firstName}}, I noticed you work at {{companyName}}. I'd love to connect!"
+        });
+      }
     }
   });
 });

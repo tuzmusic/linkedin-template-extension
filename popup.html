@@ -28,6 +28,23 @@
       color: #666;
     }
 
+    select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 14px;
+      box-sizing: border-box;
+      background: white;
+      cursor: pointer;
+    }
+
+    select:focus {
+      outline: none;
+      border-color: #0073b1;
+    }
+
     textarea {
       width: 100%;
       min-height: 100px;
@@ -149,6 +166,13 @@
       <span class="wildcard-tag">{{headline}}</span>
       <span class="wildcard-tag">{{location}}</span>
     </div>
+  </div>
+
+  <div class="template-section">
+    <label for="recentTemplates">Recent Templates:</label>
+    <select id="recentTemplates">
+      <option value="">-- Select a recent template --</option>
+    </select>
   </div>
 
   <div class="template-section">
