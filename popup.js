@@ -23,8 +23,15 @@ const dummyTemplates = [
 
 // Load templates and draft on popup open
 chrome.storage.sync.get(['messageTemplate', 'savedTemplates', 'draftTemplate'], (result) => {
-  // Load saved templates
+  // Load saved templates and filter out any invalid entries
   let templates = result.savedTemplates || [];
+  const originalLength = templates.length;
+  templates = templates.filter(t => t && typeof t === 'object' && t.title && t.template);
+
+  // If we filtered out invalid entries, clean up storage
+  if (templates.length !== originalLength) {
+    chrome.storage.sync.set({ savedTemplates: templates });
+  }
 
   // Pad with dummy templates if fewer than 4 (for testing)
   if (templates.length < 4) {
@@ -39,6 +46,10 @@ chrome.storage.sync.get(['messageTemplate', 'savedTemplates', 'draftTemplate'], 
     currentDraft = result.draftTemplate;
   } else {
     currentDraft = null;
+    // Clear invalid draft from storage
+    if (result.draftTemplate) {
+      chrome.storage.sync.set({ draftTemplate: null });
+    }
   }
 
   // Populate listbox
@@ -61,35 +72,47 @@ function populateTemplateList() {
   recentTemplatesListbox.innerHTML = '';
 
   // Add draft if exists
-  if (currentDraft) {
+  if (currentDraft && currentDraft.template) {
     const draftItem = createTemplateItem(
       currentDraft.title ? `${currentDraft.title} (in progress)` : '(in progress)',
       currentDraft.template,
       -1,
       true
     );
-    recentTemplatesListbox.appendChild(draftItem);
+    if (draftItem) {
+      recentTemplatesListbox.appendChild(draftItem);
+    }
   }
 
   // Add saved templates
   currentTemplates.forEach((template, index) => {
-    const item = createTemplateItem(template.title, template.template, index, false);
-    recentTemplatesListbox.appendChild(item);
+    if (template && template.template) {
+      const item = createTemplateItem(template.title, template.template, index, false);
+      if (item) {
+        recentTemplatesListbox.appendChild(item);
+      }
+    }
   });
 }
 
 // Create a template list item
 function createTemplateItem(title, template, index, isDraft) {
+  // Validate inputs
+  if (!template || typeof template !== 'string') {
+    console.warn('Invalid template provided to createTemplateItem:', template);
+    return null;
+  }
+
   const item = document.createElement('div');
   item.className = 'template-item';
   if (isDraft) {
     item.className += ' draft';
   }
-  item.textContent = title;
+  item.textContent = title || '(Untitled)';
   item.setAttribute('role', 'option');
   item.dataset.index = index;
   item.dataset.template = template;
-  item.dataset.title = isDraft ? (currentDraft.title || '') : title;
+  item.dataset.title = isDraft ? (currentDraft?.title || '') : (title || '');
 
   // Set anchor name for popover positioning (must be set directly, not via CSS variable)
   const anchorName = `--template-${isDraft ? 'draft' : index}`;
@@ -219,6 +242,9 @@ function saveTemplate() {
   chrome.storage.sync.get(['savedTemplates'], (result) => {
     let savedTemplates = result.savedTemplates || [];
 
+    // Filter out any invalid entries (old format or corrupted data)
+    savedTemplates = savedTemplates.filter(t => t && t.title && t.template);
+
     // Check if a template with this title already exists
     const existingIndex = savedTemplates.findIndex(t => t.title === title);
 
@@ -241,8 +267,12 @@ function saveTemplate() {
       savedTemplates: savedTemplates,
       draftTemplate: null
     }, () => {
-      // Update current state
+      // Update current state - pad with dummies if needed
       currentTemplates = savedTemplates;
+      if (currentTemplates.length < 4) {
+        const needed = 4 - currentTemplates.length;
+        currentTemplates = [...currentTemplates, ...dummyTemplates.slice(0, needed)];
+      }
       currentDraft = null;
 
       // Refresh list
