@@ -26,9 +26,10 @@ chrome.runtime.onInstalled.addListener(() => {
     if (!result.messageTemplate) {
       // Check if there are any saved templates
       if (result.savedTemplates?.length > 0) {
-        // Use the most recent saved template
+        // Use the most recent saved template (now an object with {title, template})
+        const recentTemplate = result.savedTemplates[0];
         chrome.storage.sync.set({
-          messageTemplate: result.savedTemplates[0]
+          messageTemplate: typeof recentTemplate === 'string' ? recentTemplate : recentTemplate.template
         });
       } else {
         // Use the default init message
