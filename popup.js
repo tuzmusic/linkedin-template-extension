@@ -111,6 +111,9 @@ function createTemplateItem(displayTitle, template, isCurrent, statusClass) {
     item.setAttribute('aria-selected', 'true');
   }
 
+  // Add tooltip showing full template text on the whole row
+  item.title = template.template;
+
   // Create title span
   const titleSpan = document.createElement('span');
   titleSpan.className = 'template-item-title';
