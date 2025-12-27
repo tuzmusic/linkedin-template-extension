@@ -51,17 +51,31 @@ chrome.storage.sync.get(['currentWork', 'savedTemplates'], (result) => {
   populateTemplatesList();
 });
 
+// Check if there are unsaved changes
+function hasUnsavedChanges() {
+  // Get current editor values
+  const currentTitle = templateTitleInput.value;
+  const currentTemplate = templateTextarea.value;
+
+  // If it's a draft (no ID), check if there's any content
+  if (currentWork.id === null) {
+    return currentTitle.trim() !== '' || currentTemplate.trim() !== '';
+  }
+
+  // If it's a saved template, compare with saved version
+  const savedVersion = savedTemplates.find(t => t.id === currentWork.id);
+  if (!savedVersion) return false;
+
+  return savedVersion.title !== currentTitle || savedVersion.template !== currentTemplate;
+}
+
 // Populate the templates listbox
 function populateTemplatesList() {
   templatesListbox.innerHTML = '';
 
   // Check if currentWork should be shown as draft or edited
-  const currentSaved = savedTemplates.find(t => t.id === currentWork.id);
   const isDraft = currentWork.id === null;
-  const isEdited = currentSaved && (
-    currentSaved.title !== currentWork.title ||
-    currentSaved.template !== currentWork.template
-  );
+  const isEdited = hasUnsavedChanges() && !isDraft;
 
   // Show draft/edited at top if applicable
   if (isDraft || isEdited) {
@@ -105,6 +119,14 @@ function createTemplateItem(displayTitle, template, isCurrent, statusClass) {
   // Click handler to load template
   titleSpan.addEventListener('click', () => {
     if (isCurrent) return; // Already loaded
+
+    // Check if there are unsaved changes
+    if (hasUnsavedChanges()) {
+      const confirmSwitch = confirm('You have unsaved changes. Discard changes and switch templates?');
+      if (!confirmSwitch) {
+        return; // User cancelled, stay on current template
+      }
+    }
 
     // Load the template
     currentWork = {
@@ -191,6 +213,14 @@ function generateTitle() {
 
 // New button - clear editor
 function createNew() {
+  // Check if there are unsaved changes
+  if (hasUnsavedChanges()) {
+    const confirmNew = confirm('You have unsaved changes. Discard changes and create new template?');
+    if (!confirmNew) {
+      return; // User cancelled
+    }
+  }
+
   currentWork = {
     id: null,
     title: '',
