@@ -7,13 +7,18 @@ chrome.commands.onCommand.addListener((command) => {
 
       // Only trigger on LinkedIn profile pages
       if (activeTab.url && activeTab.url.includes('linkedin.com/in/')) {
-        chrome.tabs.sendMessage(activeTab.id, { action: 'copyTemplate' });
+        chrome.tabs.sendMessage(activeTab.id, { action: 'copyTemplate' }).catch((error) => {
+          console.error('Failed to send message to content script:', error);
+          console.log('Try refreshing the LinkedIn page to reload the extension');
+        });
       } else {
         // Show notification if not on a profile page
         chrome.tabs.sendMessage(activeTab.id, {
           action: 'showNotification',
           message: 'Please navigate to a LinkedIn profile page',
           type: 'error'
+        }).catch((error) => {
+          console.error('Not on a LinkedIn profile page');
         });
       }
     });
