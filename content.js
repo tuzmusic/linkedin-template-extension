@@ -18,7 +18,9 @@ function scrapeLinkedInProfile() {
     const nameElement = document.querySelector('h1.text-heading-xlarge') ||
                        document.querySelector('h1');
     if (nameElement) {
-      data.fullName = nameElement.textContent.trim();
+      // Remove emojis from name
+      const rawName = nameElement.textContent.trim();
+      data.fullName = rawName.replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu, '').trim();
       const nameParts = data.fullName.split(' ');
       data.firstName = nameParts[0] || '';
       data.lastName = nameParts.slice(1).join(' ') || '';
