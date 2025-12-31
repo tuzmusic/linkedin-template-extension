@@ -170,13 +170,25 @@ function createTemplateItem(displayTitle, template, isCurrent, statusClass) {
 
 // Update character count
 function updateCharCount() {
-  const count = templateTextarea.value.length;
-  charCountDiv.textContent = `${count}/300 characters`;
+  const template = templateTextarea.value;
+  const totalCount = template.length;
 
-  if (count > 300) {
+  // Calculate count without placeholders
+  const withoutPlaceholders = template.replace(/\{\{[^}]+\}\}/g, '');
+  const withoutPlaceholdersCount = withoutPlaceholders.length;
+
+  // Display both counts
+  charCountDiv.textContent = `${totalCount}/300 (${withoutPlaceholdersCount} without placeholders)`;
+
+  // Color coding:
+  // - Red if without placeholders exceeds 300
+  // - Orange if total exceeds 300 (but without placeholders is ok)
+  // - Default otherwise
+  charCountDiv.classList.remove('over-limit', 'warning');
+  if (withoutPlaceholdersCount > 300) {
     charCountDiv.classList.add('over-limit');
-  } else {
-    charCountDiv.classList.remove('over-limit');
+  } else if (totalCount > 300) {
+    charCountDiv.classList.add('warning');
   }
 }
 
