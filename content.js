@@ -147,7 +147,7 @@ async function copyToClipboard(text) {
 }
 
 // Show toast notification
-function showNotification(message, type = 'success', copiedMessage = null) {
+function showNotification(message, type = 'success', copiedMessage = null, warning = null) {
   // Remove existing notification if any
   const existing = document.getElementById('linkedin-template-toast');
   if (existing) {
@@ -159,11 +159,13 @@ function showNotification(message, type = 'success', copiedMessage = null) {
   toast.className = `linkedin-template-toast ${type}`;
 
   if (copiedMessage) {
-    // Show header, message preview, and footer
+    // Show header, message preview, footer, and optional warning
+    const warningHtml = warning ? `<div class="linkedin-template-toast-warning">${warning}</div>` : '';
     toast.innerHTML = `
       <div class="linkedin-template-toast-header">${message}</div>
       <div class="linkedin-template-toast-message">${copiedMessage}</div>
       <div class="linkedin-template-toast-footer">Press Cmd+V to paste</div>
+      ${warningHtml}
     `;
   } else {
     // Simple message
@@ -227,8 +229,8 @@ async function handleCopyTemplate() {
 
     if (success) {
       // Show green toast with warning if too long
-      const warningText = charCount > 300 ? '\n⚠️ Message exceeds 300 character limit' : '';
-      showNotification(`Message copied! (${charCount}/300 chars)${warningText}`, 'success', filledMessage);
+      const warningText = charCount > 300 ? '⚠️ Message exceeds 300 character limit' : null;
+      showNotification(`Message copied! (${charCount}/300 chars)`, 'success', filledMessage, warningText);
     } else {
       showNotification('Failed to copy message', 'error');
     }
