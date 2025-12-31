@@ -215,16 +215,14 @@ async function handleCopyTemplate() {
 
     // Check character count
     const charCount = filledMessage.length;
-    if (charCount > 300) {
-      showNotification(`Warning: Message is ${charCount}/300 chars (too long!)`, 'error');
-      return;
-    }
 
-    // Copy to clipboard
+    // Copy to clipboard (even if too long)
     const success = await copyToClipboard(filledMessage);
 
     if (success) {
-      showNotification(`Message copied! (${charCount}/300 chars)`, 'success', filledMessage);
+      // Show green toast with warning if too long
+      const warningText = charCount > 300 ? '\n⚠️ Message exceeds 300 character limit' : '';
+      showNotification(`Message copied! (${charCount}/300 chars)${warningText}`, 'success', filledMessage);
     } else {
       showNotification('Failed to copy message', 'error');
     }
