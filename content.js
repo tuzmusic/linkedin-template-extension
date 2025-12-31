@@ -18,10 +18,14 @@ function scrapeLinkedInProfile() {
     const nameElement = document.querySelector('h1.text-heading-xlarge') ||
                        document.querySelector('h1');
     if (nameElement) {
-      // Remove emojis from name
+      // Remove emojis and zero-width characters from name
       const rawName = nameElement.textContent.trim();
-      data.fullName = rawName.replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu, '').trim();
-      const nameParts = data.fullName.split(' ');
+      data.fullName = rawName
+        .replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu, '')
+        .replace(/[\u200B-\u200D\uFEFF]/g, '') // Remove zero-width chars
+        .trim()
+        .replace(/\s+/g, ' '); // Normalize whitespace
+      const nameParts = data.fullName.split(' ').filter(part => part.length > 0);
       data.firstName = nameParts[0] || '';
       data.lastName = nameParts.slice(1).join(' ') || '';
     }
