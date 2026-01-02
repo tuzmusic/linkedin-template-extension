@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "LinkedIn Secret Weapon",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Tools for responsibly supercharging your networking workflow 🚀",
   "permissions": [
     "storage",
@@ -34,7 +34,7 @@
     "copy-template": {
       "suggested_key": {
         "default": "Alt+V",
-        "mac": "Opt+V"
+        "mac": "Option+V"
       },
       "description": "Copy personalized template to clipboard"
     }
