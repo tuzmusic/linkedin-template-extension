@@ -137,19 +137,13 @@ function fillTemplate(template, data) {
 
 // Copy text to clipboard
 async function copyToClipboard(text) {
-  return new Promise((resolve) => {
-    chrome.runtime.sendMessage(
-      { action: 'copyToClipboard', text: text },
-      (response) => {
-        if (chrome.runtime.lastError) {
-          console.error('Failed to copy to clipboard:', chrome.runtime.lastError);
-          resolve(false);
-        } else {
-          resolve(response?.success || false);
-        }
-      }
-    );
-  });
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch (error) {
+    console.error('Failed to copy to clipboard:', error);
+    return false;
+  }
 }
 
 // Show toast notification

@@ -1,20 +1,5 @@
 // Background service worker for handling keyboard shortcuts
 
-// Handle clipboard copy requests from content scripts
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === 'copyToClipboard') {
-    navigator.clipboard.writeText(request.text)
-      .then(() => {
-        sendResponse({ success: true });
-      })
-      .catch((error) => {
-        console.error('Failed to copy to clipboard in background:', error);
-        sendResponse({ success: false, error: error.message });
-      });
-    return true; // Keep the message channel open for async response
-  }
-});
-
 chrome.commands.onCommand.addListener((command) => {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     if (!tabs || !tabs[0]) {
