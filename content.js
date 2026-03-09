@@ -199,10 +199,46 @@ function showNotification(message, type = 'success', copiedMessage = null, warni
   setTimeout(hideToast, 5000);
 }
 
+// Click the Connect button
+function clickConnect() {
+  try {
+    const connectButton = document.querySelector('[aria-label^="Invite "][aria-label$=" to connect"]');
+    if (connectButton) {
+      connectButton.click();
+      showNotification('Connect button clicked', 'success');
+    } else {
+      showNotification('Connect button not found on this page', 'error');
+    }
+  } catch (error) {
+    console.error('Error clicking connect button:', error);
+    showNotification('Error: ' + error.message, 'error');
+  }
+}
+
+// Click the Add note button
+function clickAddNote() {
+  try {
+    const addNoteButton = document.querySelector('[aria-label="Add a note"]');
+    if (addNoteButton) {
+      addNoteButton.click();
+      showNotification('Add note button clicked', 'success');
+    } else {
+      showNotification('Add note button not found on this page', 'error');
+    }
+  } catch (error) {
+    console.error('Error clicking add note button:', error);
+    showNotification('Error: ' + error.message, 'error');
+  }
+}
+
 // Handle messages from background script
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'copyTemplate') {
     handleCopyTemplate();
+  } else if (request.action === 'clickConnect') {
+    clickConnect();
+  } else if (request.action === 'clickAddNote') {
+    clickAddNote();
   } else if (request.action === 'showNotification') {
     showNotification(request.message, request.type || 'info');
   }

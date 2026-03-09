@@ -37,6 +37,20 @@
         "mac": "Option+V"
       },
       "description": "Copy personalized template to clipboard"
+    },
+    "click-connect": {
+      "suggested_key": {
+        "default": "Alt+C",
+        "mac": "Option+C"
+      },
+      "description": "Click the Connect button"
+    },
+    "click-add-note": {
+      "suggested_key": {
+        "default": "Alt+N",
+        "mac": "Option+N"
+      },
+      "description": "Click the Add note button"
     }
   },
   "icons": {

@@ -1,18 +1,29 @@
 // Background service worker for handling keyboard shortcuts
 
 chrome.commands.onCommand.addListener((command) => {
-  if (command === 'copy-template') {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      const activeTab = tabs[0];
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    const activeTab = tabs[0];
 
-      // Only trigger on LinkedIn profile pages
-      if (activeTab.url && activeTab.url.includes('linkedin.com/in/')) {
+    // Only trigger on LinkedIn pages
+    if (!activeTab.url || !activeTab.url.includes('linkedin.com')) {
+      chrome.tabs.sendMessage(activeTab.id, {
+        action: 'showNotification',
+        message: 'Please navigate to LinkedIn',
+        type: 'error'
+      }).catch((error) => {
+        console.error('Not on a LinkedIn page');
+      });
+      return;
+    }
+
+    if (command === 'copy-template') {
+      // Only allow on profile pages
+      if (activeTab.url.includes('linkedin.com/in/')) {
         chrome.tabs.sendMessage(activeTab.id, { action: 'copyTemplate' }).catch((error) => {
           console.error('Failed to send message to content script:', error);
           console.log('Try refreshing the LinkedIn page to reload the extension');
         });
       } else {
-        // Show notification if not on a profile page
         chrome.tabs.sendMessage(activeTab.id, {
           action: 'showNotification',
           message: 'Please navigate to a LinkedIn profile page',
@@ -21,8 +32,18 @@ chrome.commands.onCommand.addListener((command) => {
           console.error('Not on a LinkedIn profile page');
         });
       }
-    });
-  }
+    } else if (command === 'click-connect') {
+      chrome.tabs.sendMessage(activeTab.id, { action: 'clickConnect' }).catch((error) => {
+        console.error('Failed to send message to content script:', error);
+        console.log('Try refreshing the LinkedIn page to reload the extension');
+      });
+    } else if (command === 'click-add-note') {
+      chrome.tabs.sendMessage(activeTab.id, { action: 'clickAddNote' }).catch((error) => {
+        console.error('Failed to send message to content script:', error);
+        console.log('Try refreshing the LinkedIn page to reload the extension');
+      });
+    }
+  });
 });
 
 // Initialize default templates on install
