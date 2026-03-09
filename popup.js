@@ -13,6 +13,9 @@ const saveAsDialog = document.getElementById('saveAsDialog');
 const saveAsTitle = document.getElementById('saveAsTitle');
 const saveAsConfirm = document.getElementById('saveAsConfirm');
 const saveAsCancel = document.getElementById('saveAsCancel');
+const templateSearchInput = document.getElementById('templateSearch');
+const noResultsDiv = document.getElementById('noResults');
+const wildcardTags = document.querySelectorAll('.wildcard-tag');
 
 let currentWork = null;
 let savedTemplates = [];
