@@ -95,6 +95,11 @@ function populateTemplatesList() {
     const item = createTemplateItem(template.title, template, false, null);
     templatesListbox.appendChild(item);
   });
+
+  // Reapply search filter if there's an active search
+  if (templateSearchInput.value) {
+    filterTemplates(templateSearchInput.value);
+  }
 }
 
 // Create a template list item
@@ -163,6 +168,9 @@ function createTemplateItem(displayTitle, template, isCurrent, statusClass) {
     templateTitleInput.value = currentWork.title || '';
     templateTextarea.value = currentWork.template || '';
     updateCharCount();
+
+    // Clear search when selecting a template for better UX
+    templateSearchInput.value = '';
 
     // Save to storage and refresh list
     chrome.storage.sync.set({ currentWork }, () => {
