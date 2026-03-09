@@ -173,16 +173,53 @@
       margin-bottom: 16px;
     }
 
+    .wildcards-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .wildcards-toggle {
+      background: none;
+      border: none;
+      color: #000;
+      font-size: 14px;
+      padding: 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+
+    .wildcards-toggle.collapsed {
+      transform: rotate(-90deg);
+    }
+
     .wildcards-title {
       font-weight: 600;
-      margin-bottom: 8px;
       color: #000;
+      flex: 1;
     }
 
     .wildcard-list {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
+      max-height: 500px;
+      overflow: hidden;
+      transition: max-height 0.3s ease, opacity 0.3s ease;
+      opacity: 1;
+    }
+
+    .wildcard-list.collapsed {
+      max-height: 0;
+      opacity: 0;
     }
 
     .wildcard-tag {
@@ -192,6 +229,11 @@
       font-family: 'Monaco', 'Courier New', monospace;
       font-size: 11px;
       border: 1px solid #ddd;
+      cursor: pointer;
+    }
+
+    .wildcard-tag:hover {
+      background: #f0f0f0;
     }
 
     .button-row {
@@ -332,17 +374,50 @@
     }
 
     .no-results {
-      padding: 20px 10px;
+      padding: 12px 10px;
       text-align: center;
       color: #999;
       font-size: 13px;
-      background: #f9f9f9;
-      border: 1px solid #f0f0f0;
+      background: transparent;
+      border: none;
       border-radius: 6px;
     }
 
     .template-item.hidden {
       display: none;
+    }
+
+    .search-input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-input-wrapper input {
+      padding-right: 36px;
+    }
+
+    .clear-search-btn {
+      position: absolute;
+      right: 8px;
+      background: none;
+      border: none;
+      color: #666;
+      font-size: 18px;
+      padding: 4px 8px;
+      cursor: pointer;
+      flex: 0 0 auto;
+      margin: 0;
+      width: auto;
+      min-width: auto;
+    }
+
+    .clear-search-btn:hover {
+      color: #000;
+    }
+
+    .template-item:only-child {
+      border: none;
     }
   </style>
 </head>
@@ -350,8 +425,11 @@
   <h1>LinkedIn Message Template</h1>
 
   <div class="wildcards">
-    <div class="wildcards-title">Available Wildcards:</div>
-    <div class="wildcard-list">
+    <div class="wildcards-header">
+      <button id="wildcardsToggle" class="wildcards-toggle" title="Toggle wildcards">▼</button>
+      <div class="wildcards-title">Available Wildcards:</div>
+    </div>
+    <div id="wildcardsContent" class="wildcard-list">
       <span class="wildcard-tag">{{firstName}}</span>
       <span class="wildcard-tag">{{lastName}}</span>
       <span class="wildcard-tag">{{fullName}}</span>
@@ -385,7 +463,10 @@
 
   <div class="template-section">
     <label for="templateSearch">Search Templates:</label>
-    <input type="text" id="templateSearch" placeholder="Search by name or content...">
+    <div class="search-input-wrapper">
+      <input type="text" id="templateSearch" placeholder="Search by name or content...">
+      <button id="clearSearchBtn" class="clear-search-btn" style="display: none;" title="Clear search">✕</button>
+    </div>
   </div>
 
   <div class="template-section">

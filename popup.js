@@ -14,11 +14,16 @@ const saveAsTitle = document.getElementById('saveAsTitle');
 const saveAsConfirm = document.getElementById('saveAsConfirm');
 const saveAsCancel = document.getElementById('saveAsCancel');
 const templateSearchInput = document.getElementById('templateSearch');
+const clearSearchBtn = document.getElementById('clearSearchBtn');
 const noResultsDiv = document.getElementById('noResults');
 const wildcardTags = document.querySelectorAll('.wildcard-tag');
 
+const wildcardsToggle = document.getElementById('wildcardsToggle');
+const wildcardsContent = document.getElementById('wildcardsContent');
+
 let currentWork = null;
 let savedTemplates = [];
+let wildcardsCollapsed = true;
 let autoSaveTimeout = null;
 
 // Load currentWork and savedTemplates on popup open
@@ -526,17 +531,95 @@ saveAsDialog.addEventListener('keydown', (e) => {
 // Search input event listener
 templateSearchInput.addEventListener('input', (e) => {
   filterTemplates(e.target.value);
+  // Show/hide clear button based on search value
+  clearSearchBtn.style.display = e.target.value ? 'block' : 'none';
+});
+
+// Clear search button click handler
+clearSearchBtn.addEventListener('click', (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  templateSearchInput.value = '';
+  clearSearchBtn.style.display = 'none';
+  filterTemplates('');
+  templateSearchInput.focus();
 });
 
 // Clear search on Escape key
 templateSearchInput.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
+    e.preventDefault();
+    e.stopPropagation();
     templateSearchInput.value = '';
+    clearSearchBtn.style.display = 'none';
     filterTemplates('');
   }
 });
 
+// Toggle wildcards collapse/expand
+function toggleWildcards() {
+  wildcardsCollapsed = !wildcardsCollapsed;
+  
+  if (wildcardsCollapsed) {
+    wildcardsContent.classList.add('collapsed');
+    wildcardsToggle.classList.add('collapsed');
+  } else {
+    wildcardsContent.classList.remove('collapsed');
+    wildcardsToggle.classList.remove('collapsed');
+  }
+  
+  // Save the state to chrome.storage
+  chrome.storage.sync.set({ wildcardsCollapsed });
+}
+
+// Load wildcards collapsed state on popup open
+chrome.storage.sync.get(['wildcardsCollapsed'], (result) => {
+  if (result.wildcardsCollapsed !== undefined) {
+    wildcardsCollapsed = result.wildcardsCollapsed;
+    
+    if (wildcardsCollapsed) {
+      wildcardsContent.classList.add('collapsed');
+      wildcardsToggle.classList.add('collapsed');
+    }
+  }
+});
+
+// Insert wildcard at cursor position
+function insertWildcard(wildcardText) {
+  // Get the textarea element
+  const textarea = templateTextarea;
+
+  // Get the current cursor position
+  const startPos = textarea.selectionStart;
+  const endPos = textarea.selectionEnd;
+
+  // Get the current value
+  const value = textarea.value;
+
+  // Insert the wildcard at the cursor position
+  const newValue = value.substring(0, startPos) + wildcardText + value.substring(endPos);
+
+  // Update textarea value
+  textarea.value = newValue;
+
+  // Set cursor position after the inserted wildcard
+  const newCursorPos = startPos + wildcardText.length;
+  textarea.selectionStart = newCursorPos;
+  textarea.selectionEnd = newCursorPos;
+
+  // Keep textarea focused
+  textarea.focus();
+
+  // Update character count
+  updateCharCount();
+
+  // Trigger auto-save
+  autoSave();
+}
+
 // Add click handlers for wildcard tags
+wildcardsToggle.addEventListener('click', toggleWildcards);
+
 wildcardTags.forEach((tag) => {
   tag.addEventListener('click', () => {
     const wildcard = tag.textContent;

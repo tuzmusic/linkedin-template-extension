@@ -137,13 +137,19 @@ function fillTemplate(template, data) {
 
 // Copy text to clipboard
 async function copyToClipboard(text) {
-  try {
-    await navigator.clipboard.writeText(text);
-    return true;
-  } catch (error) {
-    console.error('Failed to copy to clipboard:', error);
-    return false;
-  }
+  return new Promise((resolve) => {
+    chrome.runtime.sendMessage(
+      { action: 'copyToClipboard', text: text },
+      (response) => {
+        if (chrome.runtime.lastError) {
+          console.error('Failed to copy to clipboard:', chrome.runtime.lastError);
+          resolve(false);
+        } else {
+          resolve(response?.success || false);
+        }
+      }
+    );
+  });
 }
 
 // Show toast notification
@@ -202,7 +208,7 @@ function showNotification(message, type = 'success', copiedMessage = null, warni
 // Click the Connect button
 function clickConnect() {
   try {
-    const connectButton = document.querySelector('[aria-label^="Invite "][aria-label$=" to connect"]');
+    const connectButton = document.querySelector('[aria-label^="Invite "][aria-label$=" to connect"][class*="--primary"]');
     if (connectButton) {
       connectButton.click();
       showNotification('Connect button clicked', 'success');
