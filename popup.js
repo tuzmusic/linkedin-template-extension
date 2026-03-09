@@ -469,3 +469,16 @@ saveAsDialog.addEventListener('keydown', (e) => {
     saveAsDialog.close();
   }
 });
+
+// Search input event listener
+templateSearchInput.addEventListener('input', (e) => {
+  filterTemplates(e.target.value);
+});
+
+// Add click handlers for wildcard tags
+wildcardTags.forEach((tag) => {
+  tag.addEventListener('click', () => {
+    const wildcard = tag.textContent;
+    insertWildcard(wildcard);
+  });
+});
