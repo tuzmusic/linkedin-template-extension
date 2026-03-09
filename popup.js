@@ -102,6 +102,43 @@ function populateTemplatesList() {
   }
 }
 
+// Filter templates based on search query
+function filterTemplates(searchQuery) {
+  const query = searchQuery.toLowerCase().trim();
+
+  // If search is empty, show all templates
+  if (!query) {
+    // Show all items
+    const items = templatesListbox.querySelectorAll('.template-item');
+    items.forEach(item => {
+      item.classList.remove('hidden');
+    });
+    noResultsDiv.style.display = 'none';
+    return;
+  }
+
+  // Filter templates by title and content
+  let visibleCount = 0;
+  const items = templatesListbox.querySelectorAll('.template-item');
+
+  items.forEach(item => {
+    const titleText = item.querySelector('.template-item-title').textContent.toLowerCase();
+    const templateText = item.title.toLowerCase(); // tooltip contains the template content
+
+    const matches = titleText.includes(query) || templateText.includes(query);
+
+    if (matches) {
+      item.classList.remove('hidden');
+      visibleCount++;
+    } else {
+      item.classList.add('hidden');
+    }
+  });
+
+  // Show "no results" message if nothing matches
+  noResultsDiv.style.display = visibleCount === 0 ? 'block' : 'none';
+}
+
 // Create a template list item
 function createTemplateItem(displayTitle, template, isCurrent, statusClass) {
   const item = document.createElement('div');
