@@ -95,7 +95,9 @@ function populateTemplatesList() {
       return;
     }
 
-    const item = createTemplateItem(template.title, template, false, null);
+    // Check if this template is the current work (when not edited)
+    const isCurrentTemplate = !isEdited && template.id === currentWork.id;
+    const item = createTemplateItem(template.title, template, isCurrentTemplate, null);
     templatesListbox.appendChild(item);
   });
 
@@ -152,9 +154,7 @@ function createTemplateItem(displayTitle, template, isCurrent, statusClass) {
   item.setAttribute('role', 'option');
 
   // Mark as selected if it's the current work
-  if (isCurrent) {
-    item.setAttribute('aria-selected', 'true');
-  }
+  item.setAttribute('aria-selected', isCurrent ? 'true' : 'false');
 
   // Add tooltip showing full template text on the whole row
   item.title = template.template;
