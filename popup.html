@@ -173,16 +173,53 @@
       margin-bottom: 16px;
     }
 
+    .wildcards-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .wildcards-toggle {
+      background: none;
+      border: none;
+      color: #000;
+      font-size: 14px;
+      padding: 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+
+    .wildcards-toggle.collapsed {
+      transform: rotate(-90deg);
+    }
+
     .wildcards-title {
       font-weight: 600;
-      margin-bottom: 8px;
       color: #000;
+      flex: 1;
     }
 
     .wildcard-list {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
+      max-height: 500px;
+      overflow: hidden;
+      transition: max-height 0.3s ease, opacity 0.3s ease;
+      opacity: 1;
+    }
+
+    .wildcard-list.collapsed {
+      max-height: 0;
+      opacity: 0;
     }
 
     .wildcard-tag {
@@ -350,8 +387,11 @@
   <h1>LinkedIn Message Template</h1>
 
   <div class="wildcards">
-    <div class="wildcards-title">Available Wildcards:</div>
-    <div class="wildcard-list">
+    <div class="wildcards-header">
+      <button id="wildcardsToggle" class="wildcards-toggle" title="Toggle wildcards">▼</button>
+      <div class="wildcards-title">Available Wildcards:</div>
+    </div>
+    <div id="wildcardsContent" class="wildcard-list">
       <span class="wildcard-tag">{{firstName}}</span>
       <span class="wildcard-tag">{{lastName}}</span>
       <span class="wildcard-tag">{{fullName}}</span>

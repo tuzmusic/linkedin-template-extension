@@ -17,8 +17,12 @@ const templateSearchInput = document.getElementById('templateSearch');
 const noResultsDiv = document.getElementById('noResults');
 const wildcardTags = document.querySelectorAll('.wildcard-tag');
 
+const wildcardsToggle = document.getElementById('wildcardsToggle');
+const wildcardsContent = document.getElementById('wildcardsContent');
+
 let currentWork = null;
 let savedTemplates = [];
+let wildcardsCollapsed = true;
 let autoSaveTimeout = null;
 
 // Load currentWork and savedTemplates on popup open
@@ -536,7 +540,37 @@ templateSearchInput.addEventListener('keydown', (e) => {
   }
 });
 
+// Toggle wildcards collapse/expand
+function toggleWildcards() {
+  wildcardsCollapsed = !wildcardsCollapsed;
+  
+  if (wildcardsCollapsed) {
+    wildcardsContent.classList.add('collapsed');
+    wildcardsToggle.classList.add('collapsed');
+  } else {
+    wildcardsContent.classList.remove('collapsed');
+    wildcardsToggle.classList.remove('collapsed');
+  }
+  
+  // Save the state to chrome.storage
+  chrome.storage.sync.set({ wildcardsCollapsed });
+}
+
+// Load wildcards collapsed state on popup open
+chrome.storage.sync.get(['wildcardsCollapsed'], (result) => {
+  if (result.wildcardsCollapsed !== undefined) {
+    wildcardsCollapsed = result.wildcardsCollapsed;
+    
+    if (wildcardsCollapsed) {
+      wildcardsContent.classList.add('collapsed');
+      wildcardsToggle.classList.add('collapsed');
+    }
+  }
+});
+
 // Add click handlers for wildcard tags
+wildcardsToggle.addEventListener('click', toggleWildcards);
+
 wildcardTags.forEach((tag) => {
   tag.addEventListener('click', () => {
     const wildcard = tag.textContent;
