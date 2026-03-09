@@ -488,6 +488,14 @@ templateSearchInput.addEventListener('input', (e) => {
   filterTemplates(e.target.value);
 });
 
+// Clear search on Escape key
+templateSearchInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    templateSearchInput.value = '';
+    filterTemplates('');
+  }
+});
+
 // Add click handlers for wildcard tags
 wildcardTags.forEach((tag) => {
   tag.addEventListener('click', () => {
