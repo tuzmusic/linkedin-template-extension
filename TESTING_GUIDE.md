@@ -11,9 +11,16 @@ This guide covers testing for 5 new features implemented in the `release/all-fea
 5. **Keyboard Commands** - Keybindable commands for "Connect" and "Add Note" buttons
 
 ---
+NOTES: copying to clipboard doesn't work. It throws at content.js:144 (copyToClipboard). Couldn't tell you why.
 
 ## Feature 1: Searchable Template List
-
+NOTES:
+- narrowing the search changes the size of the search results (of course) which sometimes changes the scroll position within the plugin
+– Pressing ESCAPE in the search field closes the extension. 
+  - I'm okay with not having a "clear search" key like this. But let's add a clear (X) button in the field
+- single result shouldn't show the bottom line of the row
+- no results shouldn't show the empty box (between "recent templates" and "no templates match") 
+- 
 ### What Changed
 - Added a search input field at the top of the template list
 - Templates are filtered in real-time as you type
@@ -53,7 +60,9 @@ This guide covers testing for 5 new features implemented in the `release/all-fea
 ---
 
 ## Feature 2: Clickable Wildcards
-
+NOTES: 
+- This doesn't work at all. "Uncaught ReferenceError: insertWildcard is not defined" at line popup.js:543. Maybe this is a git issue.
+- Let's make the whole wildcards section collapsible. The template edit and list/search are way more important
 ### What Changed
 - Wildcard tags (like `{firstName}`, `{lastName}`, etc.) are now clickable
 - Clicking a wildcard inserts it at the cursor position in the template textarea
@@ -112,6 +121,7 @@ This guide covers testing for 5 new features implemented in the `release/all-fea
 ---
 
 ## Feature 4: Template Selection Bug Fix
+NOTES: I'm not sure you understood this bug. The UI selection works, but when you do the copy shortcut  it copies the previously selected template
 
 ### What Changed
 - When switching between templates, the UI now properly marks which template is selected
@@ -143,6 +153,27 @@ This guide covers testing for 5 new features implemented in the `release/all-fea
 ---
 
 ## Feature 5: Keyboard Commands (Connect & Add Note)
+NOTES: Whoa this works great! It does occur to me that any page has tons of "Connect" buttons. Here below we're on Samantha Byrnes' page. The shortcuts worked correctly, but it's probably a good idea to alter the selector, either to use the "primary" one (rather than the muted one), or to include the name of the person on the page in the selector itself.
+<button aria-label="Invite Samantha Byrnes to connect" id="ember884" class="artdeco-button artdeco-button--2 artdeco-button--primary ember-view VmOwFqmNXewfxzXlWMmRNrYiernxWhrJsw" type="button">        <svg role="none" aria-hidden="true" class="artdeco-button__icon " xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" data-supported-dps="16x16" data-test-icon="connect-small">
+<!---->    
+    <use href="#connect-small" width="16" height="16"></use>
+</svg>
+
+
+<span class="artdeco-button__text">
+    Connect
+</span></button>
+
+<button aria-label="Invite Alyssa Stoddard to connect" id="ember970" class="artdeco-button artdeco-button--muted artdeco-button--2 artdeco-button--secondary ember-view" type="button">        <svg role="none" aria-hidden="true" class="artdeco-button__icon " xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" data-supported-dps="16x16" data-test-icon="connect-small">
+<!---->    
+    <use href="#connect-small" width="16" height="16"></use>
+</svg>
+
+
+<span class="artdeco-button__text">
+    Connect
+</span></button>
+
 
 ### What Changed
 - Added two new commands that can be bound to keyboard shortcuts:
@@ -180,22 +211,22 @@ This guide covers testing for 5 new features implemented in the `release/all-fea
 
 ## Complete Testing Checklist
 
-- [ ] Template search filters by name
-- [ ] Template search filters by content
-- [ ] Template search is case-insensitive
-- [ ] Escape clears search
-- [ ] "No results" message appears correctly
-- [ ] Search clears when selecting a template
-- [ ] Clicking wildcard inserts it into template
-- [ ] Multiple wildcards can be inserted
-- [ ] Entire template row is clickable (not just text)
-- [ ] Cursor shows pointer throughout row
-- [ ] Delete button still works independently
-- [ ] Template switching shows correct selection immediately
-- [ ] Selection shows without saving
-- [ ] Draft/edited state displays correctly
-- [ ] Connect command is defined
-- [ ] Add Note command is defined
+- [X] Template search filters by name
+- [X] Template search filters by content
+- [X] Template search is case-insensitive
+- [-] Escape clears search
+- [X ] "No results" message appears correctly
+- [X] Search clears when selecting a template
+- [-] Clicking wildcard inserts it into template
+- [-] Multiple wildcards can be inserted
+- [X] Entire template row is clickable (not just text)
+- [X] Cursor shows pointer throughout row
+- [X] Delete button still works independently
+- [?] Template switching shows correct selection immediately
+- [?] Selection shows without saving
+- [?] Draft/edited state displays correctly
+- [X] Connect command is defined
+- [X] Add Note command is defined
 
 ---
 
