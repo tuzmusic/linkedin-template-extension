@@ -79,6 +79,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      cursor: pointer;
     }
 
     .template-item:last-child {
@@ -106,7 +107,6 @@
 
     .template-item-title {
       flex: 1;
-      cursor: pointer;
     }
 
     .template-item-delete {
@@ -119,6 +119,7 @@
       cursor: pointer;
       opacity: 0;
       transition: opacity 0.15s;
+      z-index: 1;
     }
 
     .template-item:hover .template-item-delete {
@@ -329,6 +330,20 @@
       font-size: 11px;
       border: 1px solid #ddd;
     }
+
+    .no-results {
+      padding: 20px 10px;
+      text-align: center;
+      color: #999;
+      font-size: 13px;
+      background: #f9f9f9;
+      border: 1px solid #f0f0f0;
+      border-radius: 6px;
+    }
+
+    .template-item.hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -369,9 +384,17 @@
   <div class="saved-message" id="savedMessage">Template saved!</div>
 
   <div class="template-section">
+    <label for="templateSearch">Search Templates:</label>
+    <input type="text" id="templateSearch" placeholder="Search by name or content...">
+  </div>
+
+  <div class="template-section">
     <label for="recentTemplates">Recent Templates:</label>
     <div id="recentTemplates" class="templates-listbox" role="listbox" tabindex="0">
       <!-- Templates will be populated here -->
+    </div>
+    <div id="noResults" class="no-results" style="display: none;">
+      No templates match your search.
     </div>
   </div>
 
