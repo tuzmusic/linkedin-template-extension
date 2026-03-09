@@ -119,8 +119,30 @@ function createTemplateItem(displayTitle, template, isCurrent, statusClass) {
   titleSpan.className = 'template-item-title';
   titleSpan.textContent = displayTitle;
 
-  // Click handler to load template
-  titleSpan.addEventListener('click', () => {
+  item.appendChild(titleSpan);
+
+  // Add delete button only for saved templates (not draft/edited)
+  if (!statusClass && template.id) {
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'template-item-delete';
+    deleteBtn.textContent = '×';
+    deleteBtn.title = 'Delete template';
+
+    deleteBtn.addEventListener('click', (e) => {
+      e.stopPropagation(); // Prevent triggering the item click
+      deleteTemplate(template.id);
+    });
+
+    item.appendChild(deleteBtn);
+  }
+
+  // Click handler to load template - attached to entire row
+  item.addEventListener('click', (e) => {
+    // Skip if delete button was clicked
+    if (e.target.closest('.template-item-delete')) {
+      return;
+    }
+
     if (isCurrent) return; // Already loaded
 
     // Check if there are unsaved changes
@@ -147,23 +169,6 @@ function createTemplateItem(displayTitle, template, isCurrent, statusClass) {
       populateTemplatesList();
     });
   });
-
-  item.appendChild(titleSpan);
-
-  // Add delete button only for saved templates (not draft/edited)
-  if (!statusClass && template.id) {
-    const deleteBtn = document.createElement('button');
-    deleteBtn.className = 'template-item-delete';
-    deleteBtn.textContent = '×';
-    deleteBtn.title = 'Delete template';
-
-    deleteBtn.addEventListener('click', (e) => {
-      e.stopPropagation(); // Prevent triggering the item click
-      deleteTemplate(template.id);
-    });
-
-    item.appendChild(deleteBtn);
-  }
 
   return item;
 }
