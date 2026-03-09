@@ -536,6 +536,39 @@ templateSearchInput.addEventListener('keydown', (e) => {
   }
 });
 
+// Insert wildcard at current cursor position
+function insertWildcard(wildcardText) {
+  // Get the textarea element
+  const textarea = templateTextarea;
+
+  // Get the current cursor position
+  const startPos = textarea.selectionStart;
+  const endPos = textarea.selectionEnd;
+
+  // Get the current value
+  const value = textarea.value;
+
+  // Insert the wildcard at the cursor position
+  const newValue = value.substring(0, startPos) + wildcardText + value.substring(endPos);
+
+  // Update textarea value
+  textarea.value = newValue;
+
+  // Set cursor position after the inserted wildcard
+  const newCursorPos = startPos + wildcardText.length;
+  textarea.selectionStart = newCursorPos;
+  textarea.selectionEnd = newCursorPos;
+
+  // Keep textarea focused
+  textarea.focus();
+
+  // Update character count
+  updateCharCount();
+
+  // Trigger auto-save
+  autoSave();
+}
+
 // Add click handlers for wildcard tags
 wildcardTags.forEach((tag) => {
   tag.addEventListener('click', () => {
