@@ -118,11 +118,12 @@ function filterTemplates(searchQuery) {
 
   // If search is empty, show all templates
   if (!query) {
-    // Show all items
+    // Show all items and listbox
     const items = templatesListbox.querySelectorAll('.template-item');
     items.forEach(item => {
       item.classList.remove('hidden');
     });
+    templatesListbox.style.display = '';
     noResultsDiv.style.display = 'none';
     return;
   }
@@ -145,8 +146,14 @@ function filterTemplates(searchQuery) {
     }
   });
 
-  // Show "no results" message if nothing matches
-  noResultsDiv.style.display = visibleCount === 0 ? 'block' : 'none';
+  // Show "no results" message if nothing matches, hide templates listbox
+  if (visibleCount === 0) {
+    noResultsDiv.style.display = 'block';
+    templatesListbox.style.display = 'none';
+  } else {
+    noResultsDiv.style.display = 'none';
+    templatesListbox.style.display = '';
+  }
 }
 
 // Create a template list item
