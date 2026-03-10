@@ -84,3 +84,17 @@ chrome.runtime.onInstalled.addListener(() => {
     }
   });
 });
+
+// Development mode: Check for reload signal from watcher
+setInterval(async () => {
+  try {
+    const response = await fetch('http://localhost:8765/dev-reload-check');
+    const data = await response.json();
+    if (data.shouldReload) {
+      console.log('[DEV] Reloading extension...');
+      chrome.runtime.reload();
+    }
+  } catch (error) {
+    // Silently fail if dev server is not running
+  }
+}, 500);
