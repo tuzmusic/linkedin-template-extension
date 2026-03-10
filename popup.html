@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <style>
+    :root {
+      --border-radius: 10px;
+    }
+
     body {
       width: 400px;
       padding: 20px;
@@ -32,7 +36,7 @@
       width: 100%;
       padding: 10px;
       border: 1px solid #ddd;
-      border-radius: 6px;
+      border-radius: var(--border-radius);
       font-family: inherit;
       font-size: 14px;
       box-sizing: border-box;
@@ -57,7 +61,7 @@
       width: 100%;
       max-height: 150px;
       border: 1px solid #ddd;
-      border-radius: 6px;
+      border-radius: var(--border-radius);
       font-family: inherit;
       font-size: 13px;
       box-sizing: border-box;
@@ -136,7 +140,7 @@
       min-height: 100px;
       padding: 10px;
       border: 1px solid #ddd;
-      border-radius: 6px;
+      border-radius: var(--border-radius);
       font-family: inherit;
       font-size: 14px;
       resize: vertical;
@@ -168,7 +172,7 @@
     .wildcards {
       background: #f3f6f8;
       padding: 12px;
-      border-radius: 6px;
+      border-radius: var(--border-radius);
       font-size: 12px;
       margin-bottom: 16px;
     }
@@ -253,7 +257,7 @@
       background: #0073b1;
       color: white;
       border: none;
-      border-radius: 6px;
+      border-radius: var(--border-radius);
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
@@ -385,7 +389,7 @@
       font-size: 13px;
       background: #f9f9f9;
       border: 1px solid #f0f0f0;
-      border-radius: 6px;
+      border-radius: var(--border-radius);
     }
 
     .template-item.hidden {
@@ -398,8 +402,44 @@
       align-items: center;
     }
 
+    .templates-container {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid #ddd;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+    }
+
+    .search-input-wrapper {
+      border-bottom: 1px solid #ddd;
+      flex-shrink: 0;
+    }
+
     .search-input-wrapper input {
+      border: none;
+      border-radius: 0;
+      padding-left: 32px;
       padding-right: 36px;
+      margin: 0;
+    }
+
+    .search-input-wrapper input:focus {
+      border-color: transparent;
+      box-shadow: none;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 10px;
+      color: #999;
+      pointer-events: none;
+      flex-shrink: 0;
+    }
+
+    .templates-listbox {
+      border: none;
+      border-radius: 0;
+      margin: 0;
     }
 
     .clear-search-btn {
@@ -467,20 +507,21 @@
   <div class="saved-message" id="savedMessage">Template saved!</div>
 
   <div class="template-section">
-    <label for="templateSearch">Search Templates:</label>
-    <div class="search-input-wrapper">
-      <input type="text" id="templateSearch" placeholder="Search by name or content...">
-      <button id="clearSearchBtn" class="clear-search-btn" style="display: none;" title="Clear search">✕</button>
-    </div>
-  </div>
-
-  <div class="template-section">
     <label for="recentTemplates">Recent Templates:</label>
-    <div id="recentTemplates" class="templates-listbox" role="listbox" tabindex="0">
-      <!-- Templates will be populated here -->
-    </div>
-    <div id="noResults" class="no-results" style="display: none;">
-      No templates match your search.
+    <div class="templates-container">
+      <div class="search-input-wrapper">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M6.5 1a5.5 5.5 0 014.384 8.884l4.3 4.3a.75.75 0 11-1.06 1.06l-4.3-4.3A5.5 5.5 0 116.5 1zm0 1.5a4 4 0 100 8 4 4 0 000-8z"/>
+        </svg>
+        <input type="text" id="templateSearch" placeholder="Search by name or content...">
+        <button id="clearSearchBtn" class="clear-search-btn" style="display: none;" title="Clear search">✕</button>
+      </div>
+      <div id="recentTemplates" class="templates-listbox" role="listbox" tabindex="0">
+        <!-- Templates will be populated here -->
+      </div>
+      <div id="noResults" class="no-results" style="display: none;">
+        No templates match your search.
+      </div>
     </div>
   </div>
 

@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <style>
+    :root {
+      --border-radius: 10px;
+    }
+
     body {
       max-width: 800px;
       margin: 40px auto;
@@ -48,7 +52,7 @@
       min-height: 120px;
       padding: 12px;
       border: 1px solid #ddd;
-      border-radius: 6px;
+      border-radius: var(--border-radius);
       font-family: inherit;
       font-size: 14px;
       resize: vertical;
@@ -75,7 +79,7 @@
     .wildcards {
       background: #f3f6f8;
       padding: 16px;
-      border-radius: 6px;
+      border-radius: var(--border-radius);
       margin-bottom: 16px;
     }
 
@@ -113,7 +117,7 @@
       background: #0073b1;
       color: white;
       border: none;
-      border-radius: 6px;
+      border-radius: var(--border-radius);
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
@@ -140,7 +144,7 @@
     .info-box {
       background: #e7f3ff;
       border: 1px solid #b3d9ff;
-      border-radius: 6px;
+      border-radius: var(--border-radius);
       padding: 16px;
       margin-top: 16px;
     }
