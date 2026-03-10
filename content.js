@@ -202,7 +202,7 @@ function showNotification(message, type = 'success', copiedMessage = null, warni
 // Click the Connect button
 function clickConnect() {
   try {
-    const connectButton = document.querySelector('[aria-label^="Invite "][aria-label$=" to connect"][class*="--primary"]');
+    const connectButton = document.querySelector('[aria-label^="Invite "][aria-label$=" to connect"]:not([class*="secondary"])');
     if (connectButton) {
       connectButton.click();
       showNotification('Connect button clicked', 'success');
