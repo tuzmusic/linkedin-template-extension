@@ -201,11 +201,18 @@ function showNotification(message, type = 'success', copiedMessage = null, warni
 
 // Click the Connect button
 function clickConnect() {
+    showNotification('Hi!', 'success');
+
   try {
-    const connectButton = document.querySelector('[aria-label^="Invite "][aria-label$=" to connect"]:not([class*="secondary"])');
+    const {fullName} = scrapeLinkedInProfile();
+
+    const connectButton = document.querySelector(`[aria-label="Invite ${fullName} to connect"]`);
+    const pendingButton = document.querySelector('[aria-label^="Pending, click to withdraw invitation"]');
     if (connectButton) {
       connectButton.click();
       showNotification('Connect button clicked', 'success');
+    } else if (pendingButton) {
+      showNotification('You already have a pending invitation for this user', 'error');
     } else {
       showNotification('Connect button not found on this page', 'error');
     }
