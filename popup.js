@@ -225,7 +225,7 @@ function createTemplateItem(displayTitle, template, isCurrent, statusClass) {
     templateSearchInput.value = '';
 
     // Save to storage and refresh list
-    chrome.storage.sync.set({ currentWork }, () => {
+    chrome.storage.sync.set({ currentWork, messageTemplate: currentWork.template }, () => {
       populateTemplatesList();
     });
   });
