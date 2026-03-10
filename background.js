@@ -32,6 +32,10 @@ chrome.commands.onCommand.addListener((command) => {
       chrome.tabs.sendMessage(activeTab.id, { action: 'clickAddNote' }).catch((error) => {
         console.error('Failed to send clickAddNote message:', error.message);
       });
+    } else if (command === 'click-send') {
+      chrome.tabs.sendMessage(activeTab.id, { action: 'clickSend' }).catch((error) => {
+        console.error('Failed to send clickSend message:', error.message);
+      });
     }
   });
 });

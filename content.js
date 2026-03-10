@@ -231,6 +231,22 @@ function clickAddNote() {
   }
 }
 
+// Click the Send invitation button
+function clickSend() {
+  try {
+    const sendButton = document.querySelector('[aria-label="Send invitation"]');
+    if (sendButton) {
+      sendButton.click();
+      showNotification('Send button clicked', 'success');
+    } else {
+      showNotification('Send button not found on this page', 'error');
+    }
+  } catch (error) {
+    console.error('Error clicking send button:', error);
+    showNotification('Error: ' + error.message, 'error');
+  }
+}
+
 // Handle messages from background script
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'copyTemplate') {
@@ -239,6 +255,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     clickConnect();
   } else if (request.action === 'clickAddNote') {
     clickAddNote();
+  } else if (request.action === 'clickSend') {
+    clickSend();
   } else if (request.action === 'showNotification') {
     showNotification(request.message, request.type || 'info');
   }

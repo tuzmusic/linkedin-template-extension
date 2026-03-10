@@ -51,6 +51,13 @@
         "mac": "Option+N"
       },
       "description": "Click the Add note button"
+    },
+    "click-send": {
+      "suggested_key": {
+        "default": "Shift+Alt+S",
+        "mac": "Shift+Option+S"
+      },
+      "description": "Click the Send invitation button"
     }
   },
   "icons": {
