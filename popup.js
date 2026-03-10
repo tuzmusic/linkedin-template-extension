@@ -566,7 +566,7 @@ templateSearchInput.addEventListener('keydown', (e) => {
 // Toggle wildcards collapse/expand
 function toggleWildcards() {
   wildcardsCollapsed = !wildcardsCollapsed;
-  
+
   if (wildcardsCollapsed) {
     wildcardsContent.classList.add('collapsed');
     wildcardsToggle.classList.add('collapsed');
@@ -574,7 +574,7 @@ function toggleWildcards() {
     wildcardsContent.classList.remove('collapsed');
     wildcardsToggle.classList.remove('collapsed');
   }
-  
+
   // Save the state to chrome.storage
   chrome.storage.sync.set({ wildcardsCollapsed });
 }
@@ -583,7 +583,7 @@ function toggleWildcards() {
 chrome.storage.sync.get(['wildcardsCollapsed'], (result) => {
   if (result.wildcardsCollapsed !== undefined) {
     wildcardsCollapsed = result.wildcardsCollapsed;
-    
+
     if (wildcardsCollapsed) {
       wildcardsContent.classList.add('collapsed');
       wildcardsToggle.classList.add('collapsed');
@@ -625,7 +625,7 @@ function insertWildcard(wildcardText) {
 }
 
 // Add click handlers for wildcard tags
-wildcardsToggle.addEventListener('click', toggleWildcards);
+wildcardsToggle.parentElement.addEventListener('click', toggleWildcards);
 
 wildcardTags.forEach((tag) => {
   tag.addEventListener('click', () => {

@@ -194,6 +194,10 @@
       transition: transform 0.1s ease;
       flex: 0;
       display: inline-block;
+
+      &:hover {
+        background: unset;
+      }
     }
 
     .wildcards-toggle.collapsed {
@@ -430,7 +434,7 @@
       <button id="wildcardsToggle" class="wildcards-toggle" title="Toggle wildcards">▼</button>
       <div class="wildcards-title">Available Wildcards:</div>
     </div>
-    <div id="wildcardsContent" class="wildcard-list">
+    <div id="wildcardsContent" class="wildcard-list collapsed">
       <span class="wildcard-tag">{{firstName}}</span>
       <span class="wildcard-tag">{{lastName}}</span>
       <span class="wildcard-tag">{{fullName}}</span>
