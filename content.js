@@ -10,7 +10,10 @@ function scrapeLinkedInProfile() {
     companyName: '',
     position: '',
     location: '',
-    profileUrl: window.location.href
+    profileUrl: window.location.href,
+    msgFirstName: null,
+    msgLastName: null,
+    msgFullName: null
   };
 
   try {
@@ -89,6 +92,19 @@ function scrapeLinkedInProfile() {
       data.location = locationElement.textContent.trim();
     }
 
+    // Get message recipient name from open message conversation
+    const msgProfileCard = document.querySelector('.msg-s-profile-card-one-to-one');
+    if (msgProfileCard) {
+      const nameElement = msgProfileCard.querySelector('.profile-card-one-to-one__profile-link span.truncate');
+      if (nameElement) {
+        const fullName = nameElement.textContent.trim();
+        data.msgFullName = fullName;
+        const nameParts = fullName.split(' ').filter(part => part.length > 0);
+        data.msgFirstName = nameParts[0] || null;
+        data.msgLastName = nameParts.slice(1).join(' ') || null;
+      }
+    }
+
     // Debug log
     console.log('Scraped LinkedIn data:', data);
 
@@ -112,7 +128,10 @@ function fillTemplate(template, data) {
     '{{company}}': data.companyName, // alias
     '{{position}}': data.position,
     '{{headline}}': data.headline,
-    '{{location}}': data.location
+    '{{location}}': data.location,
+    '{{msgFirstName}}': data.msgFirstName === null ? 'NULL' : data.msgFirstName,
+    '{{msgLastName}}': data.msgLastName === null ? 'NULL' : data.msgLastName,
+    '{{msgFullName}}': data.msgFullName === null ? 'NULL' : data.msgFullName
   };
 
   for (const [wildcard, value] of Object.entries(wildcards)) {
