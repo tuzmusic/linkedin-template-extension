@@ -38,27 +38,14 @@ function scrapeLinkedInProfile() {
       data.headline = headlineElement.textContent.trim();
     }
 
-    // Try to get position and company from the top card first (more reliable)
-    const topCard = document.querySelector('.pv-top-card');
-    if (topCard) {
-      // Look for position/company in the profile top section
-      const subtitleElement = topCard.querySelector('.text-body-medium');
-      if (subtitleElement) {
-        const subtitleText = subtitleElement.textContent.trim();
-        // Format is usually "Position at Company" or just "Company"
-        if (subtitleText.includes(' at ')) {
-          const parts = subtitleText.split(' at ');
-          data.position = parts[0].trim();
-          data.companyName = parts[1].trim();
-        } else if (subtitleText.includes(' · ')) {
-          // Sometimes format is "Position · Company"
-          const parts = subtitleText.split(' · ');
-          data.position = parts[0].trim();
-          if (parts[1]) data.companyName = parts[1].trim();
-        } else {
-          // Just company or position
-          data.companyName = subtitleText;
-        }
+    // Get company name from the current company button
+    const companyButton = document.querySelector('button[aria-label^="Current company:"]');
+    if (companyButton) {
+      const ariaLabel = companyButton.getAttribute('aria-label');
+      // Extract company name from "Current company: CompanyName. Click to skip..."
+      const match = ariaLabel.match(/Current company:\s*(.+?)\.\s+Click to skip/);
+      if (match) {
+        data.companyName = match[1].trim();
       }
     }
 
