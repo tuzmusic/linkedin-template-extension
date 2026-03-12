@@ -26,3 +26,12 @@ jobs:
           files: linkedin-secret-weapon.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish to Chrome Web Store
+        uses: mnao305/chrome-extension-upload@v2.0
+        with:
+          client-id: ${{ secrets.CHROME_CLIENT_ID }}
+          client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
+          refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
+          file-path: ./linkedin-secret-weapon.zip
+          extension-id: ${{ secrets.CHROME_EXTENSION_ID }}
