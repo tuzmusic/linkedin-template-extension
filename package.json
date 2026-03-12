@@ -7,6 +7,6 @@
   },
   "scripts": {
     "watch": "node watcher.js",
-    "package": "zip -r linkedin-secret-weapon.zip manifest.json background.js content.js content.css popup.html popup.js options.html icons/icon16.png icons/icon48.png icons/icon128.png"
+    "package": "zip -r linkedin-secret-weapon.zip manifest.json background.js content.js content.css popup.html popup.js options.html options.js icons/icon16.png icons/icon48.png icons/icon128.png"
   }
 }

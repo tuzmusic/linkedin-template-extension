@@ -1,0 +1,28 @@
+name: Package Extension
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create extension package
+        run: zip -r linkedin-secret-weapon.zip manifest.json background.js content.js content.css popup.html popup.js options.html options.js icons/
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: extension-build
+          path: linkedin-secret-weapon.zip
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: linkedin-secret-weapon.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
