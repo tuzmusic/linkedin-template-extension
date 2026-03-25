@@ -3,13 +3,13 @@ const http = require('http');
 
 const filesToWatch = [
   'manifest.json',
-  'background.js',
-  'content.js',
-  'content.css',
+  'src/scripts/background.js',
+  'src/scripts/content.js',
+  'src/styles/content.css',
   'popup.html',
-  'popup.js',
+  'src/scripts/popup.js',
   'options.html',
-  'options.js'
+  'src/scripts/options.js'
 ];
 
 console.log('🔍 Watching for file changes...');
