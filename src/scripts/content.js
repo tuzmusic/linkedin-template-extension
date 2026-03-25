@@ -17,76 +17,83 @@ function scrapeLinkedInProfile() {
   };
 
   try {
-    // Get full name from the h1 tag
-    const nameElement = document.querySelector('h1.text-heading-xlarge') ||
-                       document.querySelector('h1');
+    // Get full name - try multiple selectors (LinkedIn changes DOM frequently)
+    let nameElement = document.querySelector('[data-test-id="top-card-profile-name"]') ||
+                      document.querySelector('h1[class*="heading"]') ||
+                      document.querySelector('h1');
+
+    if (!nameElement) {
+      // Look for any h1 that contains the name
+      const h1s = document.querySelectorAll('h1');
+      for (const h1 of h1s) {
+        const text = h1.textContent.trim();
+        if (text.length > 2 && text.length < 100 && !text.includes('notifications')) {
+          nameElement = h1;
+          break;
+        }
+      }
+    }
+
     if (nameElement) {
-      // Remove emojis and zero-width characters from name
       const rawName = nameElement.textContent.trim();
       data.fullName = rawName
         .replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu, '')
-        .replace(/[\u200B-\u200D\uFEFF]/g, '') // Remove zero-width chars
+        .replace(/[\u200B-\u200D\uFEFF]/g, '')
         .trim()
-        .replace(/\s+/g, ' '); // Normalize whitespace
+        .replace(/\s+/g, ' ');
       const nameParts = data.fullName.split(' ').filter(part => part.length > 0);
       data.firstName = nameParts[0] || '';
       data.lastName = nameParts.slice(1).join(' ') || '';
     }
 
     // Get headline - try multiple selectors
-    const headlineElement = document.querySelector('.text-body-medium.break-words') ||
-                           document.querySelector('.pv-top-card--list-bullet span:first-child') ||
+    const headlineElement = document.querySelector('[data-test-id="top-card-headline"]') ||
+                           document.querySelector('.text-body-medium') ||
                            document.querySelector('[class*="headline"]');
     if (headlineElement) {
       data.headline = headlineElement.textContent.trim();
     }
 
-    // Get company name from the current company button
-    const companyButton = document.querySelector('button[aria-label^="Current company:"]');
+    // Get company name - try from button or experience
+    let companyButton = document.querySelector('button[aria-label*="Current company"], button[aria-label*="company"]');
     if (companyButton) {
       const ariaLabel = companyButton.getAttribute('aria-label');
-      // Extract company name from "Current company: CompanyName. Click to skip..."
-      const match = ariaLabel.match(/Current company:\s*(.+?)\.\s+Click to skip/);
+      const match = ariaLabel.match(/company[:\s]+([^.]+)/i);
       if (match) {
         data.companyName = match[1].trim();
       }
     }
 
-    // Fallback: Get current position and company from experience section
-    if (!data.position || !data.companyName) {
-      const experienceSection = document.querySelector('#experience');
+    // Fallback: Get from experience section
+    if (!data.companyName || !data.position) {
+      const experienceSection = document.querySelector('[id*="experience"], [data-test-id*="experience"]');
       if (experienceSection) {
-        const firstExperience = experienceSection.parentElement.querySelector('ul li');
-        if (firstExperience) {
-          const positionElement = firstExperience.querySelector('.t-bold span[aria-hidden="true"]') ||
-                                 firstExperience.querySelector('[class*="profile-section-card__title"]');
-
-          // For company, look for the first simple company name (not the one with duration info)
-          let companyElement = null;
-          const companySpans = firstExperience.querySelectorAll('.t-14.t-normal span[aria-hidden="true"]');
-          for (const span of companySpans) {
-            const text = span.textContent.trim();
-            // Skip spans that contain duration markers like "·", "Full-time", "yrs", "mos"
-            if (!text.includes('·') && !text.includes('Full-time') && !text.includes('Part-time') &&
-                !text.includes(' yr') && !text.includes(' mo') && text.length > 0) {
-              companyElement = span;
-              break;
+        // Find the first experience item
+        const firstItem = experienceSection.querySelector('li, .base-card, [role="listitem"]');
+        if (firstItem) {
+          // Look for position/title
+          const posElement = firstItem.querySelector('h3, .base-card__title, [class*="title"]');
+          if (posElement && !data.position) {
+            const posText = posElement.textContent.trim();
+            if (posText && posText.length < 100) {
+              data.position = posText;
             }
           }
 
-          if (positionElement && !data.position) {
-            data.position = positionElement.textContent.trim();
-          }
-          if (companyElement && !data.companyName) {
-            data.companyName = companyElement.textContent.trim();
+          // Look for company
+          const compElement = firstItem.querySelector('.base-card__subtitle, [class*="company"], h4');
+          if (compElement && !data.companyName) {
+            const compText = compElement.textContent.trim();
+            if (compText && compText.length < 100) {
+              data.companyName = compText;
+            }
           }
         }
       }
     }
 
     // Get location
-    const locationElement = document.querySelector('.text-body-small.inline.t-black--light.break-words') ||
-                           document.querySelector('.pv-top-card--list-bullet li') ||
+    const locationElement = document.querySelector('[data-test-id="top-card-location"]') ||
                            document.querySelector('[class*="location"]');
     if (locationElement) {
       data.location = locationElement.textContent.trim();
@@ -207,13 +214,21 @@ function showNotification(message, type = 'success', copiedMessage = null, warni
 
 // Click the Connect button
 function clickConnect() {
-    showNotification('Hi!', 'success');
-
   try {
     const {fullName} = scrapeLinkedInProfile();
 
-    const connectButton = document.querySelector(`[aria-label="Invite ${fullName} to connect"]`);
-    const pendingButton = document.querySelector('[aria-label^="Pending, click to withdraw invitation"]');
+    // Try exact match first
+    let connectButton = document.querySelector(`[aria-label="Invite ${fullName} to connect"]`) ||
+                        // Try partial match
+                        document.querySelector('[aria-label*="Invite"][aria-label*="connect"]') ||
+                        // Try any button with Connect
+                        Array.from(document.querySelectorAll('button')).find(btn =>
+                          btn.getAttribute('aria-label')?.includes('Invite') &&
+                          btn.getAttribute('aria-label')?.includes('connect')
+                        );
+
+    const pendingButton = document.querySelector('[aria-label*="Pending"]');
+
     if (connectButton) {
       connectButton.click();
       showNotification('Connect button clicked', 'success');
@@ -231,7 +246,11 @@ function clickConnect() {
 // Click the Add note button
 function clickAddNote() {
   try {
-    const addNoteButton = document.querySelector('[aria-label="Add a note"]');
+    let addNoteButton = document.querySelector('[aria-label="Add a note"]') ||
+                        Array.from(document.querySelectorAll('button')).find(btn =>
+                          btn.getAttribute('aria-label')?.includes('note')
+                        );
+
     if (addNoteButton) {
       addNoteButton.click();
       showNotification('Add note button clicked', 'success');
@@ -247,7 +266,11 @@ function clickAddNote() {
 // Click the Send invitation button
 function clickSend() {
   try {
-    const sendButton = document.querySelector('[aria-label="Send invitation"]');
+    let sendButton = document.querySelector('[aria-label="Send invitation"]') ||
+                     Array.from(document.querySelectorAll('button')).find(btn =>
+                       btn.getAttribute('aria-label')?.includes('Send')
+                     );
+
     if (sendButton) {
       sendButton.click();
       showNotification('Send button clicked', 'success');
