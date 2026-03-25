@@ -17,32 +17,15 @@ function scrapeLinkedInProfile() {
   };
 
   try {
-    // Get full name - try multiple selectors (LinkedIn changes DOM frequently)
-    // First try: h2 before verified badge SVG (most reliable)
-    let nameElement = document.querySelector('h2:has(+ svg[id^="verified-"])') ||
-                      (() => {
-                        const svg = document.querySelector('svg[id^="verified-"]');
-                        return svg?.previousElementSibling;
-                      })() ||
-                      document.querySelector('[data-test-id="top-card-profile-name"]') ||
-                      document.querySelector('h1[class*="heading"]') ||
-                      document.querySelector('h1');
-
-    if (!nameElement) {
-      // Look for any h1 that contains the name
-      const h1s = document.querySelectorAll('h1');
-      for (const h1 of h1s) {
-        const text = h1.textContent.trim();
-        if (text.length > 2 && text.length < 100 && !text.includes('notifications')) {
-          nameElement = h1;
-          break;
-        }
-      }
+    // Get full name from page title (e.g., "Name | LinkedIn")
+    let fullName = '';
+    const pageTitle = document.title;
+    if (pageTitle && pageTitle.includes('|')) {
+      fullName = pageTitle.split('|')[0].trim();
     }
 
-    if (nameElement) {
-      const rawName = nameElement.textContent.trim();
-      data.fullName = rawName
+    if (fullName) {
+      data.fullName = fullName
         .replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu, '')
         .replace(/[\u200B-\u200D\uFEFF]/g, '')
         .trim()
