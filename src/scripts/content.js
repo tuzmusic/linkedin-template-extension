@@ -18,7 +18,13 @@ function scrapeLinkedInProfile() {
 
   try {
     // Get full name - try multiple selectors (LinkedIn changes DOM frequently)
-    let nameElement = document.querySelector('[data-test-id="top-card-profile-name"]') ||
+    // First try: h2 before verified badge SVG (most reliable)
+    let nameElement = document.querySelector('h2:has(+ svg[id^="verified-"])') ||
+                      (() => {
+                        const svg = document.querySelector('svg[id^="verified-"]');
+                        return svg?.previousElementSibling;
+                      })() ||
+                      document.querySelector('[data-test-id="top-card-profile-name"]') ||
                       document.querySelector('h1[class*="heading"]') ||
                       document.querySelector('h1');
 
