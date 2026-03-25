@@ -12,13 +12,13 @@
     "https://www.linkedin.com/*"
   ],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "src/scripts/background.js"
   },
   "content_scripts": [
     {
       "matches": ["https://www.linkedin.com/*"],
-      "js": ["content.js"],
-      "css": ["content.css"]
+      "js": ["src/scripts/content.js"],
+      "css": ["src/styles/content.css"]
     }
   ],
   "action": {
