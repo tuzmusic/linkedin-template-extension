@@ -222,10 +222,17 @@ function findMoreButton(maxLevels = 10) {
 
 // Click the Connect button
 function clickConnect() {
-  try {
-    const {fullName} = scrapeLinkedInProfile();
+  const {fullName} = scrapeLinkedInProfile();
 
-    // Try to find connect button with current selectors
+  // if fixing a broken connect button query, set to false so we don't find a button that
+  // connects without asking for a note.
+  const ACTUALLY_CLICK = true
+  const onFindConnectButton = button => {
+    if (ACTUALLY_CLICK) button.click()
+    else highlightAndLogButton(button, fullName);
+  }
+
+  try {
     let connectButton = document.querySelector(`[aria-label="Invite ${fullName} to connect"]`);
 
     // If not found, click the More button and try again
@@ -237,7 +244,7 @@ function clickConnect() {
         setTimeout(() => {
           connectButton = document.querySelector(`[aria-label="Invite ${fullName} to connect"]`);
           if (connectButton) {
-            highlightAndLogButton(connectButton, fullName);
+            onFindConnectButton(connectButton);
           } else {
             showNotification('Connect button not found in More menu', 'error');
           }
@@ -252,8 +259,7 @@ function clickConnect() {
     const pendingButton = document.querySelector('[aria-label*="Pending"]');
 
     if (connectButton) {
-      // highlightAndLogButton(connectButton, fullName);
-      connectButton.click()
+      onFindConnectButton(connectButton);
     } else if (pendingButton) {
       showNotification('You already have a pending invitation for this user', 'error');
     } else {
