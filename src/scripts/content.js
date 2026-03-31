@@ -203,17 +203,21 @@ function showNotification(message, type = 'success', copiedMessage = null, warni
 
 // Find the More button menu
 function findMoreButton(maxLevels = 10) {
-  // Find the profile link by current pathname that contains an h2
-  let container = document.querySelector(`a[href*="${window.location.pathname}"][tabindex="0"]:has(h2)`);
+  const contactInfoSelector = 'a[href*=contact-info]'
+  let container = document.querySelector(contactInfoSelector);
   let levels = 0;
+
+  const getMoreButton = () => container.querySelector('button[aria-label="More"]')
+  let moreButton = getMoreButton()
+
   // Traverse up the DOM tree to find the common ancestor that contains the More button
-  while (container && levels < maxLevels && !container.querySelector('button[aria-label="More"]')) {
+  while (container && levels < maxLevels && !moreButton) {
     container = container.parentElement;
+    moreButton = getMoreButton()
     levels++;
   }
 
-  // Get the More button
-  return container?.querySelector('button[aria-label="More"]');
+  return moreButton;
 }
 
 // Click the Connect button
