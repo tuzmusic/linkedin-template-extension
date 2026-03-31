@@ -1,0 +1,24 @@
+export function fillTemplate(template, data) {
+  let filled = template;
+
+  // Replace all wildcards
+  const wildcards = {
+    '{{firstName}}': data.firstName,
+    '{{lastName}}': data.lastName,
+    '{{fullName}}': data.fullName,
+    '{{companyName}}': data.companyName,
+    '{{company}}': data.companyName, // alias
+    '{{position}}': data.position,
+    '{{headline}}': data.headline,
+    '{{location}}': data.location,
+    '{{msgFirstName}}': data.msgFirstName === null ? 'NULL' : data.msgFirstName,
+    '{{msgLastName}}': data.msgLastName === null ? 'NULL' : data.msgLastName,
+    '{{msgFullName}}': data.msgFullName === null ? 'NULL' : data.msgFullName
+  };
+
+  for (const [wildcard, value] of Object.entries(wildcards)) {
+    filled = filled.replace(new RegExp(wildcard, 'g'), value || '');
+  }
+
+  return filled;
+}
