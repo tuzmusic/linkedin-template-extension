@@ -220,15 +220,6 @@ function findMoreButton(maxLevels = 10) {
 function clickConnect() {
   try {
     const {fullName} = scrapeLinkedInProfile();
-    /*
-        const slug = window.location.pathname.match(/\/in\/(.+)\//)?.[1]
-        const url = window.location.origin + '/preload/custom-invite/?vanityName=' + slug
-        console.log({url})
-        window.history.pushState(null, '', url)
-        return*/
-    /*
-    /preload/custom-invite/?vanityName=carol-hale-923a4724
-    */
 
     // Try to find connect button with current selectors
     let connectButton = document.querySelector(`[aria-label="Invite ${fullName} to connect"]`);
