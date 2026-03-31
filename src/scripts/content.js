@@ -37,8 +37,8 @@ function scrapeLinkedInProfile() {
 
     // Get headline - try multiple selectors
     const headlineElement = document.querySelector('[data-test-id="top-card-headline"]') ||
-                           document.querySelector('.text-body-medium') ||
-                           document.querySelector('[class*="headline"]');
+      document.querySelector('.text-body-medium') ||
+      document.querySelector('[class*="headline"]');
     if (headlineElement) {
       data.headline = headlineElement.textContent.trim();
     }
@@ -83,7 +83,7 @@ function scrapeLinkedInProfile() {
 
     // Get location
     const locationElement = document.querySelector('[data-test-id="top-card-location"]') ||
-                           document.querySelector('[class*="location"]');
+      document.querySelector('[class*="location"]');
     if (locationElement) {
       data.location = locationElement.textContent.trim();
     }
@@ -201,26 +201,64 @@ function showNotification(message, type = 'success', copiedMessage = null, warni
   setTimeout(hideToast, 5000);
 }
 
+// Find the More button menu
+function findMoreButton(maxLevels = 10) {
+  // Find the profile link by current pathname that contains an h2
+  let container = document.querySelector(`a[href*="${window.location.pathname}"][tabindex="0"]:has(h2)`);
+  let levels = 0;
+  // Traverse up the DOM tree to find the common ancestor that contains the More button
+  while (container && levels < maxLevels && !container.querySelector('button[aria-label="More"]')) {
+    container = container.parentElement;
+    levels++;
+  }
+
+  // Get the More button
+  return container?.querySelector('button[aria-label="More"]');
+}
+
 // Click the Connect button
 function clickConnect() {
   try {
     const {fullName} = scrapeLinkedInProfile();
+    /*
+        const slug = window.location.pathname.match(/\/in\/(.+)\//)?.[1]
+        const url = window.location.origin + '/preload/custom-invite/?vanityName=' + slug
+        console.log({url})
+        window.history.pushState(null, '', url)
+        return*/
+    /*
+    /preload/custom-invite/?vanityName=carol-hale-923a4724
+    */
 
-    // Try exact match first
-    let connectButton = document.querySelector(`[aria-label="Invite ${fullName} to connect"]`) ||
-                        // Try partial match
-                        document.querySelector('[aria-label*="Invite"][aria-label*="connect"]') ||
-                        // Try any button with Connect
-                        Array.from(document.querySelectorAll('button')).find(btn =>
-                          btn.getAttribute('aria-label')?.includes('Invite') &&
-                          btn.getAttribute('aria-label')?.includes('connect')
-                        );
+    // Try to find connect button with current selectors
+    let connectButton = document.querySelector(`[aria-label="Invite ${fullName} to connect"]`);
+
+    // If not found, click the More button and try again
+    if (!connectButton) {
+      const moreButton = findMoreButton();
+      if (moreButton) {
+        moreButton.click();
+        // Wait for menu to render before searching again
+        setTimeout(() => {
+          connectButton = document.querySelector(`[aria-label="Invite ${fullName} to connect"]`);
+          if (connectButton) {
+            highlightAndLogButton(connectButton, fullName);
+          } else {
+            showNotification('Connect button not found in More menu', 'error');
+          }
+        }, 150);
+        return;
+      } else {
+        showNotification('Could not find connect button, or More menu', 'error');
+        return;
+      }
+    }
 
     const pendingButton = document.querySelector('[aria-label*="Pending"]');
 
     if (connectButton) {
-      connectButton.click();
-      showNotification('Connect button clicked', 'success');
+      // highlightAndLogButton(connectButton, fullName);
+      connectButton.click()
     } else if (pendingButton) {
       showNotification('You already have a pending invitation for this user', 'error');
     } else {
@@ -232,13 +270,34 @@ function clickConnect() {
   }
 }
 
+// Highlight button, scroll to it, and store in devtools
+function highlightAndLogButton(button, label) {
+  // Store reference in window for devtools access
+  window.linkedInConnectButton = button;
+
+  // Highlight with unmissable border and glow
+  button.style.outline = '4px solid #ff0000';
+  button.style.outlineOffset = '2px';
+  button.style.boxShadow = '0 0 20px rgba(255, 0, 0, 0.8)';
+
+  // Scroll to it
+  button.scrollIntoView({behavior: 'smooth', block: 'center'});
+
+  // Log to console
+  console.log(`[LS Extension] Found connect button for ${label}:`, button);
+  console.log('Reference stored as: window.linkedInConnectButton');
+
+  // Show notification
+  showNotification(`Connect button found for ${label} - check console`, 'success');
+}
+
 // Click the Add note button
 function clickAddNote() {
   try {
     let addNoteButton = document.querySelector('[aria-label="Add a note"]') ||
-                        Array.from(document.querySelectorAll('button')).find(btn =>
-                          btn.getAttribute('aria-label')?.includes('note')
-                        );
+      Array.from(document.querySelectorAll('button')).find(btn =>
+        btn.getAttribute('aria-label')?.includes('note')
+      );
 
     if (addNoteButton) {
       addNoteButton.click();
@@ -256,9 +315,9 @@ function clickAddNote() {
 function clickSend() {
   try {
     let sendButton = document.querySelector('[aria-label="Send invitation"]') ||
-                     Array.from(document.querySelectorAll('button')).find(btn =>
-                       btn.getAttribute('aria-label')?.includes('Send')
-                     );
+      Array.from(document.querySelectorAll('button')).find(btn =>
+        btn.getAttribute('aria-label')?.includes('Send')
+      );
 
     if (sendButton) {
       sendButton.click();
