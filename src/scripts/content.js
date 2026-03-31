@@ -1,6 +1,6 @@
 // Content script for LinkedIn profile pages
 
-// Lazy load modules
+// Lazy load modules with absolute URLs
 let modules = {};
 
 async function loadModule(path) {
@@ -11,51 +11,32 @@ async function loadModule(path) {
   return modules[path];
 }
 
-async function getModule(path) {
-  return loadModule(path);
-}
-
 // Handle messages from background script
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'copyTemplate') {
-    handleCopyTemplate().catch(error => console.error('Error in handleCopyTemplate:', error));
+    loadModule('template/handleCopyTemplate.js')
+      .then(mod => mod.handleCopyTemplate())
+      .catch(error => console.error('Error in handleCopyTemplate:', error));
     return true;
   } else if (request.action === 'clickConnect') {
-    clickConnect().catch(error => console.error('Error in clickConnect:', error));
+    loadModule('connect/clickConnect.js')
+      .then(mod => mod.clickConnect())
+      .catch(error => console.error('Error in clickConnect:', error));
     return true;
   } else if (request.action === 'clickAddNote') {
-    clickAddNote().catch(error => console.error('Error in clickAddNote:', error));
+    loadModule('ui/clickShadowRootButton.js')
+      .then(mod => mod.clickShadowRootButton('Add a note'))
+      .catch(error => console.error('Error in clickAddNote:', error));
     return true;
   } else if (request.action === 'clickSend') {
-    clickSend().catch(error => console.error('Error in clickSend:', error));
+    loadModule('ui/clickShadowRootButton.js')
+      .then(mod => mod.clickShadowRootButton('Send invitation'))
+      .catch(error => console.error('Error in clickSend:', error));
     return true;
   } else if (request.action === 'showNotification') {
-    handleShowNotification(request.message, request.type || 'info');
+    loadModule('utils/showNotification.js')
+      .then(mod => mod.showNotification(request.message, request.type || 'info'))
+      .catch(error => console.error('Error in showNotification:', error));
   }
 });
 
-// Main action handlers
-async function handleCopyTemplate() {
-  const mod = await getModule('template/handleCopyTemplate.js');
-  return mod.handleCopyTemplate();
-}
-
-async function clickConnect() {
-  const mod = await getModule('connect/clickConnect.js');
-  return mod.clickConnect();
-}
-
-async function clickAddNote() {
-  const mod = await getModule('ui/clickShadowRootButton.js');
-  return mod.clickShadowRootButton('Add a note');
-}
-
-async function clickSend() {
-  const mod = await getModule('ui/clickShadowRootButton.js');
-  return mod.clickShadowRootButton('Send invitation');
-}
-
-async function handleShowNotification(message, type) {
-  const mod = await getModule('utils/showNotification.js');
-  return mod.showNotification(message, type);
-}
