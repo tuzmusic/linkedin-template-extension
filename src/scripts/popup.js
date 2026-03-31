@@ -1,5 +1,7 @@
 // Popup script for template management
 
+import { getEnabledWildcards } from '../lib/wildcards.config.js';
+
 const templateTextarea = document.getElementById('template');
 const templateTitleInput = document.getElementById('templateTitle');
 const charCountDiv = document.getElementById('charCount');
@@ -16,7 +18,6 @@ const saveAsCancel = document.getElementById('saveAsCancel');
 const templateSearchInput = document.getElementById('templateSearch');
 const clearSearchBtn = document.getElementById('clearSearchBtn');
 const noResultsDiv = document.getElementById('noResults');
-const wildcardTags = document.querySelectorAll('.wildcard-tag');
 
 const wildcardsToggle = document.getElementById('wildcardsToggle');
 const wildcardsContent = document.getElementById('wildcardsContent');
@@ -579,7 +580,28 @@ function toggleWildcards() {
   chrome.storage.sync.set({ wildcardsCollapsed });
 }
 
-// Load wildcards collapsed state on popup open
+// Populate wildcards from config
+function populateWildcards() {
+  const enabledWildcards = getEnabledWildcards();
+  wildcardsContent.innerHTML = '';
+
+  enabledWildcards.forEach(w => {
+    // Skip the 'company' alias - only show the main keys
+    if (w.key === 'company') return;
+
+    const tag = document.createElement('span');
+    tag.className = 'wildcard-tag';
+    tag.textContent = `{{${w.key}}}`;
+    tag.addEventListener('click', () => {
+      insertWildcard(`{{${w.key}}}`);
+    });
+    wildcardsContent.appendChild(tag);
+  });
+}
+
+// Load wildcards and collapsed state on popup open
+populateWildcards();
+
 chrome.storage.sync.get(['wildcardsCollapsed'], (result) => {
   if (result.wildcardsCollapsed !== undefined) {
     wildcardsCollapsed = result.wildcardsCollapsed;
@@ -624,12 +646,5 @@ function insertWildcard(wildcardText) {
   autoSave();
 }
 
-// Add click handlers for wildcard tags
+// Toggle wildcards collapse/expand (header click)
 wildcardsToggle.parentElement.addEventListener('click', toggleWildcards);
-
-wildcardTags.forEach((tag) => {
-  tag.addEventListener('click', () => {
-    const wildcard = tag.textContent;
-    insertWildcard(wildcard);
-  });
-});
