@@ -292,13 +292,12 @@ function highlightAndLogButton(button, label) {
   showNotification(`Connect button found for ${label} - check console`, 'success');
 }
 
+const getShadowRoot = () =>document.querySelector('#interop-outlet').shadowRoot
+
 // Click the Add note button
 function clickAddNote() {
   try {
-    let addNoteButton = document.querySelector('[aria-label="Add a note"]') ||
-      Array.from(document.querySelectorAll('button')).find(btn =>
-        btn.getAttribute('aria-label')?.includes('note')
-      );
+    let addNoteButton = getShadowRoot().querySelector('[aria-label="Add a note"]')
 
     if (addNoteButton) {
       addNoteButton.click();
@@ -315,10 +314,7 @@ function clickAddNote() {
 // Click the Send invitation button
 function clickSend() {
   try {
-    let sendButton = document.querySelector('[aria-label="Send invitation"]') ||
-      Array.from(document.querySelectorAll('button')).find(btn =>
-        btn.getAttribute('aria-label')?.includes('Send')
-      );
+    let sendButton = getShadowRoot().querySelector('[aria-label="Send invitation"]')
 
     if (sendButton) {
       sendButton.click();
