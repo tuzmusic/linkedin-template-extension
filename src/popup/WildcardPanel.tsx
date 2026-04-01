@@ -1,16 +1,13 @@
-import { FC } from 'preact';
 import { WILDCARDS } from '../types';
 
-interface WildcardsPanelProps {
-  collapsed: boolean;
-  onToggle: () => void;
-  onInsert: (wildcard: string) => void;
-}
-
-export const WildcardsPanel: FC<WildcardsPanelProps> = ({
+export const WildcardsPanel = ({
   collapsed,
   onToggle,
   onInsert
+}: {
+  collapsed: boolean;
+  onToggle: () => void;
+  onInsert: (wildcard: string) => void;
 }) => {
   return (
     <div class="bg-[#f3f6f8] px-3 py-3 rounded-[10px] text-xs mb-4">

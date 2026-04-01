@@ -1,23 +1,20 @@
-import { FC } from 'preact';
 import { useRef } from 'preact/hooks';
 import { Template, CurrentWork } from '../types';
 
-interface TemplatesListProps {
-  templates: Template[];
-  currentWork: CurrentWork;
-  searchQuery: string;
-  onSearchChange: (query: string) => void;
-  onSelect: (template: Template) => void;
-  onDelete: (id: string) => void;
-}
-
-export const TemplatesList: FC<TemplatesListProps> = ({
+export const TemplatesList = ({
   templates,
   currentWork,
   searchQuery,
   onSearchChange,
   onSelect,
   onDelete
+}: {
+  templates: Template[];
+  currentWork: CurrentWork;
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
+  onSelect: (template: Template) => void;
+  onDelete: (id: string) => void;
 }) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
 

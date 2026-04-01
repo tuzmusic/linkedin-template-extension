@@ -1,20 +1,17 @@
-import { FC } from 'preact';
 import { useRef, useEffect } from 'preact/hooks';
 
-interface SaveAsDialogProps {
-  isOpen: boolean;
-  title: string;
-  onTitleChange: (title: string) => void;
-  onConfirm: () => void;
-  onCancel: () => void;
-}
-
-export const SaveAsDialog: FC<SaveAsDialogProps> = ({
+export const SaveAsDialog = ({
   isOpen,
   title,
   onTitleChange,
   onConfirm,
   onCancel
+}: {
+  isOpen: boolean;
+  title: string;
+  onTitleChange: (title: string) => void;
+  onConfirm: () => void;
+  onCancel: () => void;
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);

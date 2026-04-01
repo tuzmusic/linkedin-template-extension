@@ -1,4 +1,3 @@
-import { FC } from 'preact';
 import { useState, useEffect, useRef } from 'preact/hooks';
 import { WILDCARDS, MAX_CHAR_LIMIT } from '../types';
 
@@ -15,7 +14,7 @@ const WILDCARD_DESCRIPTIONS: Record<string, string> = {
   '{{msgFullName}}': "Message recipient's full name"
 };
 
-export const Options: FC = () => {
+export const Options = () => {
   const [template, setTemplate] = useState('');
   const [showSaved, setShowSaved] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);

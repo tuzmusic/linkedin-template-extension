@@ -1,20 +1,17 @@
-import { FC } from 'preact';
 import { MAX_CHAR_LIMIT } from '../types';
 
-interface TemplateEditorProps {
-  title: string;
-  template: string;
-  onTitleChange: (title: string) => void;
-  onTemplateChange: (template: string) => void;
-  onGenerateTitle: () => void;
-}
-
-export const TemplateEditor: FC<TemplateEditorProps> = ({
+export const TemplateEditor = ({
   title,
   template,
   onTitleChange,
   onTemplateChange,
   onGenerateTitle
+}: {
+  title: string;
+  template: string;
+  onTitleChange: (title: string) => void;
+  onTemplateChange: (template: string) => void;
+  onGenerateTitle: () => void;
 }) => {
   const totalCount = template.length;
   const withoutPlaceholders = template.replace(/\{\{[^}]+\}\}/g, '');

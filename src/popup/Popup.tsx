@@ -1,13 +1,12 @@
-import { FC } from 'preact';
 import { useState, useEffect } from 'preact/hooks';
 import { Template, CurrentWork, MAX_TEMPLATES } from '../types';
 import { loadData, saveData } from '../utils/storage';
-import { WildcardsPanel } from './Wildcard Panel';
+import { WildcardsPanel } from './WildcardPanel';
 import { TemplateEditor } from './TemplateEditor';
 import { TemplatesList } from './TemplatesList';
 import { SaveAsDialog } from './SaveAsDialog';
 
-export const Popup: FC = () => {
+export const Popup = () => {
   const [savedTemplates, setSavedTemplates] = useState<Template[]>([]);
   const [currentWork, setCurrentWork] = useState<CurrentWork>({
     id: null,
