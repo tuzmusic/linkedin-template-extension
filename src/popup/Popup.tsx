@@ -1,4 +1,5 @@
-import { FC, useState, useEffect } from 'preact';
+import { FC } from 'preact';
+import { useState, useEffect } from 'preact/hooks';
 import { Template, CurrentWork, MAX_TEMPLATES } from '../types';
 import { loadData, saveData } from '../utils/storage';
 import { WildcardsPanel } from './Wildcard Panel';

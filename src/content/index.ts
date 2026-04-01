@@ -1,4 +1,5 @@
-import { scrapeLinkedInProfile, fillTemplate } from './profile-scraper';
+import { scrapeLinkedInProfile } from './profile-scraper';
+import { fillTemplate } from './template-filler';
 import { showNotification } from './notifications';
 import { clickConnect, clickAddNote, clickSend } from './button-handlers';
 import './styles.css';

@@ -1,10 +1,22 @@
 import { defineConfig } from 'vite';
-import preactPlugin from 'preact/preset/vite';
-import { crxPlugin } from '@crxjs/vite-plugin';
+import { crx } from '@crxjs/vite-plugin';
 import manifest from './manifest.json';
 
 export default defineConfig({
-  plugins: [preactPlugin(), crxPlugin()],
+  plugins: [crx({ manifest })],
+  esbuild: {
+    loader: 'tsx',
+    include: /src\/.*\.tsx?$/,
+    exclude: []
+  },
+  optimizeDeps: {
+    esbuildOptions: {
+      loader: {
+        '.ts': 'tsx',
+        '.tsx': 'tsx'
+      }
+    }
+  },
   build: {
     rollupOptions: {
       output: {

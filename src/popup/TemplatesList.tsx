@@ -1,4 +1,5 @@
-import { FC, useRef } from 'preact';
+import { FC } from 'preact';
+import { useRef } from 'preact/hooks';
 import { Template, CurrentWork } from '../types';
 
 interface TemplatesListProps {

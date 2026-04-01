@@ -1,4 +1,5 @@
-import { FC, useRef, useEffect } from 'preact';
+import { FC } from 'preact';
+import { useRef, useEffect } from 'preact/hooks';
 
 interface SaveAsDialogProps {
   isOpen: boolean;

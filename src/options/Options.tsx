@@ -1,4 +1,5 @@
-import { FC, useState, useEffect, useRef } from 'preact';
+import { FC } from 'preact';
+import { useState, useEffect, useRef } from 'preact/hooks';
 import { WILDCARDS, MAX_CHAR_LIMIT } from '../types';
 
 const WILDCARD_DESCRIPTIONS: Record<string, string> = {
