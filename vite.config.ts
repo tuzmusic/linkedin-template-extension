@@ -1,32 +1,17 @@
 import { defineConfig } from 'vite';
 import { crx } from '@crxjs/vite-plugin';
-import manifest from './manifest.json';
+import manifest from './manifest.config';
+import preact from '@preact/preset-vite';
 
 export default defineConfig({
-  plugins: [crx({ manifest })],
-  esbuild: {
-    loader: 'tsx',
-    include: /src\/.*\.tsx?$/,
-    exclude: []
-  },
-  optimizeDeps: {
-    esbuildOptions: {
-      loader: {
-        '.ts': 'tsx',
-        '.tsx': 'tsx'
-      }
-    }
-  },
-  build: {
-    rollupOptions: {
-      output: {
-        chunkFileNames: '[name].js',
-        entryFileNames: '[name].js'
-      }
-    }
-  },
+  plugins: [preact(), crx({ manifest })],
   server: {
     port: 5173,
-    strictPort: false
+    strictPort: false,
+    cors: {
+      origin: [
+        /chrome-extension:\/\//,
+      ],
+    },
   }
 });

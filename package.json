@@ -7,6 +7,7 @@
   },
   "devDependencies": {
     "@crxjs/vite-plugin": "^2.0.0-beta.33",
+    "@preact/preset-vite": "^2.10.5",
     "@tailwindcss/postcss": "^4.2.2",
     "@types/chrome": "^0.1.38",
     "@types/node": "^25.5.0",
@@ -20,6 +21,5 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:zip": "npm run build && zip -r linkedin-secret-weapon.zip dist/ manifest.json icons/"
   }
 }
