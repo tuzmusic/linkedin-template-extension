@@ -12,24 +12,23 @@
     "https://www.linkedin.com/*"
   ],
   "background": {
-    "service_worker": "src/scripts/background.js"
+    "service_worker": "src/background/index.ts"
   },
   "content_scripts": [
     {
       "matches": ["https://www.linkedin.com/*"],
-      "js": ["src/scripts/content.js"],
-      "css": ["src/styles/content.css"]
+      "js": ["src/content/index.ts"]
     }
   ],
   "action": {
-    "default_popup": "popup.html",
+    "default_popup": "src/popup/popup.html",
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",
       "128": "icons/icon128.png"
     }
   },
-  "options_page": "options.html",
+  "options_page": "src/options/options.html",
   "commands": {
     "copy-template": {
       "suggested_key": {

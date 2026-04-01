@@ -1,12 +1,23 @@
 {
+  "name": "linkedin-secret-weapon",
+  "version": "0.3.2",
+  "type": "module",
   "dependencies": {
-    "canvas": "^3.2.0"
+    "preact": "^10.29.0"
   },
   "devDependencies": {
-    "chokidar": "^3.5.3"
+    "@crxjs/vite-plugin": "^2.0.0-beta.33",
+    "@types/chrome": "^0.1.38",
+    "@types/node": "^25.5.0",
+    "autoprefixer": "^10.4.27",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^4.2.2",
+    "typescript": "^6.0.2",
+    "vite": "^8.0.3"
   },
   "scripts": {
-    "watch": "node ./src/scripts/watcher.js",
-    "package": "zip -r linkedin-secret-weapon.zip manifest.json background.js content.js content.css popup.html popup.js options.html options.js icons/icon16.png icons/icon48.png icons/icon128.png"
+    "dev": "vite",
+    "build": "vite build",
+    "build:zip": "npm run build && zip -r linkedin-secret-weapon.zip dist/ manifest.json icons/"
   }
 }
