@@ -17,15 +17,11 @@
     @apply w-11 h-11 p-0 flex items-center justify-center bg-[#f3f6f8] text-black border border-[#ddd] rounded-[10px] font-normal text-lg transition-colors hover:bg-[#e8f4f8] hover:border-[#0073b1];
   }
 
-  /*.input-base {*/
-  /*  @apply w-full px-3 py-2 border border-[#ddd] rounded-[10px] font-inherit text-sm transition-colors focus:outline-none focus:border-[#0073b1];*/
-  /*}*/
+  .input-text {
+    @apply w-full px-3 py-2 border border-[#ddd] rounded-[10px] text-sm transition-colors focus:outline-none focus:border-[#0073b1];
+  }
 
-  /*.input-text {*/
-  /*  @apply input-base;*/
-  /*}*/
-
-  /*.textarea-base {*/
-  /*  @apply w-full px-3 py-2 border border-[#ddd] rounded-[10px] font-inherit text-sm resize-vertical box-border transition-colors focus:outline-none focus:border-[#0073b1];*/
-  /*}*/
+  .textarea-base {
+    @apply w-full px-3 py-2 border border-[#ddd] rounded-[10px] text-sm resize-y box-border transition-colors focus:outline-none focus:border-[#0073b1];
+  }
 }
