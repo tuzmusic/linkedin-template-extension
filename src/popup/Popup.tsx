@@ -13,7 +13,6 @@ export const Popup = () => {
     title: '',
     template: ''
   });
-  const [wildcardsCollapsed, setWildcardsCollapsed] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [showSaveAsDialog, setShowSaveAsDialog] = useState(false);
   const [saveAsTitle, setSaveAsTitle] = useState('');
@@ -25,7 +24,6 @@ export const Popup = () => {
     loadData().then((data) => {
       setSavedTemplates(data.savedTemplates);
       setCurrentWork(data.currentWork);
-      setWildcardsCollapsed(data.wildcardsCollapsed);
     });
   }, []);
 
@@ -317,14 +315,7 @@ export const Popup = () => {
         LinkedIn Message Template
       </h1>
 
-      <WildcardsPanel
-        collapsed={wildcardsCollapsed}
-        onToggle={() => {
-          setWildcardsCollapsed(!wildcardsCollapsed);
-          saveData({ wildcardsCollapsed: !wildcardsCollapsed });
-        }}
-        onInsert={handleInsertWildcard}
-      />
+      <WildcardsPanel onInsert={handleInsertWildcard} />
 
       <TemplateEditor
         title={currentWork.title}

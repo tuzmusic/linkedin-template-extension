@@ -1,19 +1,34 @@
+import { useEffect, useState } from 'preact/hooks';
 import { WILDCARDS } from '../types';
+import { saveData } from '../utils/storage';
 
 export const WildcardsPanel = ({
-  collapsed,
-  onToggle,
   onInsert
 }: {
-  collapsed: boolean;
-  onToggle: () => void;
   onInsert: (wildcard: string) => void;
 }) => {
+  const [collapsed, setCollapsed] = useState(true);
+
+  useEffect(function syncWildcardCollapsedState() {
+    // Load from storage on mount
+    chrome.storage.local.get('wildcardsCollapsed', (result: Record<string, unknown>) => {
+      if ('wildcardsCollapsed' in result) {
+        setCollapsed(result.wildcardsCollapsed as boolean);
+      }
+    });
+  }, []);
+
+  const handleToggle = () => {
+    const newState = !collapsed;
+    setCollapsed(newState);
+    saveData({ wildcardsCollapsed: newState });
+  };
+
   return (
     <div class="bg-[#f3f6f8] px-3 py-3 rounded-[10px] text-xs mb-4">
       <div
         class="flex items-center gap-2 cursor-pointer select-none"
-        onClick={onToggle}
+        onClick={handleToggle}
       >
         <button
           class={`bg-none border-none text-black text-xs p-0 w-4 h-4 leading-none transition-transform ${
