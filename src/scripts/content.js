@@ -43,43 +43,16 @@ function scrapeLinkedInProfile() {
       data.headline = headlineElement.textContent.trim();
     }
 
-    // Get company name - try from button or experience
-    let companyButton = document.querySelector('button[aria-label*="Current company"], button[aria-label*="company"]');
-    if (companyButton) {
-      const ariaLabel = companyButton.getAttribute('aria-label');
-      const match = ariaLabel.match(/company[:\s]+([^.]+)/i);
-      if (match) {
-        data.companyName = match[1].trim();
-      }
-    }
+    // This should be the company logo in the header
+    const companyLogos = document.querySelectorAll('[src*="company-logo"]')
+    const companyLogo = Array.from(companyLogos).find(logo => {
+      // Make sure it's not some other company logo on the page:
+      // We're looking for the one in the section with the fullName in an h2
+      const probablyProfileHeader = logo.closest(':has(h2)')
+      return probablyProfileHeader?.querySelector('h2')?.innerText === fullName
+    })
 
-    // Fallback: Get from experience section
-    if (!data.companyName || !data.position) {
-      const experienceSection = document.querySelector('[id*="experience"], [data-test-id*="experience"]');
-      if (experienceSection) {
-        // Find the first experience item
-        const firstItem = experienceSection.querySelector('li, .base-card, [role="listitem"]');
-        if (firstItem) {
-          // Look for position/title
-          const posElement = firstItem.querySelector('h3, .base-card__title, [class*="title"]');
-          if (posElement && !data.position) {
-            const posText = posElement.textContent.trim();
-            if (posText && posText.length < 100) {
-              data.position = posText;
-            }
-          }
-
-          // Look for company
-          const compElement = firstItem.querySelector('.base-card__subtitle, [class*="company"], h4');
-          if (compElement && !data.companyName) {
-            const compText = compElement.textContent.trim();
-            if (compText && compText.length < 100) {
-              data.companyName = compText;
-            }
-          }
-        }
-      }
-    }
+    data.companyName = companyLogo.closest('figure')?.nextSibling?.innerText
 
     // Get location
     const locationElement = document.querySelector('[data-test-id="top-card-location"]') ||
@@ -292,7 +265,7 @@ function highlightAndLogButton(button, label) {
   showNotification(`Connect button found for ${label} - check console`, 'success');
 }
 
-const getShadowRoot = () =>document.querySelector('#interop-outlet').shadowRoot
+const getShadowRoot = () => document.querySelector('#interop-outlet').shadowRoot
 
 // Click the Add note button
 function clickAddNote() {
