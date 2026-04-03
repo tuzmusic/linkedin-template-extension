@@ -1,4 +1,5 @@
 import { MAX_CHAR_LIMIT } from '../types';
+import { Input } from '../components/Input';
 
 export const TemplateEditor = ({
   title,
@@ -27,16 +28,15 @@ export const TemplateEditor = ({
           Template Title:
         </label>
         <div class="flex gap-2 items-stretch">
-          <input
-            type="text"
+          <Input
             value={title}
             onInput={(e) => onTitleChange((e.target as HTMLInputElement).value)}
             placeholder="e.g., Designer outreach, Recruiter intro..."
-            class="input-text flex-1"
+            class="flex-1"
           />
           <button
             onClick={onGenerateTitle}
-            class="btn-icon"
+            class="w-11 h-11 p-0 flex items-center justify-center bg-[#f3f6f8] text-black border border-[#ddd] rounded-[10px] font-normal text-lg transition-colors hover:bg-[#e8f4f8] hover:border-[#0073b1]"
             title="Generate title"
             type="button"
           >

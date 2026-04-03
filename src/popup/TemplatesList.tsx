@@ -1,5 +1,6 @@
 import { useRef } from 'preact/hooks';
 import { Template, CurrentWork } from '../types';
+import { Input } from '../components/Input';
 
 export const TemplatesList = ({
   templates,
@@ -34,13 +35,12 @@ export const TemplatesList = ({
           >
             <path d="M6.5 1a5.5 5.5 0 014.384 8.884l4.3 4.3a.75.75 0 11-1.06 1.06l-4.3-4.3A5.5 5.5 0 116.5 1zm0 1.5a4 4 0 100 8 4 4 0 000-8z" />
           </svg>
-          <input
+          <Input
             ref={searchInputRef}
-            type="text"
             value={searchQuery}
             onInput={(e) => onSearchChange((e.target as HTMLInputElement).value)}
             placeholder="Search by name or content..."
-            class="input-text border-none rounded-none flex-1 focus:ring-0 focus:border-none focus:shadow-none p-0 text-xs ml-2"
+            class="border-none rounded-none flex-1 focus:ring-0 focus:border-none focus:shadow-none p-0 text-xs ml-2"
           />
           {searchQuery && (
             <button

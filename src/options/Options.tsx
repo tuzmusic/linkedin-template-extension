@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
 import { WILDCARDS, MAX_CHAR_LIMIT } from '../types';
+import { Button } from '../components/Button';
 
 const WILDCARD_DESCRIPTIONS: Record<string, string> = {
   '{{firstName}}': "Contact's first name",
@@ -94,13 +95,9 @@ export const Options = () => {
         </div>
 
         <div class="mt-4">
-          <button
-            onClick={handleSave}
-            class="px-6 py-3 bg-[#0073b1] text-white rounded-[10px] text-sm font-semibold cursor-pointer transition-colors hover:bg-[#005885]"
-            type="button"
-          >
+          <Button onClick={handleSave} variant="primary">
             Save Template
-          </button>
+          </Button>
           {showSaved && (
             <span class="ml-4 text-[#057642] text-sm inline-block">
               Saved successfully!

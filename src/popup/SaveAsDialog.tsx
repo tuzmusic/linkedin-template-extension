@@ -1,4 +1,6 @@
 import { useRef, useEffect } from 'preact/hooks';
+import { Button } from '../components/Button';
+import { Input } from '../components/Input';
 
 export const SaveAsDialog = ({
   isOpen,
@@ -40,13 +42,12 @@ export const SaveAsDialog = ({
         onClick={(e) => e.stopPropagation()}
       >
         <h3 class="m-0 mb-4 text-base text-black">Save as new template</h3>
-        <input
+        <Input
           ref={inputRef}
-          type="text"
           value={title}
           onInput={(e) => onTitleChange((e.target as HTMLInputElement).value)}
           placeholder="Template title"
-          class="input-text mb-4"
+          class="mb-4"
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
               onConfirm();
@@ -56,20 +57,22 @@ export const SaveAsDialog = ({
           }}
         />
         <div class="flex gap-2 justify-end">
-          <button
+          <Button
             onClick={onCancel}
-            class="btn-secondary min-w-[80px]"
-            type="button"
+            variant="secondary"
+            flex={0}
+            class="min-w-20"
           >
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={onConfirm}
-            class="btn-primary min-w-[80px]"
-            type="button"
+            variant="primary"
+            flex={0}
+            class="min-w-20"
           >
             Save
-          </button>
+          </Button>
         </div>
       </div>
     </div>

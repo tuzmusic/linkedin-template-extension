@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'preact/hooks';
-import { Template, CurrentWork, MAX_TEMPLATES } from '../types';
+import { useEffect, useState } from 'preact/hooks';
+import { CurrentWork, MAX_TEMPLATES, Template } from '../types';
 import { loadData, saveData } from '../utils/storage';
+import { Button } from '../components/Button';
 import { WildcardsPanel } from './WildcardPanel';
 import { TemplateEditor } from './TemplateEditor';
 import { TemplatesList } from './TemplatesList';
@@ -298,12 +299,6 @@ export const Popup = () => {
     );
   };
 
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-      handleSave();
-    }
-  };
-
   const showSavedMessageBriefly = () => {
     setSaveMessage(true);
     setTimeout(() => {
@@ -327,25 +322,16 @@ export const Popup = () => {
         onGenerateTitle={handleGenerateTitle}
       />
 
-      <div class="flex gap-2 mb-4">
-        <button onClick={handleNew} class="btn-secondary flex-1" type="button">
+      <div class="flex gap-2 mb-4 justify-between">
+        <Button onClick={handleNew} variant="secondary">
           New
-        </button>
-        <button
-          onClick={handleSave}
-          class="btn-primary flex-1"
-          onKeyDown={handleKeyDown}
-          type="button"
-        >
+        </Button>
+        <Button onClick={handleSave} variant="primary">
           Save
-        </button>
-        <button
-          onClick={handleSaveAsNew}
-          class="btn-secondary flex-1"
-          type="button"
-        >
+        </Button>
+        <Button onClick={handleSaveAsNew} variant="secondary">
           Save As
-        </button>
+        </Button>
       </div>
 
       {saveMessage && (
