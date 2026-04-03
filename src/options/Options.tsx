@@ -21,7 +21,7 @@ export const Options = () => {
 
   // Load template on mount
   useEffect(() => {
-    chrome.storage.sync.get(['messageTemplate'], (result) => {
+    chrome.storage.sync.get<{ messageTemplate: string }>(['messageTemplate'], (result) => {
       if (result.messageTemplate) {
         setTemplate(result.messageTemplate);
       }

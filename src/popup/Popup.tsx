@@ -23,7 +23,9 @@ export const Popup = () => {
   useEffect(() => {
     loadData().then((data) => {
       setSavedTemplates(data.savedTemplates);
-      setCurrentWork(data.currentWork);
+      if (data.currentWork) {
+        setCurrentWork(data.currentWork);
+      }
     });
   }, []);
 
