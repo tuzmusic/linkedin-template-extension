@@ -1,24 +1,19 @@
-import { ComponentChildren } from 'preact';
+import { ComponentChildren, JSX } from 'preact';
 
 type ButtonVariant = 'primary' | 'secondary' | 'danger';
 
 export const Button = ({
   children,
   variant = 'primary',
-  type = 'button',
-  disabled = false,
-  onClick,
   class: className = '',
-  flex = 1
+  flex = 1,
+  ...props
 }: {
   children: ComponentChildren;
   variant?: ButtonVariant;
-  type?: 'button' | 'submit' | 'reset';
-  disabled?: boolean;
-  onClick?: () => void;
   class?: string;
   flex?: 0 | 1
-}) => {
+} & JSX.IntrinsicElements['button']) => {
   const baseClasses = `flex-${flex} px-4 py-3 rounded-[10px] font-semibold text-sm transition-colors`;
 
   const variantClasses: Record<ButtonVariant, string> = {
@@ -30,7 +25,7 @@ export const Button = ({
   const classes = `${baseClasses} ${variantClasses[variant]} ${className}`;
 
   return (
-    <button type={type} class={classes} disabled={disabled} onClick={onClick}>
+    <button class={classes} {...props}>
       {children}
     </button>
   );

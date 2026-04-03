@@ -20,8 +20,7 @@ export const Popup = () => {
   const [saveMessage, setSaveMessage] = useState(false);
   const [autoSaveTimeout, setAutoSaveTimeout] = useState<number | null>(null);
 
-  // Load data on mount
-  useEffect(() => {
+  useEffect(function loadDataOnMount() {
     loadData().then((data) => {
       setSavedTemplates(data.savedTemplates);
       if (data.currentWork) {
@@ -210,10 +209,10 @@ export const Popup = () => {
       currentWork.template.trim() !== '' ||
       (currentWork.id !== null &&
         savedTemplates.find((t) => t.id === currentWork.id)?.title !==
-          currentWork.title) ||
+        currentWork.title) ||
       (currentWork.id !== null &&
         savedTemplates.find((t) => t.id === currentWork.id)?.template !==
-          currentWork.template);
+        currentWork.template);
 
     if (hasChanges) {
       const confirmSwitch = confirm(
@@ -312,7 +311,7 @@ export const Popup = () => {
         LinkedIn Message Template
       </h1>
 
-      <WildcardsPanel onInsert={handleInsertWildcard} />
+      <WildcardsPanel onInsert={handleInsertWildcard}/>
 
       <TemplateEditor
         title={currentWork.title}
@@ -358,7 +357,9 @@ export const Popup = () => {
       />
 
       <div class="text-center text-xs text-[#666] mt-4 pt-4 border-t border-[#eee]">
-        On any LinkedIn profile, press <kbd class="bg-[#f3f6f8] px-1.5 py-0.5 rounded text-xs border border-[#ddd]">Opt+V</kbd> to copy your personalized message
+        On any LinkedIn profile, press <kbd
+        class="bg-[#f3f6f8] px-1.5 py-0.5 rounded text-xs border border-[#ddd]">Opt+V</kbd> to copy your personalized
+        message
       </div>
     </div>
   );
