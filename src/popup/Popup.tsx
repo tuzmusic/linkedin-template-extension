@@ -322,15 +322,9 @@ export const Popup = () => {
       />
 
       <div class="flex gap-2 mb-4 justify-between">
-        <Button onClick={handleNew} variant="secondary">
-          New
-        </Button>
-        <Button onClick={handleSave} variant="primary">
-          Save
-        </Button>
-        <Button onClick={handleSaveAsNew} variant="secondary">
-          Save As
-        </Button>
+        <Button onClick={handleNew} variant="secondary">New</Button>
+        <Button onClick={handleSave} variant="primary">Save</Button>
+        <Button onClick={handleSaveAsNew} variant="secondary">Save As</Button>
       </div>
 
       {saveMessage && (

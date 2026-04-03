@@ -2,15 +2,31 @@ import { useEffect, useState } from 'preact/hooks';
 import { WILDCARDS } from '../types';
 import { saveData } from '../utils/storage';
 
-export const WildcardsPanel = ({
-  onInsert
-}: {
-  onInsert: (wildcard: string) => void;
-}) => {
+function WildcardButton({ onClick, wildcard }: { onClick: () => void, wildcard: string }) {
+  return <button
+    class="bg-white px-2 py-1 rounded border border-[#ddd] cursor-pointer font-mono text-xs hover:bg-[#f0f0f0]"
+    onClick={onClick}
+    type="button"
+  >
+    {wildcard}
+  </button>;
+}
+
+function Carat({ collapsed }: { collapsed: boolean }) {
+  return <button
+    class={`bg-none border-none text-black text-xs p-0 w-4 h-4 leading-none transition-transform ${
+      collapsed ? "transform -rotate-90" : ""
+    }`}
+    type="button"
+  >
+    ▼
+  </button>;
+}
+
+export const WildcardsPanel = ({ onInsert }: { onInsert: (wildcard: string) => void; }) => {
   const [collapsed, setCollapsed] = useState(true);
 
-  useEffect(function syncWildcardCollapsedState() {
-    // Load from storage on mount
+  useEffect(function loadWildcardCollapsedStateOnMount() {
     chrome.storage.local.get('wildcardsCollapsed', (result: Record<string, unknown>) => {
       if ('wildcardsCollapsed' in result) {
         setCollapsed(result.wildcardsCollapsed as boolean);
@@ -30,27 +46,14 @@ export const WildcardsPanel = ({
         class="flex items-center gap-2 cursor-pointer select-none"
         onClick={handleToggle}
       >
-        <button
-          class={`bg-none border-none text-black text-xs p-0 w-4 h-4 leading-none transition-transform ${
-            collapsed ? 'transform -rotate-90' : ''
-          }`}
-          type="button"
-        >
-          ▼
-        </button>
+        <Carat collapsed={collapsed}/>
         <div class="font-semibold text-black flex-1">Available Wildcards:</div>
       </div>
       {!collapsed &&
         <ul className={`flex flex-wrap gap-1.5 max-h-[500px] overflow-hidden`}>
           {WILDCARDS.map((wildcard) => (
             <li key={wildcard}>
-              <button
-                class="bg-white px-2 py-1 rounded border border-[#ddd] cursor-pointer font-mono text-xs hover:bg-[#f0f0f0]"
-                onClick={() => onInsert(wildcard)}
-                type="button"
-              >
-                {wildcard}
-              </button>
+              <WildcardButton onClick={() => onInsert(wildcard)} wildcard={wildcard}/>
             </li>
           ))}
         </ul>}
