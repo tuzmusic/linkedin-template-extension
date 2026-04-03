@@ -53,7 +53,7 @@ export const TemplateEditor = ({
           value={template}
           onInput={(e) => onTemplateChange((e.target as HTMLTextAreaElement).value)}
           placeholder="Hi {{firstName}}, I noticed you work at {{companyName}}..."
-          class="textarea-base min-h-[100px]"
+          class="w-full px-3 py-2 border border-[#ddd] rounded-[10px] text-sm resize-y box-border transition-colors focus:outline-none focus:border-[#0073b1] min-h-[100px]"
         />
         <div
           class={`text-right text-xs mt-1 ${
