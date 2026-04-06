@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
 import { WILDCARDS, MAX_CHAR_LIMIT } from '../types';
 import { Button } from '../components/Button';
+import { Fragment } from "preact";
 
 const WILDCARD_DESCRIPTIONS: Record<string, string> = {
   '{{firstName}}': "Contact's first name",
@@ -60,16 +61,18 @@ export const Options = () => {
           <div class="font-semibold mb-3 text-black text-sm">
             Use these placeholders in your template:
           </div>
-          {WILDCARDS.map((wildcard) => (
-            <div key={wildcard} class="flex items-center mb-2">
-              <code class="bg-white px-2 py-1 rounded border border-[#ddd] font-mono text-xs min-w-[140px] mr-3">
-                {wildcard}
-              </code>
-              <span class="text-[#666] text-xs">
+          <div class="grid grid-cols-[auto_1fr] gap-y-1">
+            {WILDCARDS.map((wildcard) => (
+              <Fragment key={wildcard}>
+                <code class="bg-white px-2 py-1 rounded border border-[#ddd] font-mono text-xs mr-3 w-min">
+                  {wildcard}
+                </code>
+                <span class="text-[#666] text-xs">
                 {WILDCARD_DESCRIPTIONS[wildcard] || wildcard}
               </span>
-            </div>
-          ))}
+              </Fragment>
+            ))}
+          </div>
         </div>
       </div>
 
