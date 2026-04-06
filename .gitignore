@@ -61,6 +61,7 @@ pnpm-debug.log*
 *.zip
 dist/
 build/
+release/
 
 # Environment files
 .env

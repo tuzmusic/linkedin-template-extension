@@ -16,7 +16,8 @@
     "preact-render-to-string": "^6.6.7",
     "tailwindcss": "^4.2.2",
     "typescript": "^6.0.2",
-    "vite": "^8.0.3"
+    "vite": "^8.0.3",
+    "vite-plugin-zip-pack": "^1.2.4"
   },
   "scripts": {
     "dev": "vite",
