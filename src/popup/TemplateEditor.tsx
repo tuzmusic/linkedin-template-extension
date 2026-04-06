@@ -14,12 +14,20 @@ export const TemplateEditor = ({
   onTemplateChange: (template: string) => void;
   onGenerateTitle: () => void;
 }) => {
+  const placeholderText = 'Hi {{firstName}}, I noticed you work at {{companyName}}.';
   const totalCount = template.length;
   const withoutPlaceholders = template.replace(/\{\{[^}]+\}\}/g, '');
   const withoutPlaceholdersCount = withoutPlaceholders.length;
 
   const isOverLimit = withoutPlaceholdersCount > MAX_CHAR_LIMIT;
   const isWarning = totalCount > MAX_CHAR_LIMIT && !isOverLimit;
+
+  const acceptPlaceHolderOnTabPress = (e: KeyboardEvent) => {
+    if (e.key === 'Tab' && template.trim() === '') {
+      e.preventDefault();
+      onTemplateChange(placeholderText.slice(0, -1));
+    }
+  };
 
   return (
     <>
@@ -51,7 +59,8 @@ export const TemplateEditor = ({
         </label>
         <textarea
           value={template}
-          onInput={(e) => onTemplateChange((e.target as HTMLTextAreaElement).value)}
+          onInput={(e) => onTemplateChange(e.currentTarget.value)}
+          onKeyDown={acceptPlaceHolderOnTabPress}
           placeholder="Hi {{firstName}}, I noticed you work at {{companyName}}..."
           class="w-full px-3 py-2 border border-[#ddd] rounded-[10px] text-sm resize-y box-border transition-colors focus:outline-none focus:border-[#0073b1] min-h-[100px]"
         />
