@@ -308,7 +308,7 @@ export const Popup = () => {
   return (
     <div class="w-full">
       <h1 class="text-lg font-semibold m-0 mb-4 text-black">
-        LinkedIn Message Template
+        LinkedIn Secret Weapon
       </h1>
 
       <WildcardsPanel onInsert={handleInsertWildcard}/>
