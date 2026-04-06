@@ -205,14 +205,13 @@ export const Popup = () => {
 
   const handleSelectTemplate = (template: Template) => {
     const hasChanges =
-      currentWork.title.trim() !== '' ||
-      currentWork.template.trim() !== '' ||
+      (currentWork.id === null &&
+        (currentWork.title.trim() !== '' || currentWork.template.trim() !== '')) ||
       (currentWork.id !== null &&
-        savedTemplates.find((t) => t.id === currentWork.id)?.title !==
-        currentWork.title) ||
-      (currentWork.id !== null &&
-        savedTemplates.find((t) => t.id === currentWork.id)?.template !==
-        currentWork.template);
+        (savedTemplates.find((t) => t.id === currentWork.id)?.title !==
+          currentWork.title ||
+          savedTemplates.find((t) => t.id === currentWork.id)?.template !==
+            currentWork.template));
 
     if (hasChanges) {
       const confirmSwitch = confirm(
