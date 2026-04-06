@@ -1,9 +1,10 @@
 import { defineManifest } from "@crxjs/vite-plugin";
+import pkg from './package.json'
 
 export default defineManifest({
   "manifest_version": 3,
   "name": "LinkedIn Secret Weapon (Preact)",
-  "version": "0.4.0",
+  "version": pkg.version,
   "description": "Tools for responsibly supercharging your networking workflow 🚀",
   "permissions": [
     "storage",
