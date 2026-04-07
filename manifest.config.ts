@@ -3,7 +3,7 @@ import pkg from './package.json'
 
 export default defineManifest({
   "manifest_version": 3,
-  "name": "LinkedIn Secret Weapon (Preact)",
+  "name": "LinkedIn Secret Weapon",
   "version": pkg.version,
   "description": "Tools for responsibly supercharging your networking workflow 🚀",
   "permissions": [
