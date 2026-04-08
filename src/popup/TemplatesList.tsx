@@ -1,5 +1,5 @@
 import { useRef } from 'preact/hooks';
-import { Template, CurrentWork } from '../types';
+import { CurrentWork, Template } from '../types';
 import { Input } from '../components/Input';
 
 export const TemplatesList = ({
@@ -27,9 +27,9 @@ export const TemplatesList = ({
         Recent Templates:
       </label>
       <div class="border border-[#ddd] rounded-[10px] overflow-hidden">
-        <div class="border-b border-[#ddd] flex-shrink-0 flex items-center px-3 py-2">
+        <div class="border-b border-[#ddd] shrink-0 flex items-center px-3 py-2">
           <svg
-            class="w-4 h-4 text-[#999] flex-shrink-0 mr-2 pointer-events-none"
+            class="w-4 h-4 text-[#999] shrink-0 mr-2 pointer-events-none"
             viewBox="0 0 16 16"
             fill="currentColor"
           >

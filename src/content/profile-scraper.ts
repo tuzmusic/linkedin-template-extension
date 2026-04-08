@@ -3,7 +3,7 @@ export interface LinkedInProfileData {
   lastName: string;
   fullName: string;
   headline: string;
-  companyName: string;
+  companyName: string | null;
   position: string;
   location: string;
   profileUrl: string;
@@ -18,7 +18,7 @@ export function scrapeLinkedInProfile(): LinkedInProfileData {
     lastName: '',
     fullName: '',
     headline: '',
-    companyName: '',
+    companyName: null,
     position: '',
     location: '',
     profileUrl: window.location.href,
@@ -63,7 +63,7 @@ export function scrapeLinkedInProfile(): LinkedInProfileData {
       return probablyProfileHeader?.querySelector('h2')?.innerText === fullName
     })
 
-    data.companyName = companyLogo?.closest('figure')?.nextSibling?.innerText
+    data.companyName = companyLogo?.closest('figure')?.nextSibling?.textContent ?? null
 
     // Get location
     const locationElement = document.querySelector('[data-test-id="top-card-location"]') ||
