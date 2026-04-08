@@ -1,12 +1,19 @@
 import { CurrentWork, Template } from '../types';
 
+export type AppStorageState = {
+  savedTemplates: Template[];
+  currentWork: CurrentWork;
+  wildcardsCollapsed: boolean;
+  messageTemplate: string;
+};
+
 export async function loadData(): Promise<{
   savedTemplates: Template[];
   currentWork: CurrentWork | null;
   wildcardsCollapsed: boolean;
 }> {
   return new Promise((resolve) => {
-    chrome.storage.sync.get(
+    chrome.storage.sync.get<AppStorageState>(
       ['savedTemplates', 'currentWork', 'wildcardsCollapsed'],
       (result) => {
         const savedTemplates = result.savedTemplates || [];
@@ -41,12 +48,7 @@ export async function loadData(): Promise<{
   });
 }
 
-export function saveData(data: {
-  savedTemplates?: Template[];
-  currentWork?: CurrentWork;
-  wildcardsCollapsed?: boolean;
-  messageTemplate?: string;
-}): Promise<void> {
+export function saveData(data: Partial<AppStorageState>): Promise<void> {
   return new Promise((resolve) => {
     chrome.storage.sync.set(data, () => {
       resolve();

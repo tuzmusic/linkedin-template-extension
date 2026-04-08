@@ -1,4 +1,5 @@
 import { Template } from '../types';
+import { AppStorageState } from "../utils/storage.ts";
 
 // Handle keyboard shortcuts
 chrome.commands.onCommand.addListener((command) => {
@@ -57,7 +58,7 @@ chrome.commands.onCommand.addListener((command) => {
 
 // Initialize default templates on install
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.storage.sync.get(['savedTemplates', 'currentWork'], (result) => {
+  chrome.storage.sync.get<AppStorageState>(['savedTemplates', 'currentWork'], (result) => {
     // If no saved templates exist, seed with defaults
     if (!result.savedTemplates || result.savedTemplates.length === 0) {
       const defaultTemplates: Template[] = [

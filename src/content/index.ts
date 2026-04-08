@@ -1,8 +1,9 @@
 import { scrapeLinkedInProfile } from './profile-scraper';
 import { fillTemplate } from './template-filler';
 import { showNotification } from './notifications';
-import { clickConnect, clickAddNote, clickSend } from './button-handlers';
+import { clickAddNote, clickConnect, clickSend } from './button-handlers';
 import './styles.css';
+import { AppStorageState } from "../utils/storage.ts";
 
 async function copyToClipboard(text: string): Promise<boolean> {
   try {
@@ -17,7 +18,7 @@ async function copyToClipboard(text: string): Promise<boolean> {
 async function handleCopyTemplate(): Promise<void> {
   try {
     // Get the template from storage
-    const result = await chrome.storage.sync.get(['messageTemplate']);
+    const result = await chrome.storage.sync.get<AppStorageState>(['messageTemplate']);
     const template = result.messageTemplate || "Hi {{firstName}}, I'd love to connect!";
 
     // Scrape profile data
