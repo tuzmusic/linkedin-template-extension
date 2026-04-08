@@ -15,7 +15,7 @@ export default defineManifest({
     "https://www.linkedin.com/*"
   ],
   "background": {
-    "service_worker": "src/background/index.ts"
+    "service_worker": "src/background/service-worker.ts"
   },
   "content_scripts": [
     {
