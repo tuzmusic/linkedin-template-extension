@@ -19,6 +19,8 @@ export const Popup = () => {
   const [saveAsTitle, setSaveAsTitle] = useState('');
   const [saveMessage, setSaveMessage] = useState(false);
   const [autoSaveTimeout, setAutoSaveTimeout] = useState<number | null>(null);
+  const [charLimit, setCharLimit] = useState(300);
+  const [charLimitEnabled, setCharLimitEnabled] = useState(true);
 
   useEffect(function loadDataOnMount() {
     loadData().then((data) => {
@@ -26,8 +28,20 @@ export const Popup = () => {
       if (data.currentWork) {
         setCurrentWork(data.currentWork);
       }
+      setCharLimit(data.charLimit);
+      setCharLimitEnabled(data.charLimitEnabled);
     });
   }, []);
+
+  const handleCharLimitChange = (value: number) => {
+    setCharLimit(value);
+    saveData({ charLimit: value });
+  };
+
+  const handleCharLimitEnabledChange = (enabled: boolean) => {
+    setCharLimitEnabled(enabled);
+    saveData({ charLimitEnabled: enabled });
+  };
 
   const handleTitleChange = (title: string) => {
     setCurrentWork({ ...currentWork, title });
@@ -318,6 +332,10 @@ export const Popup = () => {
         onTitleChange={handleTitleChange}
         onTemplateChange={handleTemplateChange}
         onGenerateTitle={handleGenerateTitle}
+        charLimit={charLimit}
+        charLimitEnabled={charLimitEnabled}
+        onCharLimitChange={handleCharLimitChange}
+        onCharLimitEnabledChange={handleCharLimitEnabledChange}
       />
 
       <div class="flex gap-2 mb-4 justify-between">

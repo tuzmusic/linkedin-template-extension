@@ -1,4 +1,3 @@
-import { MAX_CHAR_LIMIT } from '../types';
 import { Input } from '../components/Input';
 
 export const TemplateEditor = ({
@@ -6,21 +5,29 @@ export const TemplateEditor = ({
   template,
   onTitleChange,
   onTemplateChange,
-  onGenerateTitle
+  onGenerateTitle,
+  charLimit,
+  charLimitEnabled,
+  onCharLimitChange,
+  onCharLimitEnabledChange
 }: {
   title: string;
   template: string;
   onTitleChange: (title: string) => void;
   onTemplateChange: (template: string) => void;
   onGenerateTitle: () => void;
+  charLimit: number;
+  charLimitEnabled: boolean;
+  onCharLimitChange: (value: number) => void;
+  onCharLimitEnabledChange: (enabled: boolean) => void;
 }) => {
   const placeholderText = 'Hi {{firstName}}, I noticed you work at {{companyName}}.';
   const totalCount = template.length;
   const withoutPlaceholders = template.replace(/\{\{[^}]+\}\}/g, '');
   const withoutPlaceholdersCount = withoutPlaceholders.length;
 
-  const isOverLimit = withoutPlaceholdersCount > MAX_CHAR_LIMIT;
-  const isWarning = totalCount > MAX_CHAR_LIMIT && !isOverLimit;
+  const isOverLimit = charLimitEnabled && withoutPlaceholdersCount > charLimit;
+  const isWarning = charLimitEnabled && totalCount > charLimit && !isOverLimit;
 
   const acceptPlaceHolderOnTabPress = (e: KeyboardEvent) => {
     if (e.key === 'Tab' && template.trim() === '') {
@@ -64,12 +71,37 @@ export const TemplateEditor = ({
           placeholder="Hi {{firstName}}, I noticed you work at {{companyName}}..."
           class="w-full px-3 py-2 border border rounded-[10px] text-sm resize-y box-border transition-colors focus:outline-none focus:border-primary min-h-[100px]"
         />
-        <div
-          class={`text-right text-xs mt-1 ${
-            isOverLimit ? 'text-state-danger font-semibold' : isWarning ? 'text-state-warning font-semibold' : 'text-text-secondary'
-          }`}
-        >
-          {totalCount}/300 ({withoutPlaceholdersCount} without placeholders)
+        <div class="flex items-center justify-between mt-1 gap-2">
+          <div class="flex items-center gap-1.5">
+            <input
+              type="checkbox"
+              id="charLimitEnabled"
+              checked={charLimitEnabled}
+              onChange={(e) => onCharLimitEnabledChange((e.target as HTMLInputElement).checked)}
+              class="cursor-pointer"
+            />
+            <label for="charLimitEnabled" class="text-xs text-text-secondary cursor-pointer select-none">
+              Limit:
+            </label>
+            <input
+              type="number"
+              value={charLimit}
+              min={1}
+              disabled={!charLimitEnabled}
+              onInput={(e) => {
+                const val = parseInt((e.target as HTMLInputElement).value, 10);
+                if (!isNaN(val) && val > 0) onCharLimitChange(val);
+              }}
+              class="w-16 px-1.5 py-0.5 text-xs border border rounded-md text-center disabled:opacity-40 focus:outline-none focus:border-primary"
+            />
+          </div>
+          <div
+            class={`text-xs ${
+              isOverLimit ? 'text-state-danger font-semibold' : isWarning ? 'text-state-warning font-semibold' : 'text-text-secondary'
+            }`}
+          >
+            {totalCount}{charLimitEnabled ? `/${charLimit}` : ''} ({withoutPlaceholdersCount} without placeholders)
+          </div>
         </div>
       </div>
     </>

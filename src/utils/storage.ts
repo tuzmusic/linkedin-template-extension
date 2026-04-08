@@ -1,20 +1,24 @@
-import { CurrentWork, Template } from '../types';
+import { CurrentWork, MAX_CHAR_LIMIT, Template } from '../types';
 
 export type AppStorageState = {
   savedTemplates: Template[];
   currentWork: CurrentWork;
   wildcardsCollapsed: boolean;
   messageTemplate: string;
+  charLimit: number;
+  charLimitEnabled: boolean;
 };
 
 export async function loadData(): Promise<{
   savedTemplates: Template[];
   currentWork: CurrentWork | null;
   wildcardsCollapsed: boolean;
+  charLimit: number;
+  charLimitEnabled: boolean;
 }> {
   return new Promise((resolve) => {
     chrome.storage.sync.get<AppStorageState>(
-      ['savedTemplates', 'currentWork', 'wildcardsCollapsed'],
+      ['savedTemplates', 'currentWork', 'wildcardsCollapsed', 'charLimit', 'charLimitEnabled'],
       (result) => {
         const savedTemplates = result.savedTemplates || [];
         let currentWork = result.currentWork || null;
@@ -41,7 +45,9 @@ export async function loadData(): Promise<{
         resolve({
           savedTemplates,
           currentWork,
-          wildcardsCollapsed: result.wildcardsCollapsed ?? true
+          wildcardsCollapsed: result.wildcardsCollapsed ?? true,
+          charLimit: result.charLimit ?? MAX_CHAR_LIMIT,
+          charLimitEnabled: result.charLimitEnabled ?? true
         });
       }
     );
