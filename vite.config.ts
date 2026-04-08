@@ -8,15 +8,18 @@ export default defineConfig({
   plugins: [
     preact(),
     crx({ manifest }),
-    zip({ outDir: 'release', outFileName: 'release.zip' }),
+    zip({
+      outDir: 'release',
+      outFileName: `release-${new Date().toISOString()}.zip`
+    })
   ],
   server: {
     port: 5173,
     strictPort: false,
     cors: {
       origin: [
-        /chrome-extension:\/\//,
-      ],
-    },
+        /chrome-extension:\/\//
+      ]
+    }
   }
 });
