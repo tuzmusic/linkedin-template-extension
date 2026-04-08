@@ -32,7 +32,7 @@ export const TemplateEditor = ({
   return (
     <>
       <div class="mb-5">
-        <label class="block text-xs font-medium mb-2 text-[#666]">
+        <label class="block text-xs font-medium mb-2 text-text-secondary">
           Template Title:
         </label>
         <div class="flex gap-2 items-stretch">
@@ -44,7 +44,7 @@ export const TemplateEditor = ({
           />
           <button
             onClick={onGenerateTitle}
-            class="w-11 h-11 p-0 flex items-center justify-center bg-[#f3f6f8] text-black border border-[#ddd] rounded-[10px] font-normal text-lg transition-colors hover:bg-[#e8f4f8] hover:border-[#0073b1]"
+            class="w-11 h-11 p-0 flex items-center justify-center bg text-black border border rounded-[10px] font-normal text-lg transition-colors hover:bg-state-selected hover:border-primary"
             title="Generate title"
             type="button"
           >
@@ -54,7 +54,7 @@ export const TemplateEditor = ({
       </div>
 
       <div class="mb-5">
-        <label class="block text-xs font-medium mb-2 text-[#666]">
+        <label class="block text-xs font-medium mb-2 text-text-secondary">
           Your Message Template:
         </label>
         <textarea
@@ -62,11 +62,11 @@ export const TemplateEditor = ({
           onInput={(e) => onTemplateChange(e.currentTarget.value)}
           onKeyDown={acceptPlaceHolderOnTabPress}
           placeholder="Hi {{firstName}}, I noticed you work at {{companyName}}..."
-          class="w-full px-3 py-2 border border-[#ddd] rounded-[10px] text-sm resize-y box-border transition-colors focus:outline-none focus:border-[#0073b1] min-h-[100px]"
+          class="w-full px-3 py-2 border border rounded-[10px] text-sm resize-y box-border transition-colors focus:outline-none focus:border-primary min-h-[100px]"
         />
         <div
           class={`text-right text-xs mt-1 ${
-            isOverLimit ? 'text-[#cc1016] font-semibold' : isWarning ? 'text-[#ff8c00] font-semibold' : 'text-[#666]'
+            isOverLimit ? 'text-state-danger font-semibold' : isWarning ? 'text-state-warning font-semibold' : 'text-text-secondary'
           }`}
         >
           {totalCount}/300 ({withoutPlaceholdersCount} without placeholders)

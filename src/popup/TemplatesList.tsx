@@ -23,13 +23,13 @@ export const TemplatesList = ({
 
   return (
     <div class="mb-5">
-      <label class="block text-xs font-medium mb-2 text-[#666]">
+      <label class="block text-xs font-medium mb-2 text-text-secondary">
         Recent Templates:
       </label>
-      <div class="border border-[#ddd] rounded-[10px] overflow-hidden">
-        <div class="border-b border-[#ddd] shrink-0 flex items-center px-3 py-2">
+      <div class="border border rounded-[10px] overflow-hidden">
+        <div class="border-b border shrink-0 flex items-center px-3 py-2">
           <svg
-            class="w-4 h-4 text-[#999] shrink-0 mr-2 pointer-events-none"
+            class="w-4 h-4 text-text-placeholder shrink-0 mr-2 pointer-events-none"
             viewBox="0 0 16 16"
             fill="currentColor"
           >
@@ -48,7 +48,7 @@ export const TemplatesList = ({
                 onSearchChange('');
                 searchInputRef.current?.focus();
               }}
-              class="bg-none border-none text-[#666] font-semibold text-lg p-1 ml-1 hover:text-black cursor-pointer"
+              class="bg-none border-none text-text-secondary font-semibold text-lg p-1 ml-1 hover:text-text-primary cursor-pointer"
               type="button"
             >
               ✕
@@ -58,16 +58,16 @@ export const TemplatesList = ({
 
         <div class="max-h-[150px] overflow-y-auto bg-white">
           {filteredItems.length === 0 ? (
-            <div class="px-3 py-3 text-center text-[#999] text-xs bg-[#f9f9f9] border-t border-[#f0f0f0]">
+            <div class="px-3 py-3 text-center text-text-placeholder text-xs bg-bg-light border-t border-bg-lighter">
               No templates match your search.
             </div>
           ) : (
             filteredItems.map((item) => (
               <div
                 key={item.id}
-                class={`px-3 py-2.5 border-b border-[#f0f0f0] text-xs hover:bg-[#f3f6f8] cursor-pointer flex items-center gap-2 transition-colors last:border-b-0 ${
-                  item.selected ? 'bg-[#e8f4f8] font-medium' : ''
-                } ${item.status ? 'italic text-[#666]' : ''}`}
+                class={`px-3 py-2.5 border-b border-bg-lighter text-xs hover:bg cursor-pointer flex items-center gap-2 transition-colors last:border-b-0 ${
+                  item.selected ? 'bg-state-selected font-medium' : ''
+                } ${item.status ? 'italic text-text-secondary' : ''}`}
                 onClick={() => !item.selected && onSelect(item.template)}
               >
                 <span class="flex-1">{item.displayTitle}</span>
@@ -77,7 +77,7 @@ export const TemplatesList = ({
                       e.stopPropagation();
                       onDelete(item.template.id);
                     }}
-                    class="bg-none border-none text-[#cc1016] font-semibold text-base p-1 opacity-0 hover:bg-[#fee] hover:rounded transition-all"
+                    class="bg-none border-none text-state-danger font-semibold text-base p-1 opacity-0 hover:bg-state-dangerBg hover:rounded transition-all"
                     title="Delete template"
                     type="button"
                   >

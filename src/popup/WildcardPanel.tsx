@@ -4,7 +4,7 @@ import { saveData } from '../utils/storage';
 
 function WildcardButton({ onClick, wildcard }: { onClick: () => void, wildcard: string }) {
   return <button
-    class="bg-white px-2 py-1 rounded border border-[#ddd] cursor-pointer font-mono text-xs hover:bg-[#f0f0f0]"
+    class="bg-white px-2 py-1 rounded border border cursor-pointer font-mono text-xs hover:bg-bg-lighter"
     onClick={onClick}
     type="button"
   >
@@ -41,7 +41,7 @@ export const WildcardsPanel = ({ onInsert }: { onInsert: (wildcard: string) => v
   };
 
   return (
-    <div class="bg-[#f3f6f8] px-3 py-3 rounded-[10px] text-xs mb-4 flex flex-col gap-2">
+    <div class="bg px-3 py-3 rounded-[10px] text-xs mb-4 flex flex-col gap-2">
       <div
         class="flex items-center gap-2 cursor-pointer select-none"
         onClick={handleToggle}

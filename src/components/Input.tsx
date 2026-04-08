@@ -11,7 +11,7 @@ export const Input = ({
   return (
     <input
       ref={ref}
-      class={`w-full px-3 py-2 border border-[#ddd] rounded-[10px] text-sm transition-colors focus:outline-none focus:border-[#0073b1] ${className}`}
+      class={`w-full px-3 py-2 border border rounded-[10px] text-sm transition-colors focus:outline-none focus:border-primary ${className}`}
       {...props}
     />
   );

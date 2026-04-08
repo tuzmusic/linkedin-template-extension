@@ -17,9 +17,9 @@ export const Button = ({
   const baseClasses = `flex-${flex} px-4 py-3 rounded-[10px] font-semibold text-sm transition-colors`;
 
   const variantClasses: Record<ButtonVariant, string> = {
-    primary: 'bg-[#0073b1] text-white hover:bg-[#005885] disabled:opacity-40 disabled:cursor-not-allowed',
-    secondary: 'bg-[#f3f6f8] text-black border border-[#ddd] hover:bg-[#e8f4f8] hover:border-[#0073b1]',
-    danger: 'bg-[#f3f6f8] text-[#cc1016] border border-[#ddd] hover:bg-[#fee] hover:border-[#cc1016]'
+    primary: 'bg-primary text-white hover:bg-primary-dark disabled:opacity-40 disabled:cursor-not-allowed',
+    secondary: 'bg text-black border border hover:bg-state-selected hover:border-primary',
+    danger: 'bg text-state-danger border border hover:bg-state-dangerBg hover:border-state-danger'
   };
 
   const classes = `${baseClasses} ${variantClasses[variant]} ${className}`;

@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'preact/hooks';
+import { useEffect, useRef } from 'preact/hooks';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
 
@@ -38,7 +38,7 @@ export const SaveAsDialog = ({
     >
       <div
         ref={dialogRef}
-        class="bg-white border border-[#ddd] rounded-lg p-5 min-w-[300px] shadow-lg"
+        class="bg-white border border rounded-lg p-5 min-w-[300px] shadow-lg"
         onClick={(e) => e.stopPropagation()}
       >
         <h3 class="m-0 mb-4 text-base text-black">Save as new template</h3>
