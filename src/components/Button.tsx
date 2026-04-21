@@ -1,19 +1,15 @@
-import { ComponentChildren, JSX } from 'preact';
+import { ComponentProps } from 'preact';
 
 type ButtonVariant = 'primary' | 'secondary' | 'danger';
 
 export const Button = ({
-  children,
   variant = 'primary',
-  class: className = '',
   flex = 1,
   ...props
 }: {
-  children: ComponentChildren;
   variant?: ButtonVariant;
-  class?: string;
   flex?: 0 | 1
-} & JSX.IntrinsicElements['button']) => {
+} & ComponentProps<'button'>) => {
   const baseClasses = `flex-${flex} px-4 py-3 rounded-[10px] font-semibold text-sm transition-colors`;
 
   const variantClasses: Record<ButtonVariant, string> = {
@@ -22,11 +18,11 @@ export const Button = ({
     danger: 'bg text-state-danger border border hover:bg-state-dangerBg hover:border-state-danger'
   };
 
-  const classes = `${baseClasses} ${variantClasses[variant]} ${className}`;
+  const classes = `${baseClasses} ${variantClasses[variant]} ${props.class}`;
 
   return (
     <button class={classes} {...props}>
-      {children}
+      {props.children}
     </button>
   );
 };

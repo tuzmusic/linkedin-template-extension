@@ -1,4 +1,4 @@
-import { JSX } from 'preact'
+import { ComponentProps } from 'preact'
 
 export const Input = ({
   ref,
@@ -7,7 +7,7 @@ export const Input = ({
 }: {
   ref?: any;
   class?: string;
-} & JSX.IntrinsicElements['input']) => {
+} & ComponentProps<'input'>) => {
   return (
     <input
       ref={ref}
