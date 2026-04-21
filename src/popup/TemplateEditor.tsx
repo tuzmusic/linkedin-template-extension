@@ -23,7 +23,7 @@ export const TemplateEditor = ({
 }) => {
   const placeholderText = 'Hi {{firstName}}, I noticed you work at {{companyName}}.';
   const totalCount = template.length;
-  const withoutPlaceholders = template.replace(/\{\{[^}]+\}\}/g, '');
+  const withoutPlaceholders = template.replace(/\{\{[^}]+}}/g, '');
   const withoutPlaceholdersCount = withoutPlaceholders.length;
 
   const isOverLimit = charLimitEnabled && withoutPlaceholdersCount > charLimit;
@@ -35,6 +35,17 @@ export const TemplateEditor = ({
       onTemplateChange(placeholderText.slice(0, -1));
     }
   };
+
+  function makeCharCountStr() {
+    let str = `${totalCount}`
+    if (charLimitEnabled) {
+      str += `/${charLimit}`
+    } else {
+      str += ' chars'
+    }
+
+    return str + ` (${withoutPlaceholdersCount} without placeholders)`
+  }
 
   return (
     <>
@@ -100,7 +111,7 @@ export const TemplateEditor = ({
               isOverLimit ? 'text-state-danger font-semibold' : isWarning ? 'text-state-warning font-semibold' : 'text-text-secondary'
             }`}
           >
-            {totalCount}{charLimitEnabled ? `/${charLimit}` : ''} ({withoutPlaceholdersCount} without placeholders)
+            {makeCharCountStr()}
           </div>
         </div>
       </div>
