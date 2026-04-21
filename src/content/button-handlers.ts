@@ -137,6 +137,24 @@ export function clickAddNote(): void {
   }
 }
 
+export function waitForTextarea(timeoutMs = 3000): Promise<HTMLTextAreaElement> {
+  return new Promise((resolve, reject) => {
+    const start = Date.now();
+    const interval = setInterval(() => {
+      const textarea = getShadowRoot()?.querySelector(
+        'textarea#custom-message'
+      ) as HTMLTextAreaElement | null;
+      if (textarea) {
+        clearInterval(interval);
+        resolve(textarea);
+      } else if (Date.now() - start > timeoutMs) {
+        clearInterval(interval);
+        reject(new Error("'Add note' window not found"));
+      }
+    }, 50);
+  });
+}
+
 export function clickSend(): void {
   try {
     const shadowRoot = getShadowRoot();

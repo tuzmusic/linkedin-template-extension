@@ -1,7 +1,7 @@
 import { scrapeLinkedInProfile } from './profile-scraper';
 import { fillTemplate } from './template-filler';
 import { showNotification } from './notifications';
-import { clickAddNote, clickConnect, clickSend } from './button-handlers';
+import { clickAddNote, clickConnect, clickSend, waitForTextarea } from './button-handlers';
 import './styles.css';
 import { AppStorageState } from "../utils/storage.ts";
 
@@ -55,6 +55,39 @@ async function handleCopyTemplate(): Promise<void> {
   }
 }
 
+async function fillTemplateIntoTextarea(): Promise<void> {
+  const textarea = await waitForTextarea();
+
+  const result = await chrome.storage.sync.get<AppStorageState>(['messageTemplate']);
+  const template = result.messageTemplate;
+  if (!template) {
+    showNotification('Tried to paste the template, but no template has been set', 'error');
+    return;
+  }
+
+  const profileData = scrapeLinkedInProfile();
+  const filledMessage = fillTemplate(template, profileData);
+
+  const nativeSetter = Object.getOwnPropertyDescriptor(
+    window.HTMLTextAreaElement.prototype, 'value'
+  )?.set;
+  if (nativeSetter) {
+    nativeSetter.call(textarea, filledMessage);
+  } else {
+    textarea.value = filledMessage;
+  }
+  textarea.dispatchEvent(new Event('input', { bubbles: true }));
+}
+
+async function handleAddNote(): Promise<void> {
+  try {
+    clickAddNote();
+    await fillTemplateIntoTextarea();
+  } catch (error) {
+    showNotification(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`, 'error');
+  }
+}
+
 // Handle messages from background script
 chrome.runtime.onMessage.addListener((request, _sender, _sendResponse) => {
   if (request.action === 'copyTemplate') {
@@ -62,7 +95,7 @@ chrome.runtime.onMessage.addListener((request, _sender, _sendResponse) => {
   } else if (request.action === 'clickConnect') {
     clickConnect();
   } else if (request.action === 'clickAddNote') {
-    clickAddNote();
+    handleAddNote();
   } else if (request.action === 'clickSend') {
     clickSend();
   } else if (request.action === 'showNotification') {
