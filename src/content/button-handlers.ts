@@ -145,6 +145,10 @@ export function clickSend(): void {
     ) as HTMLButtonElement | null;
 
     if (sendButton) {
+      if (sendButton.disabled) {
+        showNotification('Send button is disabled. Please fill out the note before sending.', 'error');
+        return;
+      }
       sendButton.click();
       showNotification('Send button clicked', 'success');
     } else {
