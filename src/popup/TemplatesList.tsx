@@ -65,7 +65,7 @@ export const TemplatesList = ({
             filteredItems.map((item) => (
               <div
                 key={item.id}
-                class={`px-3 py-2.5 border-b border-bg-lighter text-xs hover:bg cursor-pointer flex items-center gap-2 transition-colors last:border-b-0 ${
+                class={`px-3 py-2.5 border-b border-bg-lighter text-xs hover:bg group cursor-pointer flex items-center gap-2 transition-colors last:border-b-0 ${
                   item.selected ? 'bg-state-selected font-medium' : ''
                 } ${item.status ? 'italic text-text-secondary' : ''}`}
                 onClick={() => !item.selected && onSelect(item.template)}
@@ -77,7 +77,7 @@ export const TemplatesList = ({
                       e.stopPropagation();
                       onDelete(item.template.id);
                     }}
-                    class="bg-none border-none text-state-danger font-semibold text-base p-1 opacity-0 hover:bg-state-dangerBg hover:rounded transition-all"
+                    class="bg-none border-none text-state-danger font-semibold text-base p-1 opacity-0 group-hover:opacity-100 hover:bg-state-dangerBg hover:rounded transition-all"
                     title="Delete template"
                     type="button"
                   >
