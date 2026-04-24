@@ -4,10 +4,10 @@ export default {
     './src/**/*.{ts,tsx}',
   ],
   theme: {
-    fontFamily: {
-      sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
-    },
     extend: {
+      fontFamily: {
+        sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+      },
       colors: {
         primary: {
           DEFAULT: '#0073b1',

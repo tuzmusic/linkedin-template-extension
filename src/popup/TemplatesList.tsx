@@ -26,8 +26,8 @@ export const TemplatesList = ({
       <label class="block text-xs font-medium mb-2 text-text-secondary">
         Recent Templates:
       </label>
-      <div class="border border rounded-[10px] overflow-hidden">
-        <div class="border-b border shrink-0 flex items-center px-3 py-2">
+      <div class="border border-border rounded-[10px] overflow-hidden">
+        <div class="border-b border-border shrink-0 flex items-center px-3 py-2">
           <svg
             class="w-4 h-4 text-text-placeholder shrink-0 mr-2 pointer-events-none"
             viewBox="0 0 16 16"
@@ -65,7 +65,7 @@ export const TemplatesList = ({
             filteredItems.map((item) => (
               <div
                 key={item.id}
-                class={`px-3 py-2.5 border-b border-bg-lighter text-xs hover:bg cursor-pointer flex items-center gap-2 transition-colors last:border-b-0 ${
+                class={`px-3 py-2.5 border-b border-bg-lighter text-xs hover:bg-bg cursor-pointer flex items-center gap-2 transition-colors last:border-b-0 ${
                   item.selected ? 'bg-state-selected font-medium' : ''
                 } ${item.status ? 'italic text-text-secondary' : ''}`}
                 onClick={() => !item.selected && onSelect(item.template)}
