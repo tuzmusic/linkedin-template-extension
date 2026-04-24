@@ -18,8 +18,8 @@ export const Button = ({
 
   const variantClasses: Record<ButtonVariant, string> = {
     primary: 'bg-primary text-white hover:bg-primary-dark disabled:opacity-40 disabled:cursor-not-allowed',
-    secondary: 'bg text-black border border hover:bg-state-selected hover:border-primary',
-    danger: 'bg text-state-danger border border hover:bg-state-dangerBg hover:border-state-danger'
+    secondary: 'bg-bg text-black border border-border hover:bg-state-selected hover:border-primary',
+    danger: 'bg-bg text-state-danger border border-border hover:bg-state-dangerBg hover:border-state-danger'
   };
 
   const classes = `${baseClasses} ${variantClasses[variant]} ${className}`;

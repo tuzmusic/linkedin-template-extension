@@ -44,7 +44,7 @@ export const TemplateEditor = ({
           />
           <button
             onClick={onGenerateTitle}
-            class="w-11 h-11 p-0 flex items-center justify-center bg text-black border border rounded-[10px] font-normal text-lg transition-colors hover:bg-state-selected hover:border-primary"
+            class="w-11 h-11 p-0 flex items-center justify-center bg-bg text-black border border-border rounded-[10px] font-normal text-lg transition-colors hover:bg-state-selected hover:border-primary"
             title="Generate title"
             type="button"
           >
@@ -62,7 +62,7 @@ export const TemplateEditor = ({
           onInput={(e) => onTemplateChange(e.currentTarget.value)}
           onKeyDown={acceptPlaceHolderOnTabPress}
           placeholder="Hi {{firstName}}, I noticed you work at {{companyName}}..."
-          class="w-full px-3 py-2 border border rounded-[10px] text-sm resize-y box-border transition-colors focus:outline-none focus:border-primary min-h-[100px]"
+          class="w-full px-3 py-2 border border-border rounded-[10px] text-sm resize-y box-border transition-colors focus:outline-none focus:border-primary min-h-[100px]"
         />
         <div
           class={`text-right text-xs mt-1 ${

@@ -351,7 +351,7 @@ export const Popup = () => {
 
       <div class="text-center text-xs text-text-secondary mt-4 pt-4 border-t border-bg-lighter">
         On any LinkedIn profile, press <kbd
-        class="bg px-1.5 py-0.5 rounded text-xs border border">Opt+V</kbd> to copy your personalized
+        class="bg-bg px-1.5 py-0.5 rounded text-xs border border-border">Opt+V</kbd> to copy your personalized
         message
       </div>
     </div>
