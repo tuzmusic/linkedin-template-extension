@@ -304,11 +304,35 @@ export const Popup = () => {
     }, 2000);
   };
 
+  const handleTestMessageSent = async () => {
+    const res = await fetch('http://127.0.0.1:54321/functions/v1/handleMessageSent', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ name: 'Functions' })
+    });
+    const data = await res.json();
+    console.log('handleMessageSent response:', data);
+  };
+
   return (
     <div class="w-full">
-      <h1 class="text-lg font-semibold m-0 mb-4 text-black">
-        LinkedIn Secret Weapon
-      </h1>
+      <div class="flex items-center justify-between mb-4">
+        <h1 class="text-lg font-semibold m-0 text-black">
+          LinkedIn Secret Weapon
+        </h1>
+        {import.meta.env.DEV && (
+          <button
+            type="button"
+            onClick={handleTestMessageSent}
+            class="px-2 py-1 text-xs bg-bg-lighter border border-border rounded cursor-pointer hover:bg-state-selected"
+          >
+            Test
+          </button>
+        )}
+      </div>
 
       <WildcardsPanel onInsert={handleInsertWildcard}/>
 
