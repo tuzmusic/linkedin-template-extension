@@ -16,6 +16,7 @@
     "autoprefixer": "^10.4.27",
     "postcss": "^8.5.8",
     "preact-render-to-string": "^6.6.7",
+    "supabase": "^2.95.2",
     "tailwindcss": "^4.2.2",
     "tsx": "^4.21.0",
     "typescript": "^6.0.2",
