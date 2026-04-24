@@ -1,13 +1,50 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider        = "prisma-client"
+  output          = "../src/generated/prisma"
+  previewFeatures = ["partialIndexes"]
 }
 
 datasource db {
   provider = "postgresql"
+  schemas  = ["public"]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model contacts {
+  slug          String          @id
+  full_name     String?
+  title         String?
+  company       String?
+  created_at    DateTime        @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime        @default(now()) @db.Timestamptz(6)
+  sent_messages sent_messages[]
+
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model sent_messages {
+  id                 String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  contact_id         String
+  template_id        String    @db.Uuid
+  filled_wildcards   Json?
+  final_message_text String?
+  created_at         DateTime  @default(now()) @db.Timestamptz(6)
+  contacts           contacts  @relation(fields: [contact_id], references: [slug], onDelete: NoAction, onUpdate: NoAction)
+  templates          templates @relation(fields: [template_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model templates {
+  id            String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id       String          @db.Uuid
+  title         String
+  content       String
+  created_at    DateTime        @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime        @default(now()) @db.Timestamptz(6)
+  sent_messages sent_messages[]
+
+  @@schema("public")
 }
