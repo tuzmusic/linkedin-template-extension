@@ -305,16 +305,12 @@ export const Popup = () => {
   };
 
   const handleTestMessageSent = async () => {
-    const res = await fetch('http://127.0.0.1:54321/functions/v1/handleMessageSent', {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ name: 'Functions' })
-    });
-    const data = await res.json();
-    console.log('handleMessageSent response:', data);
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (!tab?.id || !tab.url?.includes('linkedin.com')) {
+      alert('Navigate to a LinkedIn page first');
+      return;
+    }
+    chrome.tabs.sendMessage(tab.id, { action: 'testMessageSent' });
   };
 
   return (
