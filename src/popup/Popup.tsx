@@ -269,7 +269,7 @@ export const Popup = () => {
   };
 
   const handleInsertWildcard = (wildcard: string) => {
-    const textarea = document.querySelector('textarea') as HTMLTextAreaElement;
+    const textarea = document.querySelector('textarea');
     if (!textarea) return;
 
     const startPos = textarea.selectionStart;
