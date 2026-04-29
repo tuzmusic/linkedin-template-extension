@@ -30,11 +30,13 @@ export const Auth = ({
 
     setLoading(true);
     try {
+      console.log('[auth] submitting', { mode, email: email.trim() });
       if (mode === 'signIn') {
         const { data, error: err } = await supabase.auth.signInWithPassword({
           email: email.trim(),
           password
         });
+        console.log('[auth] signIn result', { data, err });
         if (err) {
           setError(err.message);
           return;
@@ -45,6 +47,7 @@ export const Auth = ({
           email: email.trim(),
           password
         });
+        console.log('[auth] signUp result', { data, err });
         if (err) {
           setError(err.message);
           return;
@@ -56,6 +59,9 @@ export const Auth = ({
           setMode('signIn');
         }
       }
+    } catch (e) {
+      console.error('[auth] unexpected error', e);
+      setError(e instanceof Error ? e.message : 'Unknown error');
     } finally {
       setLoading(false);
     }
