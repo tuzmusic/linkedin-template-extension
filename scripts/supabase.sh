@@ -7,5 +7,5 @@
 #  exit 1
 #fi
 
-trap 'supabase stop' EXIT
-supabase start && supabase functions serve
+trap 'npx supabase stop' EXIT
+npx supabase start && npx supabase functions serve
