@@ -12,7 +12,8 @@ export default defineManifest({
     "clipboardWrite"
   ],
   "host_permissions": [
-    "https://www.linkedin.com/*"
+    "https://www.linkedin.com/*",
+    "http://127.0.0.1:54321/*"
   ],
   "background": {
     "service_worker": "src/background/service-worker.ts"
