@@ -7,7 +7,12 @@ function getShadowRoot(): ShadowRoot | null {
 }
 
 function findMoreButton(maxLevels = 10): HTMLButtonElement | null {
+  // this **assumes** the "more" button we're looking for is the second "more" button on the page
+  const secondMoreButton = document.querySelectorAll('button[aria-label="More"]')[1] as HTMLButtonElement | null;
+  if (secondMoreButton) return secondMoreButton;
+
   const contactInfoSelector = 'a[href*=contact-info]';
+
   let container = document.querySelector(contactInfoSelector) as HTMLElement | null;
   let levels = 0;
 
