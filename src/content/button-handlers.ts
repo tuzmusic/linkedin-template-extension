@@ -1,5 +1,7 @@
 import { scrapeLinkedInProfile } from './profile-scraper';
+import { fillTemplate } from './template-filler';
 import { showNotification } from './notifications';
+import { AppStorageState } from '../utils/storage';
 
 function getShadowRoot(): ShadowRoot | null {
   const outlet = document.querySelector('#interop-outlet');
@@ -179,5 +181,41 @@ export function clickSend(): void {
       `Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
       'error'
     );
+  }
+}
+
+async function fillTemplateIntoTextarea(): Promise<void> {
+  const textarea = await waitForTextarea();
+
+  const result = await chrome.storage.sync.get<AppStorageState>(['messageTemplate']);
+  const template = result.messageTemplate;
+  if (!template) {
+    showNotification('Tried to paste the template, but no template has been set', 'error');
+    return;
+  }
+
+  const profileData = scrapeLinkedInProfile();
+  const filledMessage = fillTemplate(template, profileData);
+
+  const nativeSetter = Object.getOwnPropertyDescriptor(
+    window.HTMLTextAreaElement.prototype, 'value'
+  )?.set;
+  if (nativeSetter) {
+    nativeSetter.call(textarea, filledMessage);
+  } else {
+    textarea.value = filledMessage;
+  }
+  textarea.dispatchEvent(new Event('input', { bubbles: true }));
+}
+
+export async function handleAddNote(): Promise<void> {
+  try {
+    const modalAlreadyOpen = !!document.querySelector('#interop-outlet')?.shadowRoot?.querySelector('textarea#custom-message');
+    if (!modalAlreadyOpen) {
+      clickAddNote();
+    }
+    await fillTemplateIntoTextarea();
+  } catch (error) {
+    showNotification(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`, 'error');
   }
 }

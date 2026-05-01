@@ -1,7 +1,7 @@
 import { scrapeLinkedInProfile } from './profile-scraper';
 import { fillTemplate } from './template-filler';
 import { showNotification } from './notifications';
-import { clickAddNote, clickConnect, clickSend, waitForTextarea } from './button-handlers';
+import { clickConnect, clickSend, handleAddNote } from './button-handlers';
 import './styles.css';
 import { AppStorageState } from "../utils/storage.ts";
 
@@ -52,39 +52,6 @@ async function handleCopyTemplate(): Promise<void> {
       `Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
       'error'
     );
-  }
-}
-
-async function fillTemplateIntoTextarea(): Promise<void> {
-  const textarea = await waitForTextarea();
-
-  const result = await chrome.storage.sync.get<AppStorageState>(['messageTemplate']);
-  const template = result.messageTemplate;
-  if (!template) {
-    showNotification('Tried to paste the template, but no template has been set', 'error');
-    return;
-  }
-
-  const profileData = scrapeLinkedInProfile();
-  const filledMessage = fillTemplate(template, profileData);
-
-  const nativeSetter = Object.getOwnPropertyDescriptor(
-    window.HTMLTextAreaElement.prototype, 'value'
-  )?.set;
-  if (nativeSetter) {
-    nativeSetter.call(textarea, filledMessage);
-  } else {
-    textarea.value = filledMessage;
-  }
-  textarea.dispatchEvent(new Event('input', { bubbles: true }));
-}
-
-async function handleAddNote(): Promise<void> {
-  try {
-    clickAddNote();
-    await fillTemplateIntoTextarea();
-  } catch (error) {
-    showNotification(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`, 'error');
   }
 }
 
