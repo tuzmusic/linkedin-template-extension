@@ -80,9 +80,9 @@ export const TemplateEditor = ({
           onInput={(e) => onTemplateChange(e.currentTarget.value)}
           onKeyDown={acceptPlaceHolderOnTabPress}
           placeholder="Hi {{firstName}}, I noticed you work at {{companyName}}..."
-          class="w-full px-3 py-2 border border rounded-[10px] text-sm resize-y box-border transition-colors focus:outline-none focus:border-primary min-h-[100px]"
+          class="w-full px-3 py-2 border border rounded-[10px] text-sm resize-y box-border transition-colors focus:outline-none focus:border-primary min-h-25"
         />
-        <div class="flex items-center justify-between mt-1 gap-2">
+        <div class="flex items-center justify-between mt-2 mx-0.5 gap-2">
           <div class="flex items-center gap-1.5">
             <input
               type="checkbox"
@@ -91,7 +91,7 @@ export const TemplateEditor = ({
               onChange={(e) => onCharLimitEnabledChange((e.target as HTMLInputElement).checked)}
               class="cursor-pointer"
             />
-            <label for="charLimitEnabled" class="text-xs text-text-secondary cursor-pointer select-none">
+            <label for="charLimitEnabled" class="text-sm text-text-secondary cursor-pointer select-none">
               Limit:
             </label>
             <input
@@ -103,7 +103,7 @@ export const TemplateEditor = ({
                 const val = parseInt((e.target as HTMLInputElement).value, 10);
                 if (!isNaN(val) && val > 0) onCharLimitChange(val);
               }}
-              class="w-16 px-1.5 py-0.5 text-xs border border rounded-md text-center disabled:opacity-40 focus:outline-none focus:border-primary"
+              class="w-12 py-0.5 text-xs border-b text-right disabled:opacity-40 focus:outline-none focus:border-primary"
             />
           </div>
           <div
