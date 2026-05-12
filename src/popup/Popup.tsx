@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'preact/hooks';
 import { CurrentWork, MAX_TEMPLATES, Template } from '../types';
-import { fetchTemplatesFromDb, loadData, saveData } from '../utils/storage';
+import { createTemplateInDb, deleteTemplateFromDb, fetchTemplatesFromDb, loadData, saveData, updateTemplateInDb } from '../utils/storage';
 import { Button } from '../components/Button';
 import { WildcardsPanel } from './WildcardPanel';
 import { TemplateEditor } from './TemplateEditor';
@@ -48,6 +48,12 @@ export const Popup = () => {
   const handleCharLimitEnabledChange = (enabled: boolean) => {
     setCharLimitEnabled(enabled);
     saveData({ charLimitEnabled: enabled });
+  };
+
+  const resyncFromDb = async () => {
+    const dbTemplates = await fetchTemplatesFromDb();
+    setSavedTemplates(dbTemplates);
+    saveData({ savedTemplates: dbTemplates });
   };
 
   const handleTitleChange = (title: string) => {
@@ -111,7 +117,7 @@ export const Popup = () => {
     saveData({ currentWork: newWork });
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const title = currentWork.title.trim();
     const template = currentWork.template.trim();
 
@@ -126,41 +132,43 @@ export const Popup = () => {
     }
 
     let newTemplates = [...savedTemplates];
+    let savedId = currentWork.id;
 
     if (currentWork.id) {
-      // Update existing template
+      // Optimistically update local state, then persist to DB
       const index = newTemplates.findIndex((t) => t.id === currentWork.id);
       if (index !== -1) {
-        newTemplates[index] = {
-          id: currentWork.id,
-          title,
-          template
-        };
+        newTemplates[index] = { id: currentWork.id, title, template };
+      }
+      if (newTemplates.length > MAX_TEMPLATES) newTemplates = newTemplates.slice(0, MAX_TEMPLATES);
+      const newWork = { id: savedId, title, template };
+      setSavedTemplates(newTemplates);
+      setCurrentWork(newWork);
+      showSavedMessageBriefly();
+      saveData({ savedTemplates: newTemplates, currentWork: newWork, messageTemplate: template });
+
+      const ok = await updateTemplateInDb(currentWork.id, title, template);
+      if (!ok) {
+        alert('Failed to save template. Your changes have been reverted.');
+        await resyncFromDb();
       }
     } else {
-      // Create new template
-      const newTemplate: Template = {
-        id: crypto.randomUUID(),
-        title,
-        template
-      };
+      // Await DB insert to get the generated id before updating local state
+      const created = await createTemplateInDb(title, template);
+      if (!created) {
+        alert('Failed to save template. Please try again.');
+        return;
+      }
+      savedId = created.id;
+      const newTemplate: Template = { id: savedId, title, template };
       newTemplates.unshift(newTemplate);
-      setCurrentWork({ ...currentWork, id: newTemplate.id });
+      if (newTemplates.length > MAX_TEMPLATES) newTemplates = newTemplates.slice(0, MAX_TEMPLATES);
+      const newWork = { id: savedId, title, template };
+      setSavedTemplates(newTemplates);
+      setCurrentWork(newWork);
+      showSavedMessageBriefly();
+      saveData({ savedTemplates: newTemplates, currentWork: newWork, messageTemplate: template });
     }
-
-    // Limit to MAX_TEMPLATES
-    if (newTemplates.length > MAX_TEMPLATES) {
-      newTemplates = newTemplates.slice(0, MAX_TEMPLATES);
-    }
-
-    setSavedTemplates(newTemplates);
-    showSavedMessageBriefly();
-
-    saveData({
-      savedTemplates: newTemplates,
-      currentWork: { ...currentWork, title, template },
-      messageTemplate: template
-    });
   };
 
   const handleSaveAsNew = () => {
@@ -176,7 +184,7 @@ export const Popup = () => {
     setShowSaveAsDialog(true);
   };
 
-  const handleConfirmSaveAs = () => {
+  const handleConfirmSaveAs = async () => {
     const newTitle = saveAsTitle.trim();
     const template = currentWork.template.trim();
 
@@ -191,37 +199,24 @@ export const Popup = () => {
       return;
     }
 
-    const newTemplate: Template = {
-      id: crypto.randomUUID(),
-      title: newTitle,
-      template
-    };
-
-    let newTemplates = [newTemplate, ...savedTemplates];
-
-    // Limit to MAX_TEMPLATES
-    if (newTemplates.length > MAX_TEMPLATES) {
-      newTemplates = newTemplates.slice(0, MAX_TEMPLATES);
+    const created = await createTemplateInDb(newTitle, template);
+    if (!created) {
+      alert('Failed to save template. Please try again.');
+      setShowSaveAsDialog(false);
+      return;
     }
 
+    const newTemplate: Template = { id: created.id, title: newTitle, template };
+    let newTemplates = [newTemplate, ...savedTemplates];
+    if (newTemplates.length > MAX_TEMPLATES) newTemplates = newTemplates.slice(0, MAX_TEMPLATES);
+
+    const newWork = { id: created.id, title: newTitle, template };
     setSavedTemplates(newTemplates);
-    setCurrentWork({
-      id: newTemplate.id,
-      title: newTitle,
-      template
-    });
+    setCurrentWork(newWork);
     setShowSaveAsDialog(false);
     showSavedMessageBriefly();
 
-    saveData({
-      savedTemplates: newTemplates,
-      currentWork: {
-        id: newTemplate.id,
-        title: newTitle,
-        template
-      },
-      messageTemplate: template
-    });
+    saveData({ savedTemplates: newTemplates, currentWork: newWork, messageTemplate: template });
   };
 
   const handleSelectTemplate = (template: Template) => {
@@ -252,7 +247,7 @@ export const Popup = () => {
     saveData({ currentWork: newWork });
   };
 
-  const handleDeleteTemplate = (templateId: string) => {
+  const handleDeleteTemplate = async (templateId: string) => {
     const templateToDelete = savedTemplates.find((t) => t.id === templateId);
     if (!templateToDelete) return;
 
@@ -260,33 +255,28 @@ export const Popup = () => {
       return;
     }
 
+    // Optimistically update local state
     let newTemplates = savedTemplates.filter((t) => t.id !== templateId);
     let newWork = currentWork;
 
     if (currentWork.id === templateId) {
       if (newTemplates.length > 0) {
         const firstTemplate = newTemplates[0];
-        newWork = {
-          id: firstTemplate.id,
-          title: firstTemplate.title,
-          template: firstTemplate.template
-        };
+        newWork = { id: firstTemplate.id, title: firstTemplate.title, template: firstTemplate.template };
       } else {
-        newWork = {
-          id: null,
-          title: '',
-          template: ''
-        };
+        newWork = { id: null, title: '', template: '' };
       }
     }
 
     setSavedTemplates(newTemplates);
     setCurrentWork(newWork);
+    saveData({ savedTemplates: newTemplates, currentWork: newWork });
 
-    saveData({
-      savedTemplates: newTemplates,
-      currentWork: newWork
-    });
+    const ok = await deleteTemplateFromDb(templateId);
+    if (!ok) {
+      alert('Failed to delete template. It has been restored.');
+      await resyncFromDb();
+    }
   };
 
   const handleInsertWildcard = (wildcard: string) => {

@@ -74,6 +74,30 @@ export async function fetchTemplatesFromDb(): Promise<Template[]> {
   }));
 }
 
+export async function createTemplateInDb(title: string, content: string): Promise<Template | null> {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return null;
+
+  const { data, error } = await supabase
+    .from('templates')
+    .insert({ user_id: user.id, title, content })
+    .select('id, title, content')
+    .single();
+
+  if (error || !data) return null;
+  return { id: data.id, title: data.title, template: data.content };
+}
+
+export async function updateTemplateInDb(id: string, title: string, content: string): Promise<boolean> {
+  const { error } = await supabase.from('templates').update({ title, content }).eq('id', id);
+  return !error;
+}
+
+export async function deleteTemplateFromDb(id: string): Promise<boolean> {
+  const { error } = await supabase.from('templates').delete().eq('id', id);
+  return !error;
+}
+
 export function saveData(data: Partial<AppStorageState>): Promise<void> {
   return new Promise((resolve) => {
     chrome.storage.sync.set(data, () => {
