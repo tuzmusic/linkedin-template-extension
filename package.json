@@ -22,12 +22,15 @@
     "tsx": "^4.21.0",
     "typescript": "^6.0.2",
     "vite": "^8.0.3",
-    "vite-plugin-zip-pack": "^1.2.4"
+    "vite-plugin-zip-pack": "^1.2.4",
+    "vitest": "^3.2.4"
   },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "typecheck": "tsc --noEmit",
+    "test:migrate": "vitest run scripts/migrate-templates.test.ts",
+    "migrate": "tsx scripts/migrate-templates.ts",
     "supabase": "bash scripts/supabase.sh"
   }
 }
