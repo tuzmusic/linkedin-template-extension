@@ -1,13 +1,20 @@
 import { useEffect, useState } from 'preact/hooks';
 import { CurrentWork, MAX_TEMPLATES, SortConfig, Template } from '../types';
-import { createTemplateInDb, deleteTemplateFromDb, fetchTemplatesFromDb, loadData, saveData, updateTemplateInDb } from '../utils/storage';
+import {
+  createTemplateInDb,
+  deleteTemplateFromDb,
+  fetchTemplatesFromDb,
+  loadData,
+  saveData,
+  updateTemplateInDb
+} from '../utils/storage';
 import { Button } from '../components/Button';
 import { WildcardsPanel } from './WildcardPanel';
 import { TemplateEditor } from './TemplateEditor';
 import { TemplatesList } from './TemplatesList';
 import { SaveAsDialog } from './SaveAsDialog';
 
-export const Popup = () => {
+export const Popup = ({ userEmail, onSignOut }: { userEmail?: string; onSignOut?: () => void }) => {
   const [savedTemplates, setSavedTemplates] = useState<Template[]>([]);
   const [currentWork, setCurrentWork] = useState<CurrentWork>({
     id: null,
@@ -387,24 +394,43 @@ export const Popup = () => {
           </div>
         </div>
       )}
-      <div class="flex items-center justify-between mb-4">
-        <h1 class="text-lg font-semibold m-0 text-black">
-          LinkedIn Secret Weapon
-        </h1>
-        <div class="flex items-center gap-2">
-          {dbError && (
-            <span class="text-xs text-red-500 font-medium">● Offline</span>
-          )}
-          {import.meta.env.DEV && (
-            <button
-              type="button"
-              onClick={handleTestMessageSent}
-              class="px-2 py-1 text-xs bg-bg-lighter border border-border rounded cursor-pointer hover:bg-state-selected"
-            >
-              Test
-            </button>
-          )}
+      <div class="mb-4">
+        <div class="flex items-center justify-between">
+          <h1 class="text-lg font-semibold m-0 text-black">
+            LinkedIn Secret Weapon
+          </h1>
+          <div class="flex items-center gap-2">
+            {dbError && (
+              <span class="text-xs text-red-500 font-medium">● Offline</span>
+            )}
+            {import.meta.env.DEV && (
+              <button
+                type="button"
+                onClick={handleTestMessageSent}
+                class="px-2 py-1 text-xs bg-bg-lighter border border-border rounded cursor-pointer hover:bg-state-selected"
+              >
+                Test
+              </button>
+            )}
+          </div>
         </div>
+        {userEmail && (
+          <div class="text-xs text-text-secondary mt-0.5">
+            {userEmail}
+            {onSignOut && (
+              <>
+                {' · '}
+                <button
+                  type="button"
+                  onClick={onSignOut}
+                  class="underline cursor-pointer bg-none border-none p-0 text-xs text-text-secondary hover:text-text-primary"
+                >
+                  Sign out
+                </button>
+              </>
+            )}
+          </div>
+        )}
       </div>
 
       <WildcardsPanel onInsert={handleInsertWildcard}/>
