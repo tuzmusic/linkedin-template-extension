@@ -1,12 +1,24 @@
 import { useRef } from 'preact/hooks';
-import { CurrentWork, Template } from '../types';
+import { CurrentWork, SortConfig, Template } from '../types';
+import type { SortDir, SortField } from '../types';
 import { Input } from '../components/Input';
+
+const SORT_OPTIONS: { value: string; label: string; field: SortField; dir: SortDir }[] = [
+  { value: 'created_at_desc', label: 'Created (newest)', field: 'created_at', dir: 'desc' },
+  { value: 'created_at_asc',  label: 'Created (oldest)', field: 'created_at', dir: 'asc'  },
+  { value: 'updated_at_desc', label: 'Updated (newest)', field: 'updated_at', dir: 'desc' },
+  { value: 'updated_at_asc',  label: 'Updated (oldest)', field: 'updated_at', dir: 'asc'  },
+  { value: 'title_asc',       label: 'Name (A → Z)',     field: 'title',      dir: 'asc'  },
+  { value: 'title_desc',      label: 'Name (Z → A)',     field: 'title',      dir: 'desc' },
+];
 
 export const TemplatesList = ({
   templates,
   currentWork,
   searchQuery,
   onSearchChange,
+  sortConfig,
+  onSortChange,
   onSelect,
   onDelete
 }: {
@@ -14,18 +26,39 @@ export const TemplatesList = ({
   currentWork: CurrentWork;
   searchQuery: string;
   onSearchChange: (query: string) => void;
+  sortConfig: SortConfig;
+  onSortChange: (config: SortConfig) => void;
   onSelect: (template: Template) => void;
   onDelete: (id: string) => void;
 }) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  const filteredItems = getFilteredItems(templates, currentWork, searchQuery);
+  const sortedTemplates = sortTemplates(templates, sortConfig);
+  const filteredItems = getFilteredItems(sortedTemplates, currentWork, searchQuery);
+
+  const currentValue = `${sortConfig.field}_${sortConfig.dir}`;
+
+  const handleSortChange = (value: string) => {
+    const option = SORT_OPTIONS.find((o) => o.value === value);
+    if (option) onSortChange({ field: option.field, dir: option.dir });
+  };
 
   return (
     <div class="mb-5">
-      <label class="block text-xs font-medium mb-2 text-text-secondary">
-        Recent Templates:
-      </label>
+      <div class="flex items-center justify-between mb-2">
+        <label class="block text-xs font-medium text-text-secondary">
+          Templates:
+        </label>
+        <select
+          value={currentValue}
+          onChange={(e) => handleSortChange((e.target as HTMLSelectElement).value)}
+          class="text-[10px] text-text-secondary border border-border rounded px-1.5 py-0.5 bg-white cursor-pointer focus:outline-none"
+        >
+          {SORT_OPTIONS.map((o) => (
+            <option key={o.value} value={o.value}>{o.label}</option>
+          ))}
+        </select>
+      </div>
       <div class="border border-border rounded-[10px] overflow-hidden">
         <div class="border-b border-border shrink-0 flex items-center px-3 py-2">
           <svg
@@ -101,6 +134,20 @@ interface FilteredItem {
   status: 'draft' | 'edited' | null;
 }
 
+function sortTemplates(templates: Template[], config: SortConfig): Template[] {
+  return [...templates].sort((a, b) => {
+    let cmp = 0;
+    if (config.field === 'title') {
+      cmp = a.title.localeCompare(b.title);
+    } else {
+      const aVal = a[config.field] ?? '';
+      const bVal = b[config.field] ?? '';
+      cmp = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
+    }
+    return config.dir === 'asc' ? cmp : -cmp;
+  });
+}
+
 function getFilteredItems(
   templates: Template[],
   currentWork: CurrentWork,
@@ -111,7 +158,7 @@ function getFilteredItems(
 
   const items: FilteredItem[] = [];
 
-  // Show draft/edited at top if applicable
+  // Draft/edited always at top, unsorted
   if (isDraft || isEdited) {
     const statusText = isDraft ? '(draft)' : '(edited)';
     const displayTitle = currentWork.title
@@ -131,41 +178,32 @@ function getFilteredItems(
     });
   }
 
-  // Show all saved templates
   templates.forEach((template) => {
-    // Skip if this is the current work (already shown above as edited)
-    if (isEdited && template.id === currentWork.id) {
-      return;
-    }
-
-    const isCurrentTemplate = !isEdited && template.id === currentWork.id;
+    if (isEdited && template.id === currentWork.id) return;
 
     items.push({
       id: template.id,
       template,
       displayTitle: template.title,
-      selected: isCurrentTemplate,
+      selected: !isEdited && template.id === currentWork.id,
       status: null
     });
   });
 
-  // Apply search filter
   if (searchQuery.trim()) {
     const query = searchQuery.toLowerCase();
     return items.filter((item) => {
-      const titleMatch = item.displayTitle.toLowerCase().includes(query);
-      const contentMatch = item.template.template.toLowerCase().includes(query);
-      return titleMatch || contentMatch;
+      return (
+        item.displayTitle.toLowerCase().includes(query) ||
+        item.template.template.toLowerCase().includes(query)
+      );
     });
   }
 
   return items;
 }
 
-function hasUnsavedChanges(
-  templates: Template[],
-  currentWork: CurrentWork
-): boolean {
+function hasUnsavedChanges(templates: Template[], currentWork: CurrentWork): boolean {
   if (currentWork.id === null) {
     return currentWork.title.trim() !== '' || currentWork.template.trim() !== '';
   }

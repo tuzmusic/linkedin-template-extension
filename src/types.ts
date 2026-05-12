@@ -2,6 +2,15 @@ export interface Template {
   id: string;
   title: string;
   template: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export type SortField = 'title' | 'created_at' | 'updated_at';
+export type SortDir = 'asc' | 'desc';
+export interface SortConfig {
+  field: SortField;
+  dir: SortDir;
 }
 
 export interface CurrentWork {

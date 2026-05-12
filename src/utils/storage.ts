@@ -62,7 +62,7 @@ export async function fetchTemplatesFromDb(): Promise<Template[]> {
 
   const { data, error } = await supabase
     .from('templates')
-    .select('id, title, content')
+    .select('id, title, content, created_at, updated_at')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false });
 
@@ -72,7 +72,9 @@ export async function fetchTemplatesFromDb(): Promise<Template[]> {
   return data.map((row) => ({
     id: row.id,
     title: row.title,
-    template: row.content
+    template: row.content,
+    created_at: row.created_at,
+    updated_at: row.updated_at
   }));
 }
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'preact/hooks';
-import { CurrentWork, MAX_TEMPLATES, Template } from '../types';
+import { CurrentWork, MAX_TEMPLATES, SortConfig, Template } from '../types';
 import { createTemplateInDb, deleteTemplateFromDb, fetchTemplatesFromDb, loadData, saveData, updateTemplateInDb } from '../utils/storage';
 import { Button } from '../components/Button';
 import { WildcardsPanel } from './WildcardPanel';
@@ -15,6 +15,7 @@ export const Popup = () => {
     template: ''
   });
   const [searchQuery, setSearchQuery] = useState('');
+  const [sortConfig, setSortConfig] = useState<SortConfig>({ field: 'created_at', dir: 'desc' });
   const [showSaveAsDialog, setShowSaveAsDialog] = useState(false);
   const [saveAsTitle, setSaveAsTitle] = useState('');
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
@@ -437,6 +438,8 @@ export const Popup = () => {
         currentWork={currentWork}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
+        sortConfig={sortConfig}
+        onSortChange={setSortConfig}
         onSelect={handleSelectTemplate}
         onDelete={handleDeleteTemplate}
       />
