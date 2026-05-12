@@ -1,0 +1,102 @@
+[
+  {
+    "id": "050fccc3-15f7-4bc3-acb4-7922dafb4937",
+    "template": "Hi {{firstName}}, I came across your profile looking into the frontend web dev position at Fortinet. I have 6+ years of Typescript frontend experience, mostly React but I learn quick. I'd love to know more about the position and what you're working on. Do you have 15m for a call in the next week or so?",
+    "title": "Fortinet"
+  },
+  {
+    "id": "dabcbc9e-9b82-432c-98aa-b8040cb5eeca",
+    "template": "Hi {{firstName}}, I came across your profile looking into the fullstack engineer position at Doowii. I have 6+ years of React/Typescript plus some Python BE, and If you have 15m for a call, I'd love to know more about the position and what you're working on. Do you have any time in the next week or so?",
+    "title": "Doowii"
+  },
+  {
+    "id": "fcb7ddff-9587-4878-8d6e-a6fbdde94eb1",
+    "template": "Hi {{firstName}}, I'm a React developer and a big fan of Storybook. It looks like you're not hiring frontend so I'm not fishing for a job, but I'd love to talk about the work you're doing, and how you got where you are today. Do you have 15m for a call in the next week or so?",
+    "title": "Chromatic"
+  },
+  {
+    "id": "8a2416be-f3cb-4e5e-9696-66ffd26d7d06",
+    "template": "Hi {{firstName}}, I came across your profile looking into the frontend position at Engine. I have 6+ years of React/Typescript (plus some React Native), and If you have 15m for a call, I'd love to know more about the position and what you're working on. Do you have any time in the next week or so?",
+    "title": "Engine (React Native)"
+  },
+  {
+    "id": "ad7ad5d5-43fb-4b9b-bd6e-6527c062055d",
+    "template": "Hi {{firstName}}, I came across your profile looking into the frontend platform position at Defense Unicorns. I have 6+ years of frontend Typescript experience, and If you have 15m for a call, I'd love to know more about the role. Do you have any time in the next week or so?",
+    "title": "Defense Unicorns (svelte)"
+  },
+  {
+    "id": "271de07a-6b5e-413f-a803-231ab9bd77ad",
+    "template": "Hi {{firstName}}, I came across your profile looking into the SWE position at McKesson. I have 6+ years of experience, primarily Typescript, and also Ruby. If you have 15 minutes for a call, I'd love to know more about the position and what you're working on. Do you have time in the next week or so?",
+    "title": "McKesson"
+  },
+  {
+    "id": "6dbe2116-76a9-4418-9d7e-c13c6dee8898",
+    "template": "Hi {{firstName}}, I came across your profile looking into the SWE position at Netlify. I have 6+ years of Typescript & React (+Ruby) and I ❤️ building user-facing products. Do you have 15 minutes for a call next week? I'd love to know more about the position and what you're working on?",
+    "title": "Netlify"
+  },
+  {
+    "id": "684522f1-d277-4b3d-9a2c-398fa6ae781a",
+    "template": "Hi {{firstName}}, I'm a React developer and I came across your profile looking at engineering jobs at Toggl. It looks like you're not hiring frontend so I'm not fishing for a job, but I'd still love to talk about the work you're doing, and how you got where you are today. Do you have 15m to talk?",
+    "title": "Toggl (exploring)"
+  },
+  {
+    "id": "efeaf981-24a8-4e79-81e2-ab5212972fd3",
+    "template": "Hi {{firstName}}, I came across your profile looking into a SWE position at Akamai. I have 6+ years of React/Typescript experience, and If you have 15 minutes for a call, I'd love to know more about what you're working on and how you got where you are today. Do you have any time in the next week or so?",
+    "title": "Akamai"
+  },
+  {
+    "id": "29b09ea3-9687-4ba2-b34b-cc69962236e5",
+    "template": "Hi {{firstName}}, I came across your profile looking into the frontend position at {{companyName}}. I have 6+ years of React/Typescript plus some BE, and If you have 15m for a call, I'd love to know more about the position and what you're working on. Do you have any time in the next week or so?",
+    "title": "Code Metal"
+  },
+  {
+    "id": "92de0fa0-5638-448c-a2be-2920ea3b78c4",
+    "template": "I wanted to reach out because I'm on the job hunt and I'm looking at a position at {{companyName}}. Looks like you know {{fullName}} there. Would you be able to introduce us?",
+    "title": "1st degree connection intro request"
+  },
+  {
+    "id": "ef5b807f-b1d6-4d90-9434-6336ac0c81bf",
+    "template": "I wanted to reach out because I'm on the job hunt and I'm looking at a position at {{companyName}}. Looks like you know {{firstName}} there. Would you be able to introduce us?",
+    "title": "1st degree connection intro request"
+  },
+  {
+    "id": "12878cea-57e1-4b4c-9d36-bce3352888fe",
+    "template": "Hi {{firstName}}, I came across your profile looking into the frontend position at {{companyName}}. I have 6+ years of experience (strong React and Typescript), and If you have 15m for a call, I'd love to know more about the position and what you're working on. Do you have any time in the next week or so?",
+    "title": "companyName - frontend"
+  },
+  {
+    "id": "7316dfe3-a856-409a-9603-83f65bcc59fa",
+    "template": "Hi {{firstName}}, I came across your profile looking into the frontend position at Keeper. I have 6+ years of React/Typescript, and I'm targeting a complex enterprise SaaS app for my next role. If you have 15m for a call, I'd love to know more about the position and what you're working on.",
+    "title": "keeper"
+  },
+  {
+    "id": "82aa669a-ae9b-4a65-ba1c-2afcfa197293",
+    "template": "Hi {{firstName}}, I came across your profile looking into the fullstack engineer position at Trualta. I have 6+ years of React/Typescript, and would love to add Vue. I've also worked with Laravel! Do you have 15 minutes for a call? I'd love to know more about the position and what you're working on.",
+    "title": "Trualta (Vue)"
+  },
+  {
+    "id": "271793c0-7caf-402d-9f73-d3c2875a096e",
+    "template": "Hey {{firstName}}, thanks for accepting the connection! Do you have some time to talk? You can grab a spot on my calendar at https://calendly.com/jtuzman/15min.",
+    "title": "Thanks for connecting"
+  },
+  {
+    "id": "c7f83d93-7698-4f3e-9d8c-c7823d58b9c8",
+    "template": "Hi {{firstName}}, I came across your profile looking into frontend roles at {{companyName}}. After some time in eCommerce I'm dying to work on a more complex UI like this. I know you're not hiring so I'm not fishing for a job, I'd just love to talk about the what it's like building {{companyName}}. Got 15m for a chat?",
+    "title": "Posthog"
+  },
+  {
+    "id": "ea98daeb-6294-4963-baff-bd8d14e18ccf",
+    "template": "Hi {{firstName}}, I came across your profile looking into frontend roles at {{companyName}}. My last job was in eComm, and I'm looking to work on a more challenging UI, like a CRM, in my next role. I know you're not hiring so I'm not fishing for a job, but do you have 15m to chat about {{companyName}}?",
+    "title": "CRM product"
+  },
+  {
+    "id": "78d58ec3-0e29-4f5e-93c2-1ae9daec0808",
+    "template": "Hi {{firstName}}, I came across your profile looking into the frontend position at Skylight. I have 6+ years of experience, and a ton of alignment with your stack: React Router 7, Shopify, CMS, A/B tests. I'd love to hear more about the role. Do you have 15 minutes for a chat in the next week or so?",
+    "title": "Skylight"
+  },
+  {
+    "id": "2f212eda-b4bd-47ff-a3c8-c04883a52fa3",
+    "template": "Hi {{firstName}}, I came across your profile looking at engineering jobs at Mezmo. I'm a React dev, and I'm targeting a data-rich dashboard product for my next role. It looks like you're not hiring but I'd still love to talk about the work you're doing, and where I can learn. Do you have 15m to talk?",
+    "title": "Mezmo"
+  }
+]
