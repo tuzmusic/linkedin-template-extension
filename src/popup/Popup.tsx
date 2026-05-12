@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'preact/hooks';
 import { CurrentWork, MAX_TEMPLATES, Template } from '../types';
-import { loadData, saveData } from '../utils/storage';
+import { fetchTemplatesFromDb, loadData, saveData } from '../utils/storage';
 import { Button } from '../components/Button';
 import { WildcardsPanel } from './WildcardPanel';
 import { TemplateEditor } from './TemplateEditor';
@@ -30,6 +30,13 @@ export const Popup = () => {
       }
       setCharLimit(data.charLimit);
       setCharLimitEnabled(data.charLimitEnabled);
+    });
+
+    fetchTemplatesFromDb().then((dbTemplates) => {
+      if (dbTemplates.length > 0) {
+        setSavedTemplates(dbTemplates);
+        saveData({ savedTemplates: dbTemplates });
+      }
     });
   }, []);
 

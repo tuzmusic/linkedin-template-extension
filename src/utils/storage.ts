@@ -1,4 +1,5 @@
 import { CurrentWork, MAX_CHAR_LIMIT, Template } from '../types';
+import { supabase } from './supabase-client';
 
 export type AppStorageState = {
   savedTemplates: Template[];
@@ -52,6 +53,25 @@ export async function loadData(): Promise<{
       }
     );
   });
+}
+
+export async function fetchTemplatesFromDb(): Promise<Template[]> {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return [];
+
+  const { data, error } = await supabase
+    .from('templates')
+    .select('id, title, content')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false });
+
+  if (error || !data) return [];
+
+  return data.map((row) => ({
+    id: row.id,
+    title: row.title,
+    template: row.content
+  }));
 }
 
 export function saveData(data: Partial<AppStorageState>): Promise<void> {
