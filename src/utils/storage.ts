@@ -65,7 +65,8 @@ export async function fetchTemplatesFromDb(): Promise<Template[]> {
     .eq('user_id', user.id)
     .order('created_at', { ascending: false });
 
-  if (error || !data) return [];
+  if (error) throw error;
+  if (!data) return [];
 
   return data.map((row) => ({
     id: row.id,

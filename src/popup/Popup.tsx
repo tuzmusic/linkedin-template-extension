@@ -21,6 +21,8 @@ export const Popup = () => {
   const [autoSaveTimeout, setAutoSaveTimeout] = useState<number | null>(null);
   const [charLimit, setCharLimit] = useState(300);
   const [charLimitEnabled, setCharLimitEnabled] = useState(true);
+  const [dbLoading, setDbLoading] = useState(true);
+  const [dbError, setDbError] = useState(false);
 
   useEffect(function loadDataOnMount() {
     loadData().then((data) => {
@@ -32,12 +34,27 @@ export const Popup = () => {
       setCharLimitEnabled(data.charLimitEnabled);
     });
 
-    fetchTemplatesFromDb().then((dbTemplates) => {
-      if (dbTemplates.length > 0) {
-        setSavedTemplates(dbTemplates);
-        saveData({ savedTemplates: dbTemplates });
-      }
-    });
+    const timeout = window.setTimeout(() => {
+      setDbError(true);
+      setDbLoading(false);
+    }, 10000);
+
+    fetchTemplatesFromDb()
+      .then((dbTemplates) => {
+        clearTimeout(timeout);
+        if (dbTemplates.length > 0) {
+          setSavedTemplates(dbTemplates);
+          saveData({ savedTemplates: dbTemplates });
+        }
+        setDbLoading(false);
+      })
+      .catch(() => {
+        clearTimeout(timeout);
+        setDbError(true);
+        setDbLoading(false);
+      });
+
+    return () => clearTimeout(timeout);
   }, []);
 
   const handleCharLimitChange = (value: number) => {
@@ -51,9 +68,13 @@ export const Popup = () => {
   };
 
   const resyncFromDb = async () => {
-    const dbTemplates = await fetchTemplatesFromDb();
-    setSavedTemplates(dbTemplates);
-    saveData({ savedTemplates: dbTemplates });
+    try {
+      const dbTemplates = await fetchTemplatesFromDb();
+      setSavedTemplates(dbTemplates);
+      saveData({ savedTemplates: dbTemplates });
+    } catch {
+      // resync is best-effort; the calling code already shows an alert
+    }
   };
 
   const handleTitleChange = (title: string) => {
@@ -323,6 +344,26 @@ export const Popup = () => {
     }
     chrome.tabs.sendMessage(tab.id, { action: 'testMessageSent' });
   };
+
+  if (dbLoading) {
+    return (
+      <div class="w-full flex flex-col items-center justify-center gap-3 py-10">
+        <div class="w-6 h-6 border-2 border-border border-t-text-secondary rounded-full animate-spin"/>
+        <p class="text-sm text-text-secondary">Connecting to database...</p>
+      </div>
+    );
+  }
+
+  if (dbError) {
+    return (
+      <div class="w-full flex flex-col items-center justify-center gap-2 py-10 text-center">
+        <p class="text-sm text-red-500">Could not connect to database.</p>
+        {import.meta.env.DEV && (
+          <p class="text-xs text-text-secondary">Make sure Supabase is running.</p>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div class="w-full">
