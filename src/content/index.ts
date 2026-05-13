@@ -18,8 +18,8 @@ async function copyToClipboard(text: string): Promise<boolean> {
 async function handleCopyTemplate(): Promise<void> {
   try {
     // Get the template from storage
-    const result = await chrome.storage.sync.get<AppStorageState>(['messageTemplate']);
-    const template = result.messageTemplate || "Hi {{firstName}}, I'd love to connect!";
+    const result = await chrome.storage.sync.get<AppStorageState>(['currentWork']);
+    const template = result.currentWork?.template || "Hi {{firstName}}, I'd love to connect!";
 
     // Scrape profile data
     const profileData = scrapeLinkedInProfile();

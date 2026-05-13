@@ -169,7 +169,7 @@ export const Popup = ({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
       const newWork = { id: savedId, title, template };
       setSavedTemplates(newTemplates);
       setCurrentWork(newWork);
-      saveData({ savedTemplates: newTemplates, currentWork: newWork, messageTemplate: template });
+      saveData({ savedTemplates: newTemplates, currentWork: newWork });
 
       if (dbError) {
         showSavedMessageBriefly('Saved locally (offline)');
@@ -192,7 +192,7 @@ export const Popup = ({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
         setSavedTemplates(newTemplates);
         setCurrentWork(newWork);
         showSavedMessageBriefly('Saved locally (offline)');
-        saveData({ savedTemplates: newTemplates, currentWork: newWork, messageTemplate: template });
+        saveData({ savedTemplates: newTemplates, currentWork: newWork });
         return;
       }
 
@@ -210,7 +210,7 @@ export const Popup = ({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
       setSavedTemplates(newTemplates);
       setCurrentWork(newWork);
       showSavedMessageBriefly();
-      saveData({ savedTemplates: newTemplates, currentWork: newWork, messageTemplate: template });
+      saveData({ savedTemplates: newTemplates, currentWork: newWork });
     }
   };
 
@@ -266,7 +266,7 @@ export const Popup = ({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
     setShowSaveAsDialog(false);
     showSavedMessageBriefly(dbError ? 'Saved locally (offline)' : 'Template saved!');
 
-    saveData({ savedTemplates: newTemplates, currentWork: newWork, messageTemplate: template });
+    saveData({ savedTemplates: newTemplates, currentWork: newWork });
   };
 
   const handleSelectTemplate = (template: Template) => {

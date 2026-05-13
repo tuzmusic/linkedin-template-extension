@@ -5,7 +5,6 @@ export type AppStorageState = {
   savedTemplates: Template[];
   currentWork: CurrentWork;
   wildcardsCollapsed: boolean;
-  messageTemplate: string;
   charLimit: number;
   charLimitEnabled: boolean;
 };

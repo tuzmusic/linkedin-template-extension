@@ -206,8 +206,8 @@ export function clickSend(): void {
 async function fillTemplateIntoTextarea(): Promise<void> {
   const textarea = await waitForTextarea();
 
-  const result = await chrome.storage.sync.get<AppStorageState>(['messageTemplate']);
-  const template = result.messageTemplate;
+  const result = await chrome.storage.sync.get<AppStorageState>(['currentWork']);
+  const template = result.currentWork?.template;
   if (!template) {
     showNotification('Tried to paste the template, but no template has been set', 'error');
     return;
