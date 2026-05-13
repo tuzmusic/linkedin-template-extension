@@ -7,10 +7,13 @@ import { Button } from '../components/Button';
 
 export const AuthGate = () => {
   const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    const loadingTimer = window.setTimeout(() => setLoading(true), 300);
+
     supabase.auth.getSession().then(({ data }) => {
+      clearTimeout(loadingTimer);
       setSession(data.session);
       setLoading(false);
     });
@@ -19,7 +22,10 @@ export const AuthGate = () => {
       setSession(newSession);
     });
 
-    return () => sub.subscription.unsubscribe();
+    return () => {
+      clearTimeout(loadingTimer);
+      sub.subscription.unsubscribe();
+    };
   }, []);
 
   if (loading) {

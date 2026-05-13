@@ -17,12 +17,12 @@ export const Popup = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showSaveAsDialog, setShowSaveAsDialog] = useState(false);
   const [saveAsTitle, setSaveAsTitle] = useState('');
-  const [saveMessage, setSaveMessage] = useState(false);
+  const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [autoSaveTimeout, setAutoSaveTimeout] = useState<number | null>(null);
   const [charLimit, setCharLimit] = useState(300);
   const [charLimitEnabled, setCharLimitEnabled] = useState(true);
-  const [dbLoading, setDbLoading] = useState(true);
   const [dbError, setDbError] = useState(false);
+  const [offlineModalDismissed, setOfflineModalDismissed] = useState(false);
 
   useEffect(function loadDataOnMount() {
     loadData().then((data) => {
@@ -36,7 +36,6 @@ export const Popup = () => {
 
     const timeout = window.setTimeout(() => {
       setDbError(true);
-      setDbLoading(false);
     }, 10000);
 
     fetchTemplatesFromDb()
@@ -46,12 +45,10 @@ export const Popup = () => {
           setSavedTemplates(dbTemplates);
           saveData({ savedTemplates: dbTemplates });
         }
-        setDbLoading(false);
       })
       .catch(() => {
         clearTimeout(timeout);
         setDbError(true);
-        setDbLoading(false);
       });
 
     return () => clearTimeout(timeout);
@@ -156,7 +153,6 @@ export const Popup = () => {
     let savedId = currentWork.id;
 
     if (currentWork.id) {
-      // Optimistically update local state, then persist to DB
       const index = newTemplates.findIndex((t) => t.id === currentWork.id);
       if (index !== -1) {
         newTemplates[index] = { id: currentWork.id, title, template };
@@ -165,15 +161,33 @@ export const Popup = () => {
       const newWork = { id: savedId, title, template };
       setSavedTemplates(newTemplates);
       setCurrentWork(newWork);
-      showSavedMessageBriefly();
       saveData({ savedTemplates: newTemplates, currentWork: newWork, messageTemplate: template });
 
+      if (dbError) {
+        showSavedMessageBriefly('Saved locally (offline)');
+        return;
+      }
+
+      showSavedMessageBriefly();
       const ok = await updateTemplateInDb(currentWork.id, title, template);
       if (!ok) {
         alert('Failed to save template. Your changes have been reverted.');
         await resyncFromDb();
       }
     } else {
+      if (dbError) {
+        savedId = crypto.randomUUID();
+        const newTemplate: Template = { id: savedId, title, template };
+        newTemplates.unshift(newTemplate);
+        if (newTemplates.length > MAX_TEMPLATES) newTemplates = newTemplates.slice(0, MAX_TEMPLATES);
+        const newWork = { id: savedId, title, template };
+        setSavedTemplates(newTemplates);
+        setCurrentWork(newWork);
+        showSavedMessageBriefly('Saved locally (offline)');
+        saveData({ savedTemplates: newTemplates, currentWork: newWork, messageTemplate: template });
+        return;
+      }
+
       // Await DB insert to get the generated id before updating local state
       const created = await createTemplateInDb(title, template);
       if (!created) {
@@ -220,22 +234,29 @@ export const Popup = () => {
       return;
     }
 
-    const created = await createTemplateInDb(newTitle, template);
-    if (!created) {
-      alert('Failed to save template. Please try again.');
-      setShowSaveAsDialog(false);
-      return;
+    let newId: string;
+
+    if (dbError) {
+      newId = crypto.randomUUID();
+    } else {
+      const created = await createTemplateInDb(newTitle, template);
+      if (!created) {
+        alert('Failed to save template. Please try again.');
+        setShowSaveAsDialog(false);
+        return;
+      }
+      newId = created.id;
     }
 
-    const newTemplate: Template = { id: created.id, title: newTitle, template };
+    const newTemplate: Template = { id: newId, title: newTitle, template };
     let newTemplates = [newTemplate, ...savedTemplates];
     if (newTemplates.length > MAX_TEMPLATES) newTemplates = newTemplates.slice(0, MAX_TEMPLATES);
 
-    const newWork = { id: created.id, title: newTitle, template };
+    const newWork = { id: newId, title: newTitle, template };
     setSavedTemplates(newTemplates);
     setCurrentWork(newWork);
     setShowSaveAsDialog(false);
-    showSavedMessageBriefly();
+    showSavedMessageBriefly(dbError ? 'Saved locally (offline)' : 'Template saved!');
 
     saveData({ savedTemplates: newTemplates, currentWork: newWork, messageTemplate: template });
   };
@@ -293,10 +314,12 @@ export const Popup = () => {
     setCurrentWork(newWork);
     saveData({ savedTemplates: newTemplates, currentWork: newWork });
 
-    const ok = await deleteTemplateFromDb(templateId);
-    if (!ok) {
-      alert('Failed to delete template. It has been restored.');
-      await resyncFromDb();
+    if (!dbError) {
+      const ok = await deleteTemplateFromDb(templateId);
+      if (!ok) {
+        alert('Failed to delete template. It has been restored.');
+        await resyncFromDb();
+      }
     }
   };
 
@@ -329,11 +352,9 @@ export const Popup = () => {
     );
   };
 
-  const showSavedMessageBriefly = () => {
-    setSaveMessage(true);
-    setTimeout(() => {
-      setSaveMessage(false);
-    }, 2000);
+  const showSavedMessageBriefly = (msg = 'Template saved!') => {
+    setSaveMessage(msg);
+    setTimeout(() => setSaveMessage(null), 2000);
   };
 
   const handleTestMessageSent = async () => {
@@ -345,41 +366,44 @@ export const Popup = () => {
     chrome.tabs.sendMessage(tab.id, { action: 'testMessageSent' });
   };
 
-  if (dbLoading) {
-    return (
-      <div class="w-full flex flex-col items-center justify-center gap-3 py-10">
-        <div class="w-6 h-6 border-2 border-border border-t-text-secondary rounded-full animate-spin"/>
-        <p class="text-sm text-text-secondary">Connecting to database...</p>
-      </div>
-    );
-  }
-
-  if (dbError) {
-    return (
-      <div class="w-full flex flex-col items-center justify-center gap-2 py-10 text-center">
-        <p class="text-sm text-red-500">Could not connect to database.</p>
-        {import.meta.env.DEV && (
-          <p class="text-xs text-text-secondary">Make sure Supabase is running.</p>
-        )}
-      </div>
-    );
-  }
-
   return (
     <div class="w-full">
+      {dbError && !offlineModalDismissed && (
+        <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div class="bg-white rounded-lg p-5 mx-4 max-w-xs shadow-lg">
+            <p class="text-sm font-semibold text-red-600 mb-2">Database offline</p>
+            <p class="text-xs text-text-secondary mb-4">
+              Could not connect to Supabase. You can still use cached templates, but saves will fail.
+              {import.meta.env.DEV && ' Make sure Supabase is running.'}
+            </p>
+            <button
+              type="button"
+              onClick={() => setOfflineModalDismissed(true)}
+              class="w-full px-3 py-1.5 text-xs bg-bg-lighter border border-border rounded cursor-pointer hover:bg-state-selected"
+            >
+              Continue offline
+            </button>
+          </div>
+        </div>
+      )}
       <div class="flex items-center justify-between mb-4">
         <h1 class="text-lg font-semibold m-0 text-black">
           LinkedIn Secret Weapon
         </h1>
-        {import.meta.env.DEV && (
-          <button
-            type="button"
-            onClick={handleTestMessageSent}
-            class="px-2 py-1 text-xs bg-bg-lighter border border-border rounded cursor-pointer hover:bg-state-selected"
-          >
-            Test
-          </button>
-        )}
+        <div class="flex items-center gap-2">
+          {dbError && (
+            <span class="text-xs text-red-500 font-medium">● Offline</span>
+          )}
+          {import.meta.env.DEV && (
+            <button
+              type="button"
+              onClick={handleTestMessageSent}
+              class="px-2 py-1 text-xs bg-bg-lighter border border-border rounded cursor-pointer hover:bg-state-selected"
+            >
+              Test
+            </button>
+          )}
+        </div>
       </div>
 
       <WildcardsPanel onInsert={handleInsertWildcard}/>
@@ -404,7 +428,7 @@ export const Popup = () => {
 
       {saveMessage && (
         <div class="text-center text-state-success text-xs mb-4 opacity-100 transition-opacity">
-          Template saved!
+          {saveMessage}
         </div>
       )}
 
