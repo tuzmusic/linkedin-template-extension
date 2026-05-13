@@ -92,7 +92,14 @@ export async function createTemplateInDb(title: string, content: string): Promis
 }
 
 export async function updateTemplateInDb(id: string, title: string, content: string): Promise<boolean> {
-  const { error } = await supabase.from('templates').update({ title, content }).eq('id', id);
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return false;
+  const { error } = await supabase.from('templates').upsert({
+    id,
+    user_id: user.id,
+    title,
+    content
+  }, { onConflict: 'id' });
   return !error;
 }
 
