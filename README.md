@@ -5,6 +5,7 @@ A Chrome extension that helps you quickly copy personalized LinkedIn connection 
 ## Features
 
 - **Message Templates**: Create reusable message templates with wildcard support
+- **Cloud Sync**: Sign in to sync your templates across devices
 - **Keyboard Shortcut**: Press `Opt+V` (Mac) or `Alt+V` (Windows/Linux) to copy personalized messages
 - **Auto-Fill Wildcards**: Automatically extracts profile data and fills in template placeholders
 - **Character Counter**: Shows character count (LinkedIn's 300 char limit) with warnings
@@ -177,9 +178,8 @@ To publish a new version:
 
 This extension:
 - ✅ Only runs on LinkedIn.com
-- ✅ Stores templates locally in your browser (Chrome Sync Storage)
-- ✅ Does NOT send any data to external servers
-- ✅ Does NOT track your activity
+- ✅ Stores templates in your account via Supabase (cloud sync) and locally as a cache
+- ✅ Does NOT track your activity or share data with third parties
 - ✅ Only accesses the current active tab when you press the keyboard shortcut
 
 ## License
