@@ -56,7 +56,8 @@ export async function loadData(): Promise<{
 }
 
 export async function fetchTemplatesFromDb(): Promise<Template[]> {
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
+  if (userError) throw userError;
   if (!user) return [];
 
   const { data, error } = await supabase
