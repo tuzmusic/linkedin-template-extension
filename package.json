@@ -27,7 +27,9 @@
   },
   "scripts": {
     "dev": "vite",
+    "dev:remote": "vite --mode remote",
     "build": "vite build",
+    "build:remote": "vite build --mode remote",
     "typecheck": "tsc --noEmit",
     "test:migrate": "vitest run scripts/migrate-templates.test.ts",
     "migrate": "tsx scripts/migrate-templates.ts",
