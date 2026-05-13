@@ -1,5 +1,30 @@
 [
   {
+    "id": "8e4c121d-16ee-4238-ab81-36ab0d2f7fd2",
+    "template": "Hi {{firstName}}, I came across your profile looking into Typescript roles at GitLab. I'm a frontend-leaning engingeer with 6+ years of experience. I'm targeting dev tooling in my dnext role and I'd love to hear about what you're working on. Do you have 15m for a call in the next week or so?",
+    "title": "pasting from local"
+  },
+  {
+    "id": "b50d4cc2-a2d0-4367-b099-2642386cb6d7",
+    "template": "Hi {{firstName}}, I came across your profile looking into Typescript roles at GitLab. I'm a frontend-leaning engingeer with 6+ years of experience. I'm targeting dev tooling in my next role and I'd love to hear about what you're working on. Do you have 15m for a call in the next week or so?",
+    "title": "pasting from local"
+  },
+  {
+    "id": "b6f70362-b87e-4520-8510-420b9d1d3d86",
+    "template": "Hi {{firstName}}, I came across your profile looking into Typescript roles at GitLab. I have 6+ years of experience (FE-leaning). I'm targeting dev tooling in my next role and I'd love to hear about what you're working on. Do you have 15m for a call in the next week or so?",
+    "title": "pasting from local"
+  },
+  {
+    "id": "fa15c8a9-8e7b-4007-abba-a23a8b14b837",
+    "template": "Hi {{firstName}}, I came across your profile looking into Typescript roles at GitLab. I have 6+ years of experience (FE-leaning, React). I'm targeting dev tooling in my next role and I'd love to hear about what you're working on. Do you have 15m for a call in the next week or so?",
+    "title": "pasting from local"
+  },
+  {
+    "id": "87cfaa4f-8c0e-4349-9dbb-43caa77efb74",
+    "template": "Hi {{firstName}}, I came across your profile looking into the frontend position at {{companyName}}. I have 6+ years of React/Typescript (+ some Python), and If you have 15m for a call, I'd love to know more about the position and what you're working on. Do you have any time in the next week or so?",
+    "title": "pasting from local"
+  },
+  {
     "id": "050fccc3-15f7-4bc3-acb4-7922dafb4937",
     "template": "Hi {{firstName}}, I came across your profile looking into the frontend web dev position at Fortinet. I have 6+ years of Typescript frontend experience, mostly React but I learn quick. I'd love to know more about the position and what you're working on. Do you have 15m for a call in the next week or so?",
     "title": "Fortinet"
@@ -73,30 +98,5 @@
     "id": "82aa669a-ae9b-4a65-ba1c-2afcfa197293",
     "template": "Hi {{firstName}}, I came across your profile looking into the fullstack engineer position at Trualta. I have 6+ years of React/Typescript, and would love to add Vue. I've also worked with Laravel! Do you have 15 minutes for a call? I'd love to know more about the position and what you're working on.",
     "title": "Trualta (Vue)"
-  },
-  {
-    "id": "271793c0-7caf-402d-9f73-d3c2875a096e",
-    "template": "Hey {{firstName}}, thanks for accepting the connection! Do you have some time to talk? You can grab a spot on my calendar at https://calendly.com/jtuzman/15min.",
-    "title": "Thanks for connecting"
-  },
-  {
-    "id": "c7f83d93-7698-4f3e-9d8c-c7823d58b9c8",
-    "template": "Hi {{firstName}}, I came across your profile looking into frontend roles at {{companyName}}. After some time in eCommerce I'm dying to work on a more complex UI like this. I know you're not hiring so I'm not fishing for a job, I'd just love to talk about the what it's like building {{companyName}}. Got 15m for a chat?",
-    "title": "Posthog"
-  },
-  {
-    "id": "ea98daeb-6294-4963-baff-bd8d14e18ccf",
-    "template": "Hi {{firstName}}, I came across your profile looking into frontend roles at {{companyName}}. My last job was in eComm, and I'm looking to work on a more challenging UI, like a CRM, in my next role. I know you're not hiring so I'm not fishing for a job, but do you have 15m to chat about {{companyName}}?",
-    "title": "CRM product"
-  },
-  {
-    "id": "78d58ec3-0e29-4f5e-93c2-1ae9daec0808",
-    "template": "Hi {{firstName}}, I came across your profile looking into the frontend position at Skylight. I have 6+ years of experience, and a ton of alignment with your stack: React Router 7, Shopify, CMS, A/B tests. I'd love to hear more about the role. Do you have 15 minutes for a chat in the next week or so?",
-    "title": "Skylight"
-  },
-  {
-    "id": "2f212eda-b4bd-47ff-a3c8-c04883a52fa3",
-    "template": "Hi {{firstName}}, I came across your profile looking at engineering jobs at Mezmo. I'm a React dev, and I'm targeting a data-rich dashboard product for my next role. It looks like you're not hiring but I'd still love to talk about the work you're doing, and where I can learn. Do you have 15m to talk?",
-    "title": "Mezmo"
   }
 ]

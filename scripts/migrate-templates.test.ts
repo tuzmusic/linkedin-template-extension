@@ -1,7 +1,7 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { authenticate, insertTemplate, migrateTemplates } from './migrate-templates';
 
-const TEST_URL = 'http://127.0.0.1:54321';
+const TEST_URL = 'https://test.supabase.co';
 const TEST_KEY = 'test-anon-key';
 const TEST_TOKEN = 'test-access-token';
 const TEST_USER_ID = 'user-uuid-123';

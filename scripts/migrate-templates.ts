@@ -1,6 +1,19 @@
 import { readFileSync } from 'fs';
 import { createInterface } from 'readline';
 
+function loadEnvFile(filePath: string) {
+  const content = readFileSync(filePath, 'utf8');
+  for (const line of content.split('\n')) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('#')) continue;
+    const eqIdx = trimmed.indexOf('=');
+    if (eqIdx === -1) continue;
+    const key = trimmed.slice(0, eqIdx).trim();
+    const value = trimmed.slice(eqIdx + 1).trim().replace(/^["']|["']$/g, '');
+    process.env[key] = value;
+  }
+}
+
 interface ChromeTemplate {
   id: string;
   title: string;
@@ -12,16 +25,11 @@ interface AuthResponse {
   user: { id: string };
 }
 
-const LOCAL_SUPABASE_URL = 'http://127.0.0.1:54321';
-// Standard anon key for default local Supabase installs
-const LOCAL_ANON_KEY =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRFA0NiK7kyqHDan09qmYnrP40rT_a2EvxhGMDT9ByI';
-
 export async function authenticate(
   email: string,
   password: string,
-  supabaseUrl: string = LOCAL_SUPABASE_URL,
-  anonKey: string = LOCAL_ANON_KEY
+  supabaseUrl: string,
+  anonKey: string
 ): Promise<{ accessToken: string; userId: string }> {
   const res = await fetch(`${supabaseUrl}/auth/v1/token?grant_type=password`, {
     method: 'POST',
@@ -39,8 +47,8 @@ export async function insertTemplate(
   template: ChromeTemplate,
   userId: string,
   accessToken: string,
-  supabaseUrl: string = LOCAL_SUPABASE_URL,
-  anonKey: string = LOCAL_ANON_KEY
+  supabaseUrl: string,
+  anonKey: string
 ): Promise<void> {
   const res = await fetch(`${supabaseUrl}/rest/v1/templates`, {
     method: 'POST',
@@ -66,8 +74,8 @@ export async function migrateTemplates(
   templates: ChromeTemplate[],
   userId: string,
   accessToken: string,
-  supabaseUrl: string = LOCAL_SUPABASE_URL,
-  anonKey: string = LOCAL_ANON_KEY
+  supabaseUrl: string,
+  anonKey: string
 ): Promise<{ succeeded: number; failed: number }> {
   let succeeded = 0;
   let failed = 0;
@@ -122,6 +130,18 @@ async function readLine(promptText: string): Promise<string> {
 }
 
 async function main() {
+  const envFileArg = process.argv.find((a) => a.startsWith('--env-file='));
+  if (!envFileArg) {
+    console.error('Usage: npm run migrate -- --env-file=.env.remote.local');
+    process.exit(1);
+  }
+  try {
+    loadEnvFile(envFileArg.slice('--env-file='.length));
+  } catch {
+    console.error(`Could not read env file: ${envFileArg}`);
+    process.exit(1);
+  }
+
   const exportFile = new URL('../scripts/templates-export.json', import.meta.url).pathname;
 
   let templates: ChromeTemplate[];
@@ -143,8 +163,12 @@ async function main() {
   const email = process.env.MIGRATION_EMAIL ?? (await readLine('Email: '));
   const password = process.env.MIGRATION_PASSWORD ?? (await readPassword('Password: '));
 
-  const supabaseUrl = process.env.SUPABASE_URL ?? LOCAL_SUPABASE_URL;
-  const anonKey = process.env.SUPABASE_ANON_KEY ?? LOCAL_ANON_KEY;
+  const supabaseUrl = process.env.VITE_SUPABASE_URL;
+  const anonKey = process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+  if (!supabaseUrl || !anonKey) {
+    console.error('Missing VITE_SUPABASE_URL or VITE_SUPABASE_PUBLISHABLE_KEY in .env');
+    process.exit(1);
+  }
 
   console.log('\nAuthenticating...');
   let accessToken: string;
