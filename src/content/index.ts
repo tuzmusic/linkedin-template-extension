@@ -1,7 +1,7 @@
 import { scrapeLinkedInProfile } from './profile-scraper';
 import { fillTemplate } from './template-filler';
 import { showNotification } from './notifications';
-import { clickAddNote, clickConnect, clickSend, handleAddNote, handleMessageSent } from './button-handlers';
+import { clickAddNote, clickConnect, clickSend, handleAddNote } from './button-handlers';
 import './styles.css';
 import { AppStorageState } from "../utils/storage.ts";
 
@@ -65,8 +65,6 @@ chrome.runtime.onMessage.addListener((request, _sender, _sendResponse) => {
     handleAddNote();
   } else if (request.action === 'clickSend') {
     clickSend();
-  } else if (request.action === 'testMessageSent') {
-    handleMessageSent();
   } else if (request.action === 'showNotification') {
     showNotification(request.message, request.type || 'info');
   }

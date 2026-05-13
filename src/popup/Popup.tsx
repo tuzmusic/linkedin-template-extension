@@ -49,10 +49,13 @@ export const Popup = ({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
     fetchTemplatesFromDb()
       .then((dbTemplates) => {
         clearTimeout(timeout);
-        if (dbTemplates.length > 0) {
-          setSavedTemplates(dbTemplates);
-          saveData({ savedTemplates: dbTemplates });
-        }
+        setSavedTemplates((localTemplates) => {
+          const remoteIds = new Set(dbTemplates.map((t) => t.id));
+          const localOnly = localTemplates.filter((t) => !remoteIds.has(t.id));
+          const merged = [...dbTemplates, ...localOnly];
+          saveData({ savedTemplates: merged });
+          return merged;
+        });
       })
       .catch(() => {
         clearTimeout(timeout);
@@ -365,15 +368,6 @@ export const Popup = ({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
     setTimeout(() => setSaveMessage(null), 2000);
   };
 
-  const handleTestMessageSent = async () => {
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    if (!tab?.id || !tab.url?.includes('linkedin.com')) {
-      alert('Navigate to a LinkedIn page first');
-      return;
-    }
-    chrome.tabs.sendMessage(tab.id, { action: 'testMessageSent' });
-  };
-
   return (
     <div class="w-full">
       {dbError && !offlineModalDismissed && (
@@ -399,20 +393,9 @@ export const Popup = ({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
           <h1 class="text-lg font-semibold m-0 text-black">
             LinkedIn Secret Weapon
           </h1>
-          <div class="flex items-center gap-2">
-            {dbError && (
-              <span class="text-xs text-red-500 font-medium">● Offline</span>
-            )}
-            {import.meta.env.DEV && (
-              <button
-                type="button"
-                onClick={handleTestMessageSent}
-                class="px-2 py-1 text-xs bg-bg-lighter border border-border rounded cursor-pointer hover:bg-state-selected"
-              >
-                Test
-              </button>
-            )}
-          </div>
+          {dbError && (
+            <span class="text-xs text-red-500 font-medium">● Offline</span>
+          )}
         </div>
         {userEmail && (
           <div class="text-xs text-text-secondary mt-0.5">
