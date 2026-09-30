@@ -97,11 +97,15 @@ function cleanName(name: string): string {
     .replace(/\s+/g, ' ');
 }
 
-// Finds the open (non-minimized) message overlay conversation
+// Finds the open message overlay conversation, preferring the one whose
+// input is focused, then LinkedIn's active bubble, then any non-minimized one
 function findOpenConversation(): Element | null {
-  return document.querySelector(
-    '.msg-overlay-conversation-bubble[data-msg-overlay-conversation-bubble-is-minimized="false"]'
-  ) || document.querySelector('.msg-convo-wrapper');
+  return document.activeElement?.closest('.msg-convo-wrapper') ||
+    document.querySelector('.msg-overlay-conversation-bubble--is-active') ||
+    document.querySelector(
+      '.msg-overlay-conversation-bubble[data-msg-overlay-conversation-bubble-is-minimized="false"]'
+    ) ||
+    document.querySelector('.msg-convo-wrapper');
 }
 
 function findMessageRecipientName(): string | null {
