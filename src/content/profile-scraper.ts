@@ -73,16 +73,12 @@ export function scrapeLinkedInProfile(): LinkedInProfileData {
     }
 
     // Get message recipient name from open message conversation
-    const msgProfileCard = document.querySelector('.msg-s-profile-card-one-to-one');
-    if (msgProfileCard) {
-      const nameElement = msgProfileCard.querySelector('.profile-card-one-to-one__profile-link span.truncate');
-      if (nameElement) {
-        const fullName = nameElement.textContent?.trim() || '';
-        data.msgFullName = fullName;
-        const nameParts = fullName.split(' ').filter(part => part.length > 0);
-        data.msgFirstName = nameParts[0] || null;
-        data.msgLastName = nameParts.slice(1).join(' ') || null;
-      }
+    const msgFullName = findMessageRecipientName();
+    if (msgFullName) {
+      data.msgFullName = msgFullName;
+      const nameParts = msgFullName.split(' ').filter(part => part.length > 0);
+      data.msgFirstName = nameParts[0] || null;
+      data.msgLastName = nameParts.slice(1).join(' ') || null;
     }
 
     console.log('Scraped LinkedIn data:', data);
@@ -91,4 +87,37 @@ export function scrapeLinkedInProfile(): LinkedInProfileData {
   }
 
   return data;
+}
+
+function cleanName(name: string): string {
+  return name
+    .replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu, '')
+    .replace(/[\u200B-\u200D\uFEFF]/g, '')
+    .trim()
+    .replace(/\s+/g, ' ');
+}
+
+// Finds the open (non-minimized) message overlay conversation
+function findOpenConversation(): Element | null {
+  return document.querySelector(
+    '.msg-overlay-conversation-bubble[data-msg-overlay-conversation-bubble-is-minimized="false"]'
+  ) || document.querySelector('.msg-convo-wrapper');
+}
+
+function findMessageRecipientName(): string | null {
+  // Fall back to the whole document (e.g. the full /messaging/ page)
+  const conversation = findOpenConversation() ?? document;
+
+  // The header title is always rendered; the profile card only exists once the
+  // top of the message history has loaded, so it's a fallback.
+  const nameElement =
+    conversation.querySelector('.msg-overlay-bubble-header__title a span') ||
+    conversation.querySelector('.msg-overlay-bubble-header__title') ||
+    conversation.querySelector('.profile-card-one-to-one__profile-link span.truncate');
+  const name = cleanName(nameElement?.textContent ?? '');
+  if (name) return name;
+
+  // Last resort: header avatar alt text, e.g. "Dave Gravelle, #OPEN_TO_WORK"
+  const avatarAlt = conversation.querySelector('header img.presence-entity__image')?.getAttribute('alt');
+  return avatarAlt ? cleanName(avatarAlt.split(',')[0]) || null : null;
 }
