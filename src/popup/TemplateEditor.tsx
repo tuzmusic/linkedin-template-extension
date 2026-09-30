@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'preact/hooks';
 import { Input } from '../components/Input';
+import { DEFAULT_CHAR_LIMIT } from '../types';
 
 export const TemplateEditor = ({
   title,
@@ -7,27 +9,30 @@ export const TemplateEditor = ({
   onTemplateChange,
   onGenerateTitle,
   charLimit,
-  charLimitEnabled,
-  onCharLimitChange,
-  onCharLimitEnabledChange
+  onCharLimitChange
 }: {
   title: string;
   template: string;
   onTitleChange: (title: string) => void;
   onTemplateChange: (template: string) => void;
   onGenerateTitle: () => void;
-  charLimit: number;
-  charLimitEnabled: boolean;
-  onCharLimitChange: (value: number) => void;
-  onCharLimitEnabledChange: (enabled: boolean) => void;
+  charLimit: number | null;
+  onCharLimitChange: (value: number | null) => void;
 }) => {
+  const charLimitEnabled = charLimit !== null;
+  // Remembers the last limit so re-checking the box restores it
+  const [lastLimit, setLastLimit] = useState(charLimit ?? DEFAULT_CHAR_LIMIT);
+  useEffect(() => {
+    if (charLimit !== null) setLastLimit(charLimit);
+  }, [charLimit]);
+
   const placeholderText = 'Hi {{firstName}}, I noticed you work at {{companyName}}.';
   const totalCount = template.length;
   const withoutPlaceholders = template.replace(/\{\{[^}]+}}/g, '');
   const withoutPlaceholdersCount = withoutPlaceholders.length;
 
-  const isOverLimit = charLimitEnabled && withoutPlaceholdersCount > charLimit;
-  const isWarning = charLimitEnabled && totalCount > charLimit && !isOverLimit;
+  const isOverLimit = charLimit !== null && withoutPlaceholdersCount > charLimit;
+  const isWarning = charLimit !== null && totalCount > charLimit && !isOverLimit;
 
   const acceptPlaceHolderOnTabPress = (e: KeyboardEvent) => {
     if (e.key === 'Tab' && template.trim() === '') {
@@ -88,7 +93,7 @@ export const TemplateEditor = ({
               type="checkbox"
               id="charLimitEnabled"
               checked={charLimitEnabled}
-              onChange={(e) => onCharLimitEnabledChange((e.target as HTMLInputElement).checked)}
+              onChange={(e) => onCharLimitChange((e.target as HTMLInputElement).checked ? lastLimit : null)}
               class="cursor-pointer"
             />
             <label for="charLimitEnabled" class="text-sm text-text-secondary cursor-pointer select-none">
@@ -96,7 +101,7 @@ export const TemplateEditor = ({
             </label>
             <input
               type="number"
-              value={charLimit}
+              value={charLimit ?? lastLimit}
               min={1}
               disabled={!charLimitEnabled}
               onInput={(e) => {

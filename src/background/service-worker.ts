@@ -66,25 +66,29 @@ chrome.runtime.onInstalled.addListener(() => {
           id: crypto.randomUUID(),
           title: 'Designer outreach',
           template:
-            "Hi {{firstName}}, I noticed you work at {{companyName}} and wanted to reach out. I'm really impressed by your work in {{position}} and would love to connect!"
+            "Hi {{firstName}}, I noticed you work at {{companyName}} and wanted to reach out. I'm really impressed by your work in {{position}} and would love to connect!",
+          char_limit: 300
         },
         {
           id: crypto.randomUUID(),
           title: 'Recruiter intro',
           template:
-            "Hello {{firstName}}! I saw your profile and your experience at {{companyName}} caught my attention. I think we could have some great conversations about {{headline}}."
+            "Hello {{firstName}}! I saw your profile and your experience at {{companyName}} caught my attention. I think we could have some great conversations about {{headline}}.",
+          char_limit: 300
         },
         {
           id: crypto.randomUUID(),
           title: 'Sales pitch',
           template:
-            "Hey {{firstName}}, I'm reaching out because I noticed we share similar interests. Your role as {{position}} at {{companyName}} is fascinating. Would you be open to connecting?"
+            "Hey {{firstName}}, I'm reaching out because I noticed we share similar interests. Your role as {{position}} at {{companyName}} is fascinating. Would you be open to connecting?",
+          char_limit: 300
         },
         {
           id: crypto.randomUUID(),
           title: 'General networking',
           template:
-            "Hi {{firstName}}, I came across your profile and was impressed by your background at {{companyName}}. I'd love to learn more about your experience in {{position}}!"
+            "Hi {{firstName}}, I came across your profile and was impressed by your background at {{companyName}}. I'd love to learn more about your experience in {{position}}!",
+          char_limit: 300
         }
       ];
 

@@ -170,7 +170,8 @@ function getFilteredItems(
       template: {
         id: currentWork.id || '',
         title: currentWork.title,
-        template: currentWork.template
+        template: currentWork.template,
+        char_limit: currentWork.char_limit
       },
       displayTitle,
       selected: true,
@@ -213,6 +214,7 @@ function hasUnsavedChanges(templates: Template[], currentWork: CurrentWork): boo
 
   return (
     savedVersion.title !== currentWork.title ||
-    savedVersion.template !== currentWork.template
+    savedVersion.template !== currentWork.template ||
+    savedVersion.char_limit !== currentWork.char_limit
   );
 }

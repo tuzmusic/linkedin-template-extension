@@ -2,6 +2,8 @@ export interface Template {
   id: string;
   title: string;
   template: string;
+  /** Max characters; null means no limit */
+  char_limit: number | null;
   created_at?: string;
   updated_at?: string;
 }
@@ -17,6 +19,7 @@ export interface CurrentWork {
   id: string | null;
   title: string;
   template: string;
+  char_limit: number | null;
 }
 
 export const WILDCARDS = [
@@ -33,4 +36,4 @@ export const WILDCARDS = [
 ];
 
 export const MAX_TEMPLATES = 20;
-export const MAX_CHAR_LIMIT = 300;
+export const DEFAULT_CHAR_LIMIT = 300;
