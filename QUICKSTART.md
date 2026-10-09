@@ -4,19 +4,19 @@
 
 1. Open Chrome and go to `chrome://extensions/`
 2. Enable "Developer mode" (toggle in top-right)
-3. Click "Load unpacked" → Select the `linkedin-template-extension` folder
-4. Done! Look for the blue "LT" icon in your toolbar
+3. Click "Load unpacked" → Select the `dist` folder (run `npm run build` first)
+4. Done! Look for the extension's icon in your toolbar
 
 ## Usage (30 seconds)
 
 1. **Set your template** (one time):
-   - Click the LT icon
+   - Click the extension icon
    - Type: `Hi {{firstName}}, I noticed you work at {{companyName}}. Let's connect!`
    - Click "Save Template"
 
 2. **Use it** (on any LinkedIn profile):
    - Navigate to someone's LinkedIn profile
-   - Press `Cmd+.` (Mac) or `Ctrl+.` (Windows)
+   - Press `Option+V` (Mac) or `Alt+V` (Windows)
    - See green notification: "Message copied!"
    - Go to LinkedIn → Connect → Add a note → Paste (`Cmd+V`)
    - Send!

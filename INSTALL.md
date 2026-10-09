@@ -12,13 +12,13 @@
 
 ### 3. Load the Extension
 - Click the "Load unpacked" button that appears
-- Navigate to and select the `linkedin-template-extension` folder
+- Navigate to and select the `dist` folder (run `npm run build` first)
 - Click "Select" or "Open"
 
 ### 4. Verify Installation
 You should see:
-- "LinkedIn Message Template" in your extensions list
-- A blue "LT" icon in your Chrome toolbar (you may need to click the puzzle piece icon to pin it)
+- "LinkedIn Secret Weapon" in your extensions list
+- Its icon in your Chrome toolbar (you may need to click the puzzle piece icon to pin it)
 
 ### 5. Set Up Your Template
 - Click the extension icon in the toolbar
@@ -28,7 +28,7 @@ You should see:
 ## Quick Test
 
 1. Go to any LinkedIn profile (e.g., a coworker or public profile)
-2. Press `Cmd+.` (Mac) or `Ctrl+.` (Windows)
+2. Press `Option+V` (Mac) or `Alt+V` (Windows)
 3. You should see a green toast notification saying "Message copied!"
 4. Paste (`Cmd+V`) anywhere to see your personalized message
 

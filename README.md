@@ -1,195 +1,89 @@
-# LinkedIn Message Template Extension
+# LinkedIn Secret Weapon
 
-A Chrome extension that helps you quickly copy personalized LinkedIn connection request messages using customizable templates with wildcards.
+**With 3 keystrokes, send someone a LinkedIn connection request with a personalized message built from their
+profile.** Write your message once with wildcards like `{{firstName}}` and `{{companyName}}`. On any profile, press
+`Option+C` (Connect), `Option+N` (add your filled-in note), `Option+Shift+S` (send).
 
-## Features
+**[Install from the Chrome Web Store](https://chromewebstore.google.com/detail/linkedin-secret-weapon/lemllkepipijimjaobiapmipedjmnonp)**
 
-- **Message Templates**: Create reusable message templates with wildcard support
-- **Cloud Sync**: Sign in to sync your templates across devices
-- **Keyboard Shortcut**: Press `Opt+V` (Mac) or `Alt+V` (Windows/Linux) to copy personalized messages
-- **Auto-Fill Wildcards**: Automatically extracts profile data and fills in template placeholders
-- **Character Counter**: Shows character count (LinkedIn's 300 char limit) with warnings
-- **Toast Notifications**: Visual feedback when message is copied
-- **Easy Management**: Simple popup and settings page to manage your templates
+<img src="screenshots/v100_ss1_top.png" width="640" alt="The template editor popup on a LinkedIn profile">
 
-## Supported Wildcards
+## Why
 
-- `{{firstName}}` - Contact's first name
-- `{{lastName}}` - Contact's last name
-- `{{fullName}}` - Contact's full name
-- `{{companyName}}` or `{{company}}` - Current company name
-- `{{position}}` - Current job position
-- `{{headline}}` - LinkedIn headline
-- `{{location}}` - Location
+A connection request with a real note gets accepted far more often than a blank one, but writing a fresh note for every
+profile is slow, and copy-paste-and-edit is how you end up calling someone by the last person's name. This extension
+reads the profile you're on and fills your template for you, so personalizing takes a keystroke instead of a minute.
 
-## Usage
+It doesn't automate sending. You still look at every profile and press Send yourself; it just removes the busywork.
 
-### Setting Up Your Template
+## What it does
 
-**Option 1: Using the Popup**
-1. Click the extension icon in Chrome toolbar
-2. Enter your message template
-3. Use wildcards like `{{firstName}}` and `{{companyName}}`
-4. Click "Save Template"
+- **Templates with wildcards.** `{{firstName}}`, `{{lastName}}`, `{{fullName}}`, `{{companyName}}`, `{{position}}`,
+  `{{headline}}`, `{{location}}`, filled from the profile you're viewing.
+- **Introduction requests.** `{{msgFirstName}}` / `{{msgFullName}}` fill from the person in your open message thread,
+  so you can write "Hi {{msgFirstName}}, could you introduce me to {{firstName}}?"
+- **Keyboard-driven flow.** `Option+V` copies the note, `Option+C` opens Connect, `Option+N` opens "Add a note" and
+  inserts the filled template, `Option+Shift+S` sends. Rebind any of them at `chrome://extensions/shortcuts`.
+- **Many templates.** Search, sort (name / created / updated), click a wildcard to insert it, pick a template and it's
+  live.
+- **Character limit check.** Warns past LinkedIn's 300-character limit, or set your own (or none).
+- **Cloud sync.** Sign in and your templates follow you across devices. If the network is down, it keeps working from
+  the local cache.
 
-**Option 2: Using the Settings Page**
-1. Right-click the extension icon → Options
-2. Enter your message template
-3. Click "Save Template"
+## How it's built
 
-**Example Template:**
+- **Chrome MV3** extension: service worker for shortcuts, content script for LinkedIn, **Preact** popup and options page.
+- **TypeScript**, **Tailwind CSS**, **Vite** + **CRXJS**.
+- **Supabase** (Postgres + Auth) for accounts and sync, schema managed with **Prisma** migrations, row-level security on
+  every table. Local-first: templates load from `chrome.storage.local` immediately and sync in the background.
+- Profile scraping is isolated in `src/content/profile-scraper.ts`, since LinkedIn's markup changes often (see
+  v0.3.0 in the [changelog](CHANGELOG.md)).
+
 ```
-Hi {{firstName}}, I noticed you work at {{companyName}}. I'd love to connect and learn more about your work in {{position}}!
-```
-
-### Sending Connection Requests
-
-1. **Navigate to a LinkedIn Profile**
-   - Go to any LinkedIn profile page (e.g., `linkedin.com/in/someone`)
-
-2. **Copy Personalized Message**
-   - Press `Opt+V` (Mac) or `Alt+V` (Windows/Linux)
-   - You'll see a toast notification: "Message copied! (XXX/300 chars)"
-
-3. **Paste into LinkedIn**
-   - Click the "Connect" button on LinkedIn
-   - Click "Add a note"
-   - Paste (`Cmd+V` or `Ctrl+V`) your personalized message
-   - Send the request!
-
-### Tips
-
-- **Character Limit**: LinkedIn limits connection messages to 300 characters for premium memberships. The extension will warn you if your message is too long.
-- **Missing Data**: If a wildcard can't be filled (e.g., company not found), it will be replaced with an empty string.
-- **Test Your Template**: Try it on a few profiles to make sure the wildcards are working as expected.
-
-## Troubleshooting
-
-### Extension not working on LinkedIn
-- Make sure you're on a profile page (URL contains `/in/`)
-- Try refreshing the page
-- Check if the extension is enabled in `chrome://extensions/`
-
-### Keyboard shortcut not working
-- Check if another extension is using the same shortcut
-- Go to `chrome://extensions/shortcuts` to view/modify shortcuts
-- Make sure you're on a LinkedIn page, not the Chrome extensions page
-
-### Wildcards not filling correctly
-- LinkedIn's page structure may change over time
-- Some profiles may have incomplete information
-- Try different profiles to see if the issue is consistent
-
-### Icons not showing
-- The basic placeholder icons should work fine
-- You can create custom icons by replacing files in the `icons/` folder
-
-## Development
-
-### Tech Stack
-- **Preact**: Lightweight React alternative for the UI
-- **TypeScript**: Type-safe code
-- **Vite**: Fast build tool
-- **Tailwind CSS**: Utility-first styling
-- **CRXJS**: Chrome extension bundling for Vite
-
-### Project Structure
-```
-linkedin-secret-weapon-preact/
-├── src/
-│   ├── background/        # Service worker for keyboard shortcuts
-│   ├── content/           # Content script for LinkedIn pages
-│   ├── popup/             # Popup UI (Preact components)
-│   ├── options/           # Settings page UI (Preact components)
-│   ├── components/        # Shared Preact components
-│   ├── scripts/           # Utility functions
-│   ├── styles/            # Global styles
-│   ├── types.ts           # TypeScript type definitions
-│   └── utils/             # Helper utilities
-├── manifest.config.ts     # Extension configuration (used by CRXJS)
-├── dist/                  # Built extension (generated by build)
-├── icons/                 # Extension icons
-├── popup.html             # Popup HTML template
-├── options.html           # Options page HTML template
-├── vite.config.ts         # Vite configuration
-├── tsconfig.json          # TypeScript configuration
-└── README.md              # This file
+src/
+  background/   service worker: keyboard commands → content script messages
+  content/      profile scraper, template filler, LinkedIn button handlers, toasts
+  popup/        template editor, list, search, auth (Preact)
+  options/      settings page
+  utils/        storage, Supabase client, auth storage
+prisma/         schema and migrations
+supabase/       local Supabase config
 ```
 
-### Key Files
-
-- **manifest.config.ts**: Extension configuration that gets processed into manifest.json
-- **src/background/**: Service worker that listens for keyboard shortcuts
-- **src/content/**: Content script that scrapes LinkedIn data and handles template filling
-- **src/popup/**: Preact components for the quick template editor
-- **src/options/**: Preact components for the full settings page
-
-### Development
-
-1. **Install dependencies and build**
-   ```bash
-   npm install
-   npm run build
-   ```
-
-2. **Open Chrome Extensions Page**
-   - Navigate to `chrome://extensions/`
-   - Or Menu → More Tools → Extensions
-
-3. **Enable Developer Mode**
-   - Toggle the "Developer mode" switch in the top right
-
-4. **Load the Extension**
-   - Click "Load unpacked"
-   - Select the `dist` folder (the built extension)
-   - The extension should now appear in your extensions list
-
-5. **Pin the Extension** (Optional)
-   - Click the puzzle piece icon in Chrome toolbar
-   - Find "LinkedIn Message Template"
-   - Click the pin icon to keep it visible
-
-### Building
-
-To build the extension:
+## Build from source
 
 ```bash
 npm install
-npm run build
+npm run build        # outputs dist/ and release/release-*.zip
 ```
 
-This generates a `release.zip` file in the `/release` folder. This can be dragged into the `chrome://extensions/`, or uploaded to the Chrome Web Store.
+Then `chrome://extensions` → Developer mode → **Load unpacked** → select `dist/`.
 
-### Releasing
+To develop against a local Supabase: `npm run supabase` (wraps the Supabase CLI), then `npm run dev`. Use
+`npm run dev:remote` / `npm run build:remote` to target the hosted project.
 
-To publish a new version:
+## Using it
 
-1. **Update the version** in `package.json`
-2. **Update the manifest** in `manifest.config.ts` if needed
-3. **Build the extension**: `npm run build`
-4. **Package the extension**: The build process creates `release/release.zip`
-5. **Upload to Chrome Web Store**:
-   - Go to [Chrome Web Store Developer Console](https://chrome.google.com/webstore/devconsole)
-   - Select the extension
-   - Upload the new version (the zip created above)
-   - Review the changes and publish
+1. Click the toolbar icon, sign in, and write a template, e.g.
+   `Hi {{firstName}}, I noticed you work at {{companyName}}. I'd love to connect!`
+2. Go to a LinkedIn profile (`linkedin.com/in/...`).
+3. Press `Option+C`, then `Option+N`: the note box opens with your message filled in. Or press `Option+V` and paste it
+   wherever you like.
+
+On Windows/Linux, use `Alt` in place of `Option`. If a wildcard can't be found on the profile, it's left blank (company
+shows `COMPANY_NAME` so you notice).
 
 ## Privacy
 
-This extension:
-- ✅ Only runs on LinkedIn.com
-- ✅ Stores templates in your account via Supabase (cloud sync) and locally as a cache
-- ✅ Does NOT track your activity or share data with third parties
-- ✅ Only accesses the current active tab when you press the keyboard shortcut
-
-## License
-
-MIT License - Feel free to modify and distribute
-
-## Contributing
-
-Contributions welcome! Please feel free to submit issues or pull requests.
+- Runs only on linkedin.com.
+- Templates are stored in your account (Supabase) and cached locally. Nothing is shared with third parties.
+- Profile data is read only when you trigger a shortcut, and only to fill your template.
 
 ## Disclaimer
 
-This extension is not affiliated with LinkedIn. Use responsibly and in accordance with LinkedIn's Terms of Service. The extension does not automate sending connection requests - it only helps you create personalized messages faster.
+Not affiliated with LinkedIn. It does not send connection requests on its own; use it in line with LinkedIn's Terms of
+Service.
+
+## License
+
+MIT
