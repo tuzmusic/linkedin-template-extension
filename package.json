@@ -33,6 +33,8 @@
     "typecheck": "tsc --noEmit",
     "test:migrate": "vitest run scripts/migrate-templates.test.ts",
     "migrate": "tsx scripts/migrate-templates.ts",
+    "migrate:local": "prisma migrate deploy",
+    "migrate:remote": "ENV_FILE=.env.remote.local prisma migrate deploy",
     "supabase": "bash scripts/supabase.sh"
   }
 }
