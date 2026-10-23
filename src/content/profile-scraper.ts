@@ -12,6 +12,15 @@ export interface LinkedInProfileData {
   msgFullName: string | null;
 }
 
+// Strip emoji and zero-width chars so names read naturally in templates (e.g. "💻 Wendy G." -> "Wendy G.")
+function cleanName(name: string): string {
+  return name
+    .replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu, '')
+    .replace(/[\u200B-\u200D\uFE0F\uFEFF]/g, '')
+    .trim()
+    .replace(/\s+/g, ' ');
+}
+
 export function scrapeLinkedInProfile(): LinkedInProfileData {
   const data: LinkedInProfileData = {
     firstName: '',
@@ -36,11 +45,7 @@ export function scrapeLinkedInProfile(): LinkedInProfileData {
     }
 
     if (fullName) {
-      data.fullName = fullName
-        .replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu, '')
-        .replace(/[\u200B-\u200D\uFEFF]/g, '')
-        .trim()
-        .replace(/\s+/g, ' ');
+      data.fullName = cleanName(fullName);
       const nameParts = data.fullName.split(' ').filter(part => part.length > 0);
       data.firstName = nameParts[0] || '';
       data.lastName = nameParts.slice(1).join(' ') || '';
@@ -73,16 +78,24 @@ export function scrapeLinkedInProfile(): LinkedInProfileData {
     }
 
     // Get message recipient name from open message conversation
-    const msgProfileCard = document.querySelector('.msg-s-profile-card-one-to-one');
-    if (msgProfileCard) {
-      const nameElement = msgProfileCard.querySelector('.profile-card-one-to-one__profile-link span.truncate');
-      if (nameElement) {
-        const fullName = nameElement.textContent?.trim() || '';
-        data.msgFullName = fullName;
-        const nameParts = fullName.split(' ').filter(part => part.length > 0);
-        data.msgFirstName = nameParts[0] || null;
-        data.msgLastName = nameParts.slice(1).join(' ') || null;
-      }
+    // The profile card only renders at the top of new conversations, so prefer the header title
+    // On profile pages the chat overlay lives inside the #interop-outlet shadow root, invisible to document.querySelector.
+    // With several bubbles open, prefer the focused one (all open bubbles carry the --is-active class).
+    const msgRoot: ParentNode = document.querySelector('#interop-outlet')?.shadowRoot ?? document;
+    const msgScope: ParentNode =
+      msgRoot.querySelector('.msg-overlay-conversation-bubble:focus-within') ||
+      msgRoot.querySelector('.msg-overlay-conversation-bubble') ||
+      msgRoot;
+    const nameElement =
+      msgScope.querySelector('.msg-overlay-bubble-header__title') ||
+      msgScope.querySelector('.msg-entity-lockup__entity-title') ||
+      msgScope.querySelector('.msg-s-profile-card-one-to-one .profile-card-one-to-one__profile-link span.truncate');
+    if (nameElement) {
+      const fullName = cleanName(nameElement.textContent || '');
+      data.msgFullName = fullName;
+      const nameParts = fullName.split(' ').filter(part => part.length > 0);
+      data.msgFirstName = nameParts[0] || null;
+      data.msgLastName = nameParts.slice(1).join(' ') || null;
     }
 
     console.log('Scraped LinkedIn data:', data);
