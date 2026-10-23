@@ -40,11 +40,11 @@ export function scrapeLinkedInProfile(): LinkedInProfileData {
   };
 
   try {
-    // Get full name from page title (e.g., "Name | LinkedIn")
+    // Get full name from page title (e.g., "Name | LinkedIn", or "(2) Name | LinkedIn" when there are notifications)
     let fullName = '';
     const pageTitle = document.title;
     if (pageTitle && pageTitle.includes('|')) {
-      fullName = pageTitle.split('|')[0].trim();
+      fullName = pageTitle.split('|')[0].replace(/^\s*\(\d+\+?\)\s*/, '').trim();
     }
 
     if (fullName) {
