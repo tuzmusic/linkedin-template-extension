@@ -85,13 +85,15 @@ export function scrapeLinkedInProfile(): LinkedInProfileData {
     // The profile card only renders at the top of new conversations, so prefer the header title
     // On profile pages the chat overlay lives inside the #interop-outlet shadow root, invisible to document.querySelector.
     // With several bubbles open, prefer the focused one (all open bubbles carry the --is-active class).
+    // Compose bubbles are titled "New message", so read the recipient pill from the To field instead.
     const msgRoot: ParentNode = document.querySelector('#interop-outlet')?.shadowRoot ?? document;
     const msgScope: ParentNode =
       msgRoot.querySelector('.msg-overlay-conversation-bubble:focus-within') ||
       msgRoot.querySelector('.msg-overlay-conversation-bubble') ||
       msgRoot;
     const nameElement =
-      msgScope.querySelector('.msg-overlay-bubble-header__title') ||
+      msgScope.querySelector('.msg-connections-typeahead__added-recipients .artdeco-pill__text') ||
+      msgScope.querySelector('.msg-overlay-conversation-bubble:not(.msg-overlay-conversation-bubble--is-compose) .msg-overlay-bubble-header__title') ||
       msgScope.querySelector('.msg-entity-lockup__entity-title') ||
       msgScope.querySelector('.msg-s-profile-card-one-to-one .profile-card-one-to-one__profile-link span.truncate');
     if (nameElement) {
