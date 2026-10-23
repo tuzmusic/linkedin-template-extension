@@ -2,6 +2,8 @@ export interface LinkedInProfileData {
   firstName: string;
   lastName: string;
   fullName: string;
+  // Name exactly as LinkedIn displays it (may include emoji); use for matching DOM elements, not for templates
+  displayName: string;
   headline: string;
   companyName: string | null;
   position: string;
@@ -26,6 +28,7 @@ export function scrapeLinkedInProfile(): LinkedInProfileData {
     firstName: '',
     lastName: '',
     fullName: '',
+    displayName: '',
     headline: '',
     companyName: null,
     position: '',
@@ -45,6 +48,7 @@ export function scrapeLinkedInProfile(): LinkedInProfileData {
     }
 
     if (fullName) {
+      data.displayName = fullName;
       data.fullName = cleanName(fullName);
       const nameParts = data.fullName.split(' ').filter(part => part.length > 0);
       data.firstName = nameParts[0] || '';

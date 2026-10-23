@@ -35,20 +35,21 @@ function findMoreButton(maxLevels = 10): HTMLButtonElement | null {
 }
 
 export function clickConnect(): void {
-  const { fullName } = scrapeLinkedInProfile();
+  // Use the name as displayed (with any emoji) so it matches LinkedIn's aria-label
+  const { displayName } = scrapeLinkedInProfile();
 
   const ACTUALLY_CLICK = true;
   const onFindConnectButton = (button: HTMLButtonElement) => {
     if (ACTUALLY_CLICK) {
       button.click();
     } else {
-      highlightAndLogButton(button, fullName);
+      highlightAndLogButton(button, displayName);
     }
   };
 
   try {
     let connectButton = document.querySelector(
-      `[aria-label="Invite ${fullName} to connect"]`
+      `[aria-label="Invite ${displayName} to connect"]`
     ) as HTMLButtonElement | null;
 
     // If not found, click the More button and try again
@@ -59,7 +60,7 @@ export function clickConnect(): void {
         // Wait for menu to render before searching again
         setTimeout(() => {
           connectButton = document.querySelector(
-            `[aria-label="Invite ${fullName} to connect"]`
+            `[aria-label="Invite ${displayName} to connect"]`
           ) as HTMLButtonElement | null;
           if (connectButton) {
             onFindConnectButton(connectButton);
