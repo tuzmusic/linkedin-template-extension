@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'preact/hooks';
-import { CurrentWork, MAX_TEMPLATES, SortConfig, Template } from '../types';
+import { CurrentWork, SortConfig, Template } from '../types';
 import {
   createTemplateInDb,
   deleteTemplateFromDb,
@@ -160,15 +160,14 @@ export const Popup = ({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
       return;
     }
 
-    let newTemplates = [...savedTemplates];
+    const newTemplates = [...savedTemplates];
     let savedId = currentWork.id;
 
     if (currentWork.id) {
       const index = newTemplates.findIndex((t) => t.id === currentWork.id);
       if (index !== -1) {
-        newTemplates[index] = { id: currentWork.id, title, template };
+        newTemplates[index] = { ...newTemplates[index], title, template };
       }
-      if (newTemplates.length > MAX_TEMPLATES) newTemplates = newTemplates.slice(0, MAX_TEMPLATES);
       const newWork = { id: savedId, title, template };
       setSavedTemplates(newTemplates);
       setCurrentWork(newWork);
@@ -190,7 +189,6 @@ export const Popup = ({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
         savedId = crypto.randomUUID();
         const newTemplate: Template = { id: savedId, title, template };
         newTemplates.unshift(newTemplate);
-        if (newTemplates.length > MAX_TEMPLATES) newTemplates = newTemplates.slice(0, MAX_TEMPLATES);
         const newWork = { id: savedId, title, template };
         setSavedTemplates(newTemplates);
         setCurrentWork(newWork);
@@ -208,7 +206,6 @@ export const Popup = ({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
       savedId = created.id;
       const newTemplate: Template = { id: savedId, title, template };
       newTemplates.unshift(newTemplate);
-      if (newTemplates.length > MAX_TEMPLATES) newTemplates = newTemplates.slice(0, MAX_TEMPLATES);
       const newWork = { id: savedId, title, template };
       setSavedTemplates(newTemplates);
       setCurrentWork(newWork);
@@ -260,8 +257,7 @@ export const Popup = ({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
     }
 
     const newTemplate: Template = { id: newId, title: newTitle, template };
-    let newTemplates = [newTemplate, ...savedTemplates];
-    if (newTemplates.length > MAX_TEMPLATES) newTemplates = newTemplates.slice(0, MAX_TEMPLATES);
+    const newTemplates = [newTemplate, ...savedTemplates];
 
     const newWork = { id: newId, title: newTitle, template };
     setSavedTemplates(newTemplates);
