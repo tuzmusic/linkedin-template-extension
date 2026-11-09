@@ -1,6 +1,54 @@
 import { Template } from '../types';
 import { AppStorageState } from "../utils/storage.ts";
 
+// Content scripts only run on LinkedIn, so elsewhere we inject a self-contained copy + toast.
+// This function is serialized into the page: it can't reference anything outside itself.
+function copyAndToast(text: string) {
+  const toast = document.createElement('div');
+  toast.style.cssText =
+    'position:fixed;top:20px;right:20px;z-index:2147483647;max-width:360px;padding:12px 16px;' +
+    'border-radius:8px;background:#16a34a;color:#fff;font:14px/1.4 system-ui,sans-serif;' +
+    'box-shadow:0 4px 12px rgba(0,0,0,.25)';
+  const show = (ok: boolean) => {
+    toast.style.background = ok ? '#16a34a' : '#dc2626';
+    toast.innerHTML = ok
+      ? '<div><b>Template copied!</b></div><div style="opacity:.9;margin:6px 0;white-space:pre-wrap"></div>' +
+        '<div style="font-size:12px;opacity:.9">⚠️ Not on LinkedIn: wildcards left unfilled</div>'
+      : 'Failed to copy template';
+    const preview = toast.children[1];
+    if (preview) preview.textContent = text;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 5000);
+  };
+  navigator.clipboard.writeText(text).then(
+    () => show(true),
+    () => {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      const ok = document.execCommand('copy');
+      ta.remove();
+      show(ok);
+    }
+  );
+}
+
+async function copyTemplateOutsideLinkedIn(tabId: number) {
+  try {
+    const result = await chrome.storage.sync.get<AppStorageState>(['currentWork']);
+    const template = result.currentWork?.template || '';
+    await chrome.scripting.executeScript({
+      target: { tabId },
+      func: copyAndToast,
+      args: [template]
+    });
+  } catch (error) {
+    // e.g. chrome:// pages, the Web Store, or the PDF viewer can't be scripted
+    console.error('Failed to copy template on this page:', error);
+  }
+}
+
 // Handle keyboard shortcuts
 chrome.commands.onCommand.addListener((command) => {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -10,31 +58,35 @@ chrome.commands.onCommand.addListener((command) => {
     }
 
     const activeTab = tabs[0];
-
-    // Only trigger on LinkedIn pages
-    if (!activeTab.url || !activeTab.url.includes('linkedin.com')) {
-      console.warn('Not on a LinkedIn page:', activeTab.url);
-      return;
-    }
-
     const tabId = activeTab.id;
     if (!tabId) {
       console.error('No tab ID found');
       return;
     }
 
+    const onLinkedIn = !!activeTab.url && activeTab.url.includes('linkedin.com');
+
     if (command === 'copy-template') {
-      // Only allow on profile pages
-      if (!activeTab.url.includes('linkedin.com/in/')) {
-        console.warn('Not on a LinkedIn profile page');
-        return;
+      // Works anywhere: on non-LinkedIn pages (e.g. Gmail) the template is copied unfilled
+      if (onLinkedIn) {
+        chrome.tabs
+          .sendMessage(tabId, { action: 'copyTemplate' })
+          .catch((error) => {
+            console.error('Failed to send copyTemplate message:', error.message);
+          });
+      } else {
+        copyTemplateOutsideLinkedIn(tabId);
       }
-      chrome.tabs
-        .sendMessage(tabId, { action: 'copyTemplate' })
-        .catch((error) => {
-          console.error('Failed to send copyTemplate message:', error.message);
-        });
-    } else if (command === 'click-connect') {
+      return;
+    }
+
+    // Everything else only makes sense on LinkedIn
+    if (!onLinkedIn) {
+      console.warn('Not on a LinkedIn page:', activeTab.url);
+      return;
+    }
+
+    if (command === 'click-connect') {
       chrome.tabs
         .sendMessage(tabId, { action: 'clickConnect' })
         .catch((error) => {

@@ -21,11 +21,13 @@ async function handleCopyTemplate(): Promise<void> {
     const result = await chrome.storage.sync.get<AppStorageState>(['currentWork']);
     const template = result.currentWork?.template || "Hi {{firstName}}, I'd love to connect!";
 
-    // Scrape profile data
+    // Scrape profile data; off a profile (or message thread) there's nothing to fill from,
+    // so copy the template as-is and warn instead of failing
     const profileData = scrapeLinkedInProfile();
-
-    // Fill template
-    const filledMessage = fillTemplate(template, profileData);
+    const hasProfile =
+      (window.location.pathname.startsWith('/in/') && !!profileData.firstName) ||
+      !!profileData.msgFullName;
+    const filledMessage = hasProfile ? fillTemplate(template, profileData) : template;
 
     // Check character count
     const charCount = filledMessage.length;
@@ -35,8 +37,11 @@ async function handleCopyTemplate(): Promise<void> {
 
     if (success) {
       // Show green toast with warning if too long
-      const warningText =
-        charCount > 300 ? '⚠️ Message exceeds 300 character limit' : null;
+      const warningText = !hasProfile
+        ? '⚠️ No LinkedIn profile found; copied template unfilled'
+        : charCount > 300
+          ? '⚠️ Message exceeds 300 character limit'
+          : null;
       showNotification(
         `Message copied! (${charCount}/300 chars)`,
         'success',

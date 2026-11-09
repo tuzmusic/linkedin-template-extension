@@ -9,6 +9,7 @@ export default defineManifest({
   "permissions": [
     "storage",
     "activeTab",
+    "scripting",
     "clipboardWrite"
   ],
   "host_permissions": [
