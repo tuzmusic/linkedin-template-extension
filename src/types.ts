@@ -32,5 +32,4 @@ export const WILDCARDS = [
   '{{msgFullName}}'
 ];
 
-export const MAX_TEMPLATES = 20;
 export const MAX_CHAR_LIMIT = 300;
