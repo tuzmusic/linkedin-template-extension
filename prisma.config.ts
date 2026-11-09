@@ -3,7 +3,7 @@
 import dotenv from "dotenv";
 import { defineConfig } from "prisma/config";
 
-dotenv.config({ path: ".env.local" });
+dotenv.config({ path: process.env["ENV_FILE"] ?? ".env.local" });
 
 const pw = process.env["VITE_SUPABASE_PASSWORD"]
 const connectionString = process.env["VITE_SUPABASE_CONNECTION_STRING"];

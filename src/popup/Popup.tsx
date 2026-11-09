@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'preact/hooks';
-import { CurrentWork, SortConfig, Template } from '../types';
+import { CurrentWork, DEFAULT_CHAR_LIMIT, SortConfig, Template } from '../types';
 import {
   createTemplateInDb,
   deleteTemplateFromDb,
@@ -19,7 +19,8 @@ export const Popup = ({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
   const [currentWork, setCurrentWork] = useState<CurrentWork>({
     id: null,
     title: '',
-    template: ''
+    template: '',
+    char_limit: DEFAULT_CHAR_LIMIT
   });
   const [searchQuery, setSearchQuery] = useState('');
   const [sortConfig, setSortConfig] = useState<SortConfig>({ field: 'created_at', dir: 'desc' });
@@ -27,8 +28,6 @@ export const Popup = ({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
   const [saveAsTitle, setSaveAsTitle] = useState('');
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [autoSaveTimeout, setAutoSaveTimeout] = useState<number | null>(null);
-  const [charLimit, setCharLimit] = useState(300);
-  const [charLimitEnabled, setCharLimitEnabled] = useState(true);
   const [dbError, setDbError] = useState(false);
   const [offlineModalDismissed, setOfflineModalDismissed] = useState(false);
 
@@ -38,8 +37,6 @@ export const Popup = ({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
       if (data.currentWork) {
         setCurrentWork(data.currentWork);
       }
-      setCharLimit(data.charLimit);
-      setCharLimitEnabled(data.charLimitEnabled);
     });
 
     const timeout = window.setTimeout(() => {
@@ -65,14 +62,11 @@ export const Popup = ({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
     return () => clearTimeout(timeout);
   }, []);
 
-  const handleCharLimitChange = (value: number) => {
-    setCharLimit(value);
-    saveData({ charLimit: value });
-  };
-
-  const handleCharLimitEnabledChange = (enabled: boolean) => {
-    setCharLimitEnabled(enabled);
-    saveData({ charLimitEnabled: enabled });
+  // Limit edits stay in the draft (like title/template) until Save
+  const handleCharLimitChange = (char_limit: number | null) => {
+    const work = { ...currentWork, char_limit };
+    setCurrentWork(work);
+    debounceAutoSave(work, savedTemplates);
   };
 
   const resyncFromDb = async () => {
@@ -138,7 +132,8 @@ export const Popup = ({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
     const newWork: CurrentWork = {
       id: null,
       title: '',
-      template: ''
+      template: '',
+      char_limit: DEFAULT_CHAR_LIMIT
     };
 
     setCurrentWork(newWork);
@@ -149,6 +144,7 @@ export const Popup = ({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
   const handleSave = async () => {
     const title = currentWork.title.trim();
     const template = currentWork.template.trim();
+    const char_limit = currentWork.char_limit;
 
     if (!title) {
       alert('Please enter a title for this template');
@@ -166,9 +162,9 @@ export const Popup = ({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
     if (currentWork.id) {
       const index = newTemplates.findIndex((t) => t.id === currentWork.id);
       if (index !== -1) {
-        newTemplates[index] = { ...newTemplates[index], title, template };
+        newTemplates[index] = { ...newTemplates[index], title, template, char_limit };
       }
-      const newWork = { id: savedId, title, template };
+      const newWork = { id: savedId, title, template, char_limit };
       setSavedTemplates(newTemplates);
       setCurrentWork(newWork);
       saveData({ savedTemplates: newTemplates, currentWork: newWork });
@@ -179,7 +175,7 @@ export const Popup = ({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
       }
 
       showSavedMessageBriefly();
-      const ok = await updateTemplateInDb(currentWork.id, title, template);
+      const ok = await updateTemplateInDb(currentWork.id, title, template, char_limit);
       if (!ok) {
         alert('Failed to save template. Your changes have been reverted.');
         await resyncFromDb();
@@ -187,9 +183,9 @@ export const Popup = ({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
     } else {
       if (dbError) {
         savedId = crypto.randomUUID();
-        const newTemplate: Template = { id: savedId, title, template };
+        const newTemplate: Template = { id: savedId, title, template, char_limit };
         newTemplates.unshift(newTemplate);
-        const newWork = { id: savedId, title, template };
+        const newWork = { id: savedId, title, template, char_limit };
         setSavedTemplates(newTemplates);
         setCurrentWork(newWork);
         showSavedMessageBriefly('Saved locally (offline)');
@@ -198,15 +194,15 @@ export const Popup = ({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
       }
 
       // Await DB insert to get the generated id before updating local state
-      const created = await createTemplateInDb(title, template);
+      const created = await createTemplateInDb(title, template, char_limit);
       if (!created) {
         alert('Failed to save template. Please try again.');
         return;
       }
       savedId = created.id;
-      const newTemplate: Template = { id: savedId, title, template };
+      const newTemplate: Template = { id: savedId, title, template, char_limit };
       newTemplates.unshift(newTemplate);
-      const newWork = { id: savedId, title, template };
+      const newWork = { id: savedId, title, template, char_limit };
       setSavedTemplates(newTemplates);
       setCurrentWork(newWork);
       showSavedMessageBriefly();
@@ -230,6 +226,7 @@ export const Popup = ({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
   const handleConfirmSaveAs = async () => {
     const newTitle = saveAsTitle.trim();
     const template = currentWork.template.trim();
+    const char_limit = currentWork.char_limit;
 
     if (!newTitle) {
       alert('Please enter a title');
@@ -247,7 +244,7 @@ export const Popup = ({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
     if (dbError) {
       newId = crypto.randomUUID();
     } else {
-      const created = await createTemplateInDb(newTitle, template);
+      const created = await createTemplateInDb(newTitle, template, char_limit);
       if (!created) {
         alert('Failed to save template. Please try again.');
         setShowSaveAsDialog(false);
@@ -256,10 +253,10 @@ export const Popup = ({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
       newId = created.id;
     }
 
-    const newTemplate: Template = { id: newId, title: newTitle, template };
+    const newTemplate: Template = { id: newId, title: newTitle, template, char_limit };
     const newTemplates = [newTemplate, ...savedTemplates];
 
-    const newWork = { id: newId, title: newTitle, template };
+    const newWork = { id: newId, title: newTitle, template, char_limit };
     setSavedTemplates(newTemplates);
     setCurrentWork(newWork);
     setShowSaveAsDialog(false);
@@ -276,7 +273,9 @@ export const Popup = ({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
         (savedTemplates.find((t) => t.id === currentWork.id)?.title !==
           currentWork.title ||
           savedTemplates.find((t) => t.id === currentWork.id)?.template !==
-            currentWork.template));
+            currentWork.template ||
+          savedTemplates.find((t) => t.id === currentWork.id)?.char_limit !==
+            currentWork.char_limit));
 
     if (hasChanges) {
       const confirmSwitch = confirm(
@@ -288,7 +287,8 @@ export const Popup = ({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
     const newWork: CurrentWork = {
       id: template.id,
       title: template.title,
-      template: template.template
+      template: template.template,
+      char_limit: template.char_limit
     };
 
     setCurrentWork(newWork);
@@ -311,9 +311,9 @@ export const Popup = ({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
     if (currentWork.id === templateId) {
       if (newTemplates.length > 0) {
         const firstTemplate = newTemplates[0];
-        newWork = { id: firstTemplate.id, title: firstTemplate.title, template: firstTemplate.template };
+        newWork = { id: firstTemplate.id, title: firstTemplate.title, template: firstTemplate.template, char_limit: firstTemplate.char_limit };
       } else {
-        newWork = { id: null, title: '', template: '' };
+        newWork = { id: null, title: '', template: '', char_limit: DEFAULT_CHAR_LIMIT };
       }
     }
 
@@ -420,10 +420,8 @@ export const Popup = ({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
         onTitleChange={handleTitleChange}
         onTemplateChange={handleTemplateChange}
         onGenerateTitle={handleGenerateTitle}
-        charLimit={charLimit}
-        charLimitEnabled={charLimitEnabled}
+        charLimit={currentWork.char_limit}
         onCharLimitChange={handleCharLimitChange}
-        onCharLimitEnabledChange={handleCharLimitEnabledChange}
       />
 
       <div class="flex gap-2 mb-4 justify-between">
