@@ -59,8 +59,8 @@ npm run build        # outputs dist/ and release/release-*.zip
 
 Then `chrome://extensions` → Developer mode → **Load unpacked** → select `dist/`.
 
-To develop against a local Supabase: `npm run supabase` (wraps the Supabase CLI), then `npm run dev`. Use
-`npm run dev:remote` / `npm run build:remote` to target the hosted project.
+`npm run dev` and `npm run build` target the hosted Supabase project. To develop against a local Supabase:
+`npm run supabase` (wraps the Supabase CLI), then `npm run dev:local` / `npm run build:local`.
 
 ## Using it
 

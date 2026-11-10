@@ -12,9 +12,10 @@ auto-fills template placeholders.
 
 ### Development
 
-- `npm run dev` — Start Vite dev server (hot reload for popup/options pages)
-- `npm run build` — Production build: compiles TypeScript, bundles with Vite, generates `dist/` folder and
-  `release/release-*.zip`
+- `npm run dev` — Start Vite dev server (hot reload for popup/options pages) against the hosted Supabase project
+- `npm run build` — Production build against the hosted Supabase project: compiles TypeScript, bundles with Vite,
+  generates `dist/` folder and `release/release-*.zip`
+- `dev`/`build` just call `dev:remote`/`build:remote`; `dev:local`/`build:local` use `.env.local` (local Supabase)
 
 ### Testing the Extension Locally
 
@@ -97,8 +98,8 @@ The extension uses a **service worker + content script + popup UI** pattern:
 ## Release Process
 
 1. Update version in `package.json`
-2. Run `npm run build:remote` — NOT `npm run build`, which bakes in `.env.local` (local Supabase at 127.0.0.1)
-   and breaks sign-in for every user with "Failed to fetch"
+2. Run `npm run build` (same as `build:remote`) — never `build:local`, which bakes in `.env.local` (local Supabase at
+   127.0.0.1) and breaks sign-in for every user with "Failed to fetch"
 3. Confirm the zip targets the hosted project: `unzip -p release/<zip> '*.js' | grep -o 'https://[a-z]*\.supabase\.co'`
 4. Test locally with fresh `dist/` folder
 5. Upload the generated `release/release-*.zip`

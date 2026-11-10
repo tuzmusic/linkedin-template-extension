@@ -26,9 +26,11 @@
     "vitest": "^3.2.4"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "npm run dev:remote",
+    "dev:local": "vite",
     "dev:remote": "vite --mode remote",
-    "build": "vite build",
+    "build": "npm run build:remote",
+    "build:local": "vite build",
     "build:remote": "vite build --mode remote",
     "typecheck": "tsc --noEmit",
     "test:migrate": "vitest run scripts/migrate-templates.test.ts",
