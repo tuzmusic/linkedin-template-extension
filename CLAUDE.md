@@ -97,9 +97,11 @@ The extension uses a **service worker + content script + popup UI** pattern:
 ## Release Process
 
 1. Update version in `package.json`
-2. Run `npm run build`
-3. Test locally with fresh `dist/` folder
-4. Upload the generated `release/release-*.zip`
+2. Run `npm run build:remote` — NOT `npm run build`, which bakes in `.env.local` (local Supabase at 127.0.0.1)
+   and breaks sign-in for every user with "Failed to fetch"
+3. Confirm the zip targets the hosted project: `unzip -p release/<zip> '*.js' | grep -o 'https://[a-z]*\.supabase\.co'`
+4. Test locally with fresh `dist/` folder
+5. Upload the generated `release/release-*.zip`
    to [Chrome Web Store Developer Console](https://chrome.google.com/webstore/devconsole)
 
 ## Tech Stack
